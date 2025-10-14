@@ -276,6 +276,14 @@ npx prisma migrate dev --name update-schema
 
 npm run db:generate
 npm run build
+
+Hak akses
+git init
+git remote add origin https://github.com/GTXSatria/unus.git
+git remote set-url origin git@github.com:GTXSatria/unus.git
+
+
+
 git add .
 git commit -m "Fix registration error with enhanced debugging and health check"
 git push origin main
