@@ -22,9 +22,14 @@ function verifyGuruToken(request: NextRequest) {
   }
 }
 
-export async function GET(request: NextRequest) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ kelas: string }> }
+) {
   try {
+    const { kelas } = await params
     const guru = verifyGuruToken(request)
+    
     if (!guru) {
       return NextResponse.json(
         { message: 'Unauthorized' },
@@ -32,33 +37,41 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const hasilUjian = await db.hasilUjian.findMany({
+    // Cari semua ujian untuk guru ini dengan kelas tertentu
+    const ujians = await db.ujian.findMany({
       where: {
-        ujian: {
-          guruId: guru.id
-        }
+        kelas: kelas,
+        guruId: guru.id
       },
-      include: {
-        ujian: {
-          select: {
-            kodeUjian: true,
-            namaUjian: true
-          }
-        },
-        siswa: {
-          select: {
-            nisn: true,
-            nama: true,
-            kelas: true
-          }
-        }
-      },
-      orderBy: { createdAt: 'desc' }
+      select: {
+        id: true
+      }
     })
 
-    return NextResponse.json(hasilUjian)
+    if (ujians.length === 0) {
+      return NextResponse.json(
+        { message: `Tidak ada ujian untuk kelas ${kelas}` },
+        { status: 404 }
+      )
+    }
+
+    // Hapus semua hasil ujian untuk ujian-ujian tersebut
+    const ujianIds = ujians.map(ujian => ujian.id)
+    
+    const result = await db.hasilUjian.deleteMany({
+      where: {
+        ujianId: {
+          in: ujianIds
+        }
+      }
+    })
+
+    return NextResponse.json({
+      message: `Berhasil menghapus ${result.count} hasil ujian dari kelas ${kelas}`,
+      deletedCount: result.count
+    })
   } catch (error) {
-    console.error('Get hasil ujian error:', error)
+    console.error('Delete hasil ujian by kelas error:', error)
     return NextResponse.json(
       { message: 'Terjadi kesalahan server' },
       { status: 500 }
