@@ -20,4 +20,8 @@ build/
 
 # OS
 .DS_Store
+<<<<<<< HEAD
 Thumbs.db
+=======
+Thumbs.db
+>>>>>>> c6573b5e22f78ea167489812497adbcb9540726e
