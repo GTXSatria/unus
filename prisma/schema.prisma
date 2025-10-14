@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Guru {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  ujian     Ujian[]
+  siswa     Siswa[]
+}
+
+model Siswa {
+  id        String   @id @default(cuid())
+  nisn      String
+  nama      String
+  kelas     String
+  guruId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@unique([nisn, guruId])
+  guru       Guru     @relation(fields: [guruId], references: [id])
+  hasilUjian HasilUjian[]
+}
+
+model Ujian {
+  id          String   @id @default(cuid())
+  kodeUjian   String   @unique
+  namaUjian   String
+  kelas       String
+  jumlahSoal  Int
+  lamaUjian   Int // dalam menit
+  tipePilihan String // ABCD or ABCDF
+  pdfPath     String?
+  kunciJawaban String // JSON format
+  guruId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  guru        Guru     @relation(fields: [guruId], references: [id])
+  hasilUjian  HasilUjian[]
+}
+
+model HasilUjian {
+  id          String   @id @default(cuid())
+  ujianId     String
+  siswaId     String
+  jawaban     String   // JSON format
+  skor        Int
+  benar       Int
+  salah       Int
+  waktuMulai  DateTime
+  waktuSelesai DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  ujian       Ujian    @relation(fields: [ujianId], references: [id])
+  siswa       Siswa    @relation(fields: [siswaId], references: [id])
+}
