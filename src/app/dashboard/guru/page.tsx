@@ -639,32 +639,59 @@ export default function DashboardGuru() {
                         Kelas {kelas}
                       </h3>
                     </div>
-                    <div className="flex items-center space-x-4">
-                      <span className="text-sm text-gray-500">
-                        {hasilList.length} siswa
-                      </span>
-                      <div className="text-sm">
-                        <span className="font-medium text-gray-700">
-                          Rata-rata: 
-                        </span>
-                        <span className="ml-1 text-blue-600 font-semibold">
-                          {Math.round(hasilList.reduce((sum, h) => sum + h.skor, 0) / hasilList.length)}%
-                        </span>
-                      </div>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleExportPerKelas(kelas, hasilList)
-                        }}
-                        className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 flex items-center"
-                      >
-                        <Download className="w-3 h-3 mr-1" />
-                        Export Kelas
-                      </button>
-                    </div>
-                  </div>
-                </div>
+<div className="flex flex-wrap items-center justify-end gap-2">
+  <span className="text-sm text-gray-500">
+    {hasilList.length} siswa
+  </span>
+  <div className="text-sm">
+    <span className="font-medium text-gray-700">
+      Rata-rata: 
+    </span>
+    <span className="ml-1 text-blue-600 font-semibold">
+      {Math.round(hasilList.reduce((sum, h) => sum + h.skor, 0) / hasilList.length)}%
+    </span>
+  </div>
 
+  {/* Tombol Hapus Kelas */}
+  <button
+    onClick={(e) => {
+      e.stopPropagation()
+      if (confirm(`Apakah Anda yakin ingin menghapus semua hasil ujian kelas ${kelas}?`)) {
+        fetch(`/api/hasil-ujian/kelas/${kelas}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('guruToken')}`
+          }
+        }).then(res => {
+          if (res.ok) {
+            alert(`Berhasil menghapus hasil ujian kelas ${kelas}`)
+            window.location.reload()
+          } else {
+            alert('Gagal menghapus hasil ujian kelas ini')
+          }
+        })
+      }
+    }}
+    className="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700 flex items-center"
+  >
+    <Trash2 className="w-3 h-3 mr-1" />
+    Hapus Kelas
+  </button>
+
+  {/* Tombol Export Kelas */}
+  <button
+    onClick={(e) => {
+      e.stopPropagation()
+      handleExportPerKelas(kelas, hasilList)
+    }}
+    className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 flex items-center"
+  >
+    <Download className="w-3 h-3 mr-1" />
+    Export Kelas
+  </button>
+</div>
+</div>
+</div>
                 {/* Detail Hasil per Kelas */}
                 {expandedKelas[kelas] && (
                   <div className="mt-2 bg-white rounded-lg shadow overflow-hidden">

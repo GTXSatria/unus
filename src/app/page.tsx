@@ -72,11 +72,7 @@ export default function Home() {
         </div>
 
         <div className="text-center mt-12 text-gray-500 text-sm">
-<<<<<<< HEAD
           © 2018 GTX EduKids (Banjar) - By Ade Susandi, S.Pd
-=======
-          © 2025 GTX EduKids - Banjar- By Ade Susandi, S.Pd
->>>>>>> c6573b5e22f78ea167489812497adbcb9540726e
         </div>
       </div>
     </div>

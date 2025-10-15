@@ -22,56 +22,58 @@ function verifyGuruToken(request: NextRequest) {
   }
 }
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: Promise<{ kelas: string }> }
-) {
+export async function GET(request: NextRequest) {
   try {
-    const { kelas } = await params
+    console.log('=== GET HASIL UJIAN API CALLED ===')
+    
     const guru = verifyGuruToken(request)
     
     if (!guru) {
+      console.log('Unauthorized access attempt')
       return NextResponse.json(
         { message: 'Unauthorized' },
         { status: 401 }
       )
     }
 
-    // Cari semua ujian untuk guru ini dengan kelas tertentu
-    const ujians = await db.ujian.findMany({
-      where: {
-        kelas: kelas,
-        guruId: guru.id
-      },
-      select: {
-        id: true
-      }
-    })
+    console.log('Fetching hasil ujian for guru:', guru.id)
 
-    if (ujians.length === 0) {
-      return NextResponse.json(
-        { message: `Tidak ada ujian untuk kelas ${kelas}` },
-        { status: 404 }
-      )
-    }
-
-    // Hapus semua hasil ujian untuk ujian-ujian tersebut
-    const ujianIds = ujians.map(ujian => ujian.id)
-    
-    const result = await db.hasilUjian.deleteMany({
+    // Ambil semua hasil ujian untuk guru ini
+    const hasilUjian = await db.hasilUjian.findMany({
       where: {
-        ujianId: {
-          in: ujianIds
+        ujian: {
+          guruId: guru.id
         }
+      },
+      include: {
+        ujian: {
+          select: {
+            id: true,
+            kodeUjian: true,
+            namaUjian: true,
+            kelas: true
+          }
+        },
+        siswa: {
+          select: {
+            id: true,
+            nisn: true,
+            nama: true,
+            kelas: true
+          }
+        }
+      },
+      orderBy: {
+        createdAt: 'desc'
       }
     })
 
-    return NextResponse.json({
-      message: `Berhasil menghapus ${result.count} hasil ujian dari kelas ${kelas}`,
-      deletedCount: result.count
-    })
+    console.log('Found hasil ujian count:', hasilUjian.length)
+    console.log('Sample hasil ujian:', hasilUjian.slice(0, 3))
+
+    return NextResponse.json(hasilUjian)
   } catch (error) {
-    console.error('Delete hasil ujian by kelas error:', error)
+    console.error('Get hasil ujian error:', error)
     return NextResponse.json(
       { message: 'Terjadi kesalahan server' },
       { status: 500 }

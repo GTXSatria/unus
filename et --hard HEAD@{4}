@@ -1,0 +1,14 @@
+[33mc7c77fa[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfix-tailwind-error[m[33m)[m HEAD@{0}: rebase (abort): returning to refs/heads/fix-tailwind-error
+[33mf5323c9[m HEAD@{1}: rebase (pick): Remove duplicate config files
+[33mc6573b5[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{2}: rebase (start): checkout origin/main
+[33mc7c77fa[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfix-tailwind-error[m[33m)[m HEAD@{3}: commit (merge): Resolve merge conflicts
+[33m41dc10f[m HEAD@{4}: commit: Fix registration error with enhanced debugging and health check
+[33mfc94d8f[m HEAD@{5}: commit: Update locally
+[33m2bf9864[m HEAD@{6}: commit: Fix defloy
+[33m017c2fa[m HEAD@{7}: commit: Fix TypeScript errors, Tailwind CSS configuration, and Prisma Client generation
+[33mbf63880[m HEAD@{8}: commit: Remove duplicate config files
+[33m15a60c1[m[33m ([m[1;32mmain[m[33m)[m HEAD@{9}: checkout: moving from main to fix-tailwind-error
+[33m15a60c1[m[33m ([m[1;32mmain[m[33m)[m HEAD@{10}: Branch: renamed refs/heads/fix-typescript-errors to refs/heads/main
+[33m15a60c1[m[33m ([m[1;32mmain[m[33m)[m HEAD@{12}: checkout: moving from main to fix-typescript-errors
+[33m15a60c1[m[33m ([m[1;32mmain[m[33m)[m HEAD@{13}: checkout: moving from main to main
+[33m15a60c1[m[33m ([m[1;32mmain[m[33m)[m HEAD@{14}: commit (initial): Initial backup before fixing TypeScript errors

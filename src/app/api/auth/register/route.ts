@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error('Registration error:', error)
-    console.error('Error stack:', error.stack)
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack available');
     return NextResponse.json(
       { message: 'Terjadi kesalahan server: ' + (error instanceof Error ? error.message : 'Unknown error') },
       { status: 500 }
