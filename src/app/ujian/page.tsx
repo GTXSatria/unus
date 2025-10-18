@@ -44,6 +44,49 @@ export default function UjianPage() {
   const router = useRouter()
   const timerRef = useRef<NodeJS.Timeout | null>(null)
 
+  // ✅ Tambahan: Anti-cheat dan fullscreen
+  useEffect(() => {
+    // masuk fullscreen otomatis
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {})
+    }
+
+    // cegah keluar fullscreen
+    const handleFsChange = () => {
+      if (!document.fullscreenElement) {
+        alert('Harap tetap di mode layar penuh selama ujian!')
+        document.documentElement.requestFullscreen().catch(() => {})
+      }
+    }
+
+    // cegah shortcut curang
+    const blockKeys = (e: KeyboardEvent) => {
+      if (
+        e.key === 'F12' ||
+        (e.ctrlKey && ['p', 's', 'u', 'c'].includes(e.key.toLowerCase())) ||
+        e.key === 'PrintScreen'
+      ) {
+        e.preventDefault()
+        e.stopPropagation()
+        alert('Aksi ini dinonaktifkan selama ujian.')
+      }
+    }
+
+    // cegah klik kanan
+    const blockRightClick = (e: MouseEvent) => e.preventDefault()
+
+    document.addEventListener('fullscreenchange', handleFsChange)
+    document.addEventListener('keydown', blockKeys)
+    document.addEventListener('contextmenu', blockRightClick)
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFsChange)
+      document.removeEventListener('keydown', blockKeys)
+      document.removeEventListener('contextmenu', blockRightClick)
+    }
+  }, [])
+  // ✅ selesai tambahan anti-cheat
+
   useEffect(() => {
     const token = localStorage.getItem('siswaToken')
     const siswaDataStr = localStorage.getItem('siswaData')
@@ -97,11 +140,9 @@ export default function UjianPage() {
       const data = await response.json()
       
       if (response.ok && data.hasExistingResult) {
-        // Student already has a finished result, show it directly
         setResult(data.hasil)
         setShowResult(true)
       } else if (response.ok && data.sudahMulai) {
-        // Student started but didn't finish, calculate remaining time
         const startTime = new Date(data.waktuMulai)
         const currentTime = new Date()
         const elapsedMs = currentTime.getTime() - startTime.getTime()
@@ -110,19 +151,13 @@ export default function UjianPage() {
         const remainingTime = Math.max(0, totalSeconds - elapsedSeconds)
         
         setTimeLeft(remainingTime)
-        
-        // If time is up, submit automatically
-        if (remainingTime === 0) {
-          handleSubmit()
-        }
+        if (remainingTime === 0) handleSubmit()
       } else {
-        // Student hasn't started yet, start the exam
         await startExam(token)
         setTimeLeft(ujianData?.lamaUjian ? ujianData.lamaUjian * 60 : 3600)
       }
     } catch (error) {
       console.error('Error checking existing result:', error)
-      // Fallback: start exam normally
       await startExam(token)
       setTimeLeft(ujianData?.lamaUjian ? ujianData.lamaUjian * 60 : 3600)
     }
@@ -137,7 +172,6 @@ export default function UjianPage() {
           'Authorization': `Bearer ${token}`
         }
       })
-
       const data = await response.json()
       console.log('Start exam response:', data)
     } catch (error) {
@@ -149,7 +183,6 @@ export default function UjianPage() {
     const hours = Math.floor(seconds / 3600)
     const minutes = Math.floor((seconds % 3600) / 60)
     const secs = seconds % 60
-    
     if (hours > 0) {
       return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
     }
@@ -165,9 +198,7 @@ export default function UjianPage() {
 
   const handleSubmit = async () => {
     if (isSubmitting) return
-    
     setIsSubmitting(true)
-    
     try {
       const token = localStorage.getItem('siswaToken')
       const response = await fetch('/api/ujian/submit', {
@@ -180,7 +211,6 @@ export default function UjianPage() {
       })
 
       const data = await response.json()
-
       if (response.ok) {
         setResult(data.hasil)
         setShowResult(true)
@@ -262,7 +292,6 @@ export default function UjianPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Header */}
       <header className="bg-white shadow-sm border-b relative z-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -306,14 +335,23 @@ export default function UjianPage() {
       </header>
 
       <div className="flex-1 flex relative">
-        {/* PDF Fullscreen */}
+        {/* ✅ PDF bisa discroll tapi tidak bisa print/download */}
         <div className="flex-1 bg-white">
           <iframe
-            src={`${pdfUrl}#toolbar=0&navpanes=0&scrollbar=0`}
+            src={`${pdfUrl}#toolbar=0&navpanes=0`}
             className="w-full h-full"
             title="Soal Ujian PDF"
             style={{
-              pointerEvents: 'none' // Disable interaction to prevent cheating
+              userSelect: 'none',
+              pointerEvents: 'auto'
+            }}
+            onLoad={(e) => {
+              e.currentTarget.contentWindow?.addEventListener('keydown', (evt) => {
+                if ((evt.ctrlKey && evt.key === 'p') || evt.key === 'PrintScreen') {
+                  evt.preventDefault()
+                  evt.stopPropagation()
+                }
+              })
             }}
           />
         </div>
@@ -323,7 +361,6 @@ export default function UjianPage() {
           showJawaban ? 'translate-x-0' : 'translate-x-full'
         }`}>
           <div className="w-96 h-full flex flex-col">
-            {/* Panel Header */}
             <div className="bg-blue-600 text-white p-4 flex items-center justify-between">
               <h3 className="text-lg font-semibold">Lembar Jawaban</h3>
               <button
@@ -334,7 +371,6 @@ export default function UjianPage() {
               </button>
             </div>
 
-            {/* Panel Content */}
             <div className="flex-1 overflow-y-auto p-4">
               <div className="space-y-3">
                 {Array.from({ length: ujianData.jumlahSoal }, (_, i) => i + 1).map((nomor) => (
@@ -368,7 +404,6 @@ export default function UjianPage() {
                 ))}
               </div>
               
-              {/* Submit Button in Panel */}
               <div className="mt-6 pt-4 border-t border-gray-200">
                 <button
                   onClick={handleSubmit}
@@ -379,7 +414,6 @@ export default function UjianPage() {
                   {isSubmitting ? 'Mengirim...' : 'Selesai & Kirim'}
                 </button>
                 
-                {/* Progress Info */}
                 <div className="mt-3 bg-blue-50 rounded-lg p-3">
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-sm font-medium text-blue-900">Progress</span>

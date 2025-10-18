@@ -3,7 +3,7 @@ import { db } from '@/lib/db'
 import { writeFile, mkdir } from 'fs/promises'
 import path from 'path'
 import jwt from 'jsonwebtoken'
-
+// YANG BARU DAN KONSISTEN
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'
 
 function verifyGuruToken(request: NextRequest) {

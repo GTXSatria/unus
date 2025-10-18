@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import jwt from 'jsonwebtoken'
-
+// YANG BARU DAN KONSISTEN
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'
 
 function verifyGuruToken(request: NextRequest) {
@@ -24,8 +24,9 @@ function verifyGuruToken(request: NextRequest) {
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params; // <-- Tambahkan 'await'
   try {
     const guru = verifyGuruToken(request)
     if (!guru) {
@@ -35,7 +36,7 @@ export async function POST(
       )
     }
 
-    const ujianId = params.id
+    const ujianId = (await params).id
     const formData = await request.formData()
     const file = formData.get('file') as File
 

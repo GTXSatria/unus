@@ -1,7 +1,12 @@
 import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
-import { readFile } from 'fs/promises'
-import path from 'path'
+import { createClient } from '@supabase/supabase-js' // <-- 1. IMPORT SUPABASE CLIENT
+
+// Inisialisasi Supabase Client
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
 
 export async function GET(
   request: NextRequest,
@@ -10,10 +15,10 @@ export async function GET(
   try {
     const { kodeUjian } = await params
 
-    // Cari ujian berdasarkan kode (case-insensitive)
+    // Cari ujian berdasarkan kode
     const ujian = await db.ujian.findFirst({
       where: {
-        kodeUjian: kodeUjian.toLowerCase()
+        kodeUjian: kodeUjian
       }
     })
 
@@ -29,20 +34,36 @@ export async function GET(
       )
     }
 
-    // Baca file PDF
-    const pdfBuffer = await readFile(ujian.pdfPath)
+    // --- MODIFIKASI UTAMA: DOWNLOAD PDF DARI SUPABASE STORAGE ---
 
-    // Fix: Konversi Buffer ke Uint8Array untuk kompatibilitas dengan BodyInit
-    const pdfUint8Array = new Uint8Array(pdfBuffer)
+    // 2. GUNAKAN SUPABASE CLIENT UNTUK MENGUNDUH FILE
+    const { data: pdfData, error } = await supabase.storage
+      .from('soal-ujian') // <-- NAMA BUCKET
+      .download(ujian.pdfPath) // <-- pdfPath adalah path yang disimpan di DB (misal: 'guruId/Kelas/kodeUjian.pdf')
 
-    // Gunakan Response native untuk mengembalikan PDF
+    // 3. CEK JIKA DOWNLOAD GAGAL
+    if (error || !pdfData) {
+      console.error('Gagal mengambil PDF dari Supabase:', error)
+      return new Response(
+        JSON.stringify({ message: 'Gagal mengambil file PDF dari server.' }),
+        { status: 500 }
+      )
+    }
+
+    // 4. KONVERSI DATA YANG DIDAPAT DARI SUPABASE
+    // `pdfData` dari Supabase adalah objek Blob. Kita perlu mengubahnya menjadi ArrayBuffer atau Uint8Array.
+    const arrayBuffer = await pdfData.arrayBuffer()
+    const pdfUint8Array = new Uint8Array(arrayBuffer)
+
+    // 5. KEMBALIKAN RESPONSE PDF
     return new Response(pdfUint8Array, {
       status: 200,
-      headers: new Headers({
+      headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `inline; filename="${ujian.namaUjian}.pdf"`
-      })
+      }
     })
+
   } catch (error) {
     console.error('Get PDF error:', error)
     return new Response(

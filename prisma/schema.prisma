@@ -9,7 +9,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -40,18 +40,18 @@ model Siswa {
 }
 
 model Ujian {
-  id          String   @id @default(cuid())
-  kodeUjian   String   @unique
-  namaUjian   String
-  kelas       String
-  jumlahSoal  Int
-  lamaUjian   Int // dalam menit
-  tipePilihan String // ABCD or ABCDF
-  pdfPath     String?
-  kunciJawaban String // JSON format
-  guruId      String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String   @id @default(cuid())
+  kodeUjian     String   @unique
+  namaUjian     String
+  kelas         String
+  jumlahSoal    Int
+  lamaUjian     Int // dalam menit
+  tipePilihan   String // ABCD or ABCDE
+  pdfPath       String? // path file PDF di Supabase Storage
+  kunciJawaban  String     // simpan langsung format JSON, bukan string
+  guruId        String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
   
   guru        Guru     @relation(fields: [guruId], references: [id])
   hasilUjian  HasilUjian[]

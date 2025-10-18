@@ -1,11 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import jwt from 'jsonwebtoken'
-import { writeFile, mkdir } from 'fs/promises'
-import path from 'path'
 import * as XLSX from 'xlsx'
+import { createClient } from '@supabase/supabase-js' // <-- 1. IMPORT SUPABASE CLIENT
 
+// YANG BARU DAN KONSISTEN
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'
+
+// 2. INISIALISASI SUPABASE CLIENT (GUNAKAN SERVICE ROLE UNTUK OPERASI SERVER)
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
 
 function verifyGuruToken(request: NextRequest) {
   const authHeader = request.headers.get('authorization')
@@ -64,24 +70,35 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Proses file PDF
+    // --- MODIFIKASI UTAMA: UPLOAD KE SUPABASE STORAGE ---
+
+    // 3. SIAPKAN FILE PDF UNTUK DIUPLOAD
     const pdfBytes = await pdfFile.arrayBuffer()
     const pdfBuffer = Buffer.from(pdfBytes)
     
-    // Buat direktori uploads jika belum ada
-    const uploadsDir = path.join(process.cwd(), 'uploads')
-    try {
-      await mkdir(uploadsDir, { recursive: true })
-    } catch {
-      // Directory already exists
+    // 4. BUAT PATH UNTUK FILE DI BUCKET SESUAI STRUKTUR YANG DIINGINKAN
+    const pdfStoragePath = `${guru.id}/${kelas}/${kodeUjian}.pdf`
+
+    // 5. UPLOAD FILE PDF KE BUCKET 'Soal-ujian'
+    const { data: uploadData, error: uploadError } = await supabase.storage
+      .from('soal-ujian') // <-- NAMA BUCKET
+      .upload(pdfStoragePath, pdfBuffer, {
+        contentType: 'application/pdf',
+        upsert: false // Jangan timpa jika file sudah ada
+      })
+
+    // 6. CEK JIKA UPLOAD GAGAL
+    if (uploadError) {
+      console.error('Gagal upload PDF ke Supabase:', uploadError)
+      return NextResponse.json(
+        { message: 'Gagal mengupload file PDF ke server.', error: uploadError.message },
+        { status: 500 }
+      )
     }
 
-    // Simpan file PDF
-    const pdfFileName = `${kodeUjian}_${Date.now()}.pdf`
-    const pdfPath = path.join(uploadsDir, pdfFileName)
-    await writeFile(pdfPath, pdfBuffer)
+    // --- AKHIR MODIFIKASI UPLOAD ---
 
-    // Proses file kunci jawaban (Excel)
+    // Proses file kunci jawaban (Excel) - TIDAK ADA PERUBAHAN DI SINI
     const kunciBytes = await kunciFile.arrayBuffer()
     const kunciBuffer = Buffer.from(kunciBytes)
     const workbook = XLSX.read(kunciBuffer)
@@ -115,8 +132,8 @@ export async function POST(request: NextRequest) {
         jumlahSoal: parseInt(jumlahSoal),
         lamaUjian: parseInt(lamaUjian),
         tipePilihan,
-        pdfPath: pdfPath,
-        kunciJawaban: JSON.stringify(kunciJawaban),
+        pdfPath: pdfStoragePath, // <-- 7. SIMPAN PATH DARI SUPABASE STORAGE
+        kunciJawaban: JSON.stringify(kunciJawaban), // <-- UBAH MENJADI STRING JSON
         guruId: guru.id
       }
     })

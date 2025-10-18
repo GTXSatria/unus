@@ -310,8 +310,8 @@ export default function UploadUjian() {
                   </div>
                 )}
               </div>
-              <p className="text-sm text-gray-500 mt-2">
-                Template: Kolom A = Nomor Soal, Kolom B = Jawaban (A/B/C/D/E)
+              <p className="text-sm text-blue-800 mt-2">
+                CONTOH Template Header Exel: Kolom A = Nomor (Di isi 1-2-3-dsb), Kolom B = Jawaban (Di isi A/B/C/D/E)
               </p>
             </div>
 

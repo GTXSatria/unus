@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import jwt from 'jsonwebtoken'
-
+// YANG BARU DAN KONSISTEN
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'
 
 function verifySiswaToken(request: NextRequest) {
@@ -54,7 +54,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Ambil kunci jawaban
-    const kunciJawaban = JSON.parse(ujian.kunciJawaban)
+    // KODE YANG SUDAH DIPERBAIKI
+const kunciJawaban = JSON.parse(ujian.kunciJawaban as string)
 
     // Hitung skor
     let benar = 0

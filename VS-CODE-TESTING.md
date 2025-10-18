@@ -5,13 +5,20 @@
 ./test-setup.sh
 
 # Manual setup local
-npm install @prisma/client
 npm install -D tailwindcss-animate
-npm install -D tailwindcss@^3.4.0 autoprefixer
+npm install -D tailwindcss postcss autoprefixer @tailwindcss/postcss
 npm install dotenv
+npm install @supabase/supabase-js
+npm install @prisma/client
+npm install -g prisma
+npm install -g vercel
+npm install -g supabase
 npm install
-npx prisma db push
 npx prisma generate
+npx prisma db push
+npx tsc --noEmit
+npm run build
+
 npm run db:push
 npm run lint
 # perintah debug
@@ -36,8 +43,6 @@ npx prisma generate      # Generate Prisma Client
 npx prisma db push       # Alternative db push
 
 # Run type checking
-npx tsc --noEmit
-
 # Check for unused dependencies
 npm outdated
 
@@ -269,7 +274,7 @@ Happy Testing! 🚀
 https://gtxfinal-3sc5ndcii-gtx-satrias-projects.vercel.app
 setelah edit lakukan 
 npm run build
-npm cache clean --force
+git rm -r --cached .
 
 jika ada perubahan prisma.schema lakukan 
 npx prisma migrate dev --name update-schema
@@ -281,10 +286,11 @@ Hak akses
 git init
 git remote add origin https://github.com/GTXSatria/unus.git
 git remote set-url origin git@github.com:GTXSatria/unus.git
-
-
-
+git rm -r --cached .
 git add .
-git commit -m "Fix registration error with enhanced debugging and health check"
+git commit -m "Push All after accidental clean"
 git push origin main
+git push origin main --force 
 git status
+git checkout main
+Hapus .next lalu bisa jalan jalan hehehehehehe
