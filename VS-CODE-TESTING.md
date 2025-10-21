@@ -294,3 +294,11 @@ git push origin main --force
 git status
 git checkout main
 Hapus .next lalu bisa jalan jalan hehehehehehe
+
+
+
+pindah kamar git checkout -b fitur-panduan-guru
+git checkout main 
+git merge fitur-panduan-guru
+git push origin main
+git branch -d fitur-panduan-guru

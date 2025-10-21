@@ -43,8 +43,8 @@ export default function HasilUjianList() {
   const fetchHasilUjian = async () => {
     try {
       console.log('=== FETCHING HASIL UJIAN ===')
-      console.log('Kelas list:', kelasList);
-      console.log('Ujian list:', ujianList);
+      // console.log('Kelas list:', kelasList); // Di-comment
+      // console.log('Ujian list:', ujianList); // Di-comment
       
       const token = localStorage.getItem('token')
       if (!token) {
@@ -71,8 +71,8 @@ export default function HasilUjianList() {
 
       if (response.ok) {
         const data = await response.json()
-        console.log('Hasil ujian data received:', data)
-        console.log('Data count:', data.length)
+        console.log('Hasil ujian data received successfully.'); // Log aman
+        // console.log('Data count:', data.length) // di koment
         
         setHasilUjian(data)
         

@@ -7,15 +7,15 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('=== REGISTER API CALLED ===')
+    // console.log('=== REGISTER API CALLED ===') // Di-comment
     
     const { name, email, password, role } = await request.json()
     
-    console.log('Request data:', { name, email, role })
-    console.log('DATABASE_URL:', process.env.DATABASE_URL)
+    // console.log('Request data:', { name, email, role })
+    // console.log('DATABASE_URL:', process.env.DATABASE_URL)
     
     if (!name || !email || !password || !role) {
-      console.log('Validation error: Missing fields')
+      // console.log('Validation error: Missing fields')
       return NextResponse.json(
         { message: 'Semua field harus diisi' },
         { status: 400 }
@@ -30,29 +30,29 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    console.log('Checking if email already exists...')
+    // console.log('Checking if email already exists...')
     
     // Cek apakah email sudah terdaftar
     const existingGuru = await db.guru.findUnique({
       where: { email }
     })
 
-    console.log('Existing guru:', existingGuru)
+    // console.log('Existing guru:', existingGuru)
 
     if (existingGuru) {
-      console.log('Email already registered')
+      // console.log('Email already registered')
       return NextResponse.json(
         { message: 'Email sudah terdaftar' },
         { status: 400 }
       )
     }
 
-    console.log('Hashing password...')
+    // console.log('Hashing password...')
     
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10)
     
-    console.log('Creating new guru...')
+    // console.log('Creating new guru...')
 
     // Buat guru baru
     const guru = await db.guru.create({
@@ -63,7 +63,8 @@ export async function POST(request: NextRequest) {
       }
     })
 
-    console.log('Guru created:', guru)
+    // console.log('Guru created:', guru)
+    console.log('New guru registered successfully.'); // Log aman
 
     return NextResponse.json({
       message: 'Registrasi berhasil',

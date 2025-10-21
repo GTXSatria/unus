@@ -25,11 +25,11 @@ function verifyGuruToken(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('Upload siswa API called')
+    // console.log('Upload siswa API called')
     
     const guru = verifyGuruToken(request)
     if (!guru) {
-      console.log('Unauthorized access attempt')
+      // console.log('Unauthorized access attempt')
       return NextResponse.json(
         { message: 'Unauthorized' },
         { status: 401 }
@@ -40,14 +40,14 @@ export async function POST(request: NextRequest) {
     const file = formData.get('file') as File
 
     if (!file) {
-      console.log('No file provided')
+      // console.log('No file provided')
       return NextResponse.json(
         { message: 'File harus diupload' },
         { status: 400 }
       )
     }
 
-    console.log('Processing file:', file.name, file.type, file.size)
+    // console.log('Processing file:', file.name, file.type, file.size)
 
     // Proses file Excel/CSV
     const bytes = await file.arrayBuffer()
@@ -116,7 +116,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    console.log('Parsed data:', jsonData.length, 'rows')
+    // console.log('Parsed data:', jsonData.length, 'rows')
 
     // Validasi dan proses data siswa
     // Fix: Tentukan tipe array secara eksplisit
@@ -162,7 +162,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    console.log('Processed data:', siswaData.length, 'valid students')
+    // console.log('Processed data:', siswaData.length, 'valid students')
     console.log('Errors:', errors.length)
 
     if (errors.length > 0 && siswaData.length === 0) {
@@ -185,14 +185,14 @@ export async function POST(request: NextRequest) {
         } catch (error: any) {
           // Skip duplicate entries
           if (error.code === 'P2002') {
-            console.log(`Skipping duplicate NISN for guru: ${siswa.nisn}`)
+            // console.log(`Skipping duplicate NISN for guru: ${siswa.nisn}`)
             continue
           }
           throw error
         }
       }
 
-      console.log('Created students:', createdCount)
+      // console.log('Created students:', createdCount)
 
       return NextResponse.json({
         message: `Berhasil mengupload ${createdCount} siswa`,

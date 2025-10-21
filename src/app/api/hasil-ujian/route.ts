@@ -24,19 +24,19 @@ function verifyGuruToken(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    console.log('=== GET HASIL UJIAN API CALLED ===')
+    // console.log('=== GET HASIL UJIAN API CALLED ===') // Di-comment atau dihapus
     
     const guru = verifyGuruToken(request)
     
     if (!guru) {
-      console.log('Unauthorized access attempt')
+      // console.log('Unauthorized access attempt')
       return NextResponse.json(
         { message: 'Unauthorized' },
         { status: 401 }
       )
     }
 
-    console.log('Fetching hasil ujian for guru:', guru.id)
+    // console.log('Fetching hasil ujian for guru:', guru.id) //
 
     // Ambil semua hasil ujian untuk guru ini
     const hasilUjian = await db.hasilUjian.findMany({
@@ -68,8 +68,9 @@ export async function GET(request: NextRequest) {
       }
     })
 
-    console.log('Found hasil ujian count:', hasilUjian.length)
-    console.log('Sample hasil ujian:', hasilUjian.slice(0, 3))
+    // console.log('Found hasil ujian count:', hasilUjian.length) //
+    // console.log('Sample hasil ujian:', hasilUjian.slice(0, 3)) //
+    console.log(`Found ${hasilUjian.length} hasil ujian.`); // Log aman, tidak menampilkan data
 
     return NextResponse.json(hasilUjian)
   } catch (error) {

@@ -15,7 +15,8 @@ import {
   Eye,
   Download,
   ChevronDown,
-  ChevronRight
+  ChevronRight,
+  HelpCircle // Tambahkan ini
 } from 'lucide-react'
 
 interface Ujian {
@@ -56,6 +57,7 @@ interface HasilUjian {
 
 export default function DashboardGuru() {
   const [activeTab, setActiveTab] = useState('ujian')
+  const [isPanduanOpen, setIsPanduanOpen] = useState(false) // Tambahkan state ini
   const [ujians, setUjians] = useState<Ujian[]>([])
   const [siswaPerKelas, setSiswaPerKelas] = useState<Record<string, Siswa[]>>({})
   const [hasilUjians, setHasilUjians] = useState<HasilUjian[]>([])
@@ -295,18 +297,28 @@ export default function DashboardGuru() {
                 <p className="text-sm text-gray-500">Dashboard Guru</p>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-blue-600">
-                {guruData?.name}
-              </span>
-              <button
-                onClick={handleLogout}
-                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center"
-              >
-                <LogOut className="w-4 h-4 mr-1" />
-                Logout
-              </button>
-            </div>
+<div className="flex items-center space-x-4">
+  {/* Tambahkan tombol ini */}
+  <button
+  onClick={() => setIsPanduanOpen(true)}
+  className="flex items-center text-gray-700 bg-transparent border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors"
+>
+  <HelpCircle className="w-4 h-4 mr-1" />
+  Panduan
+</button>
+
+  <span className="text-sm text-blue-600">
+    {guruData?.name}
+  </span>
+
+  <button
+    onClick={handleLogout}
+    className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center"
+  >
+    <LogOut className="w-4 h-4 mr-1" />
+    Logout
+  </button>
+</div>
           </div>
         </div>
       </header>
@@ -417,10 +429,17 @@ export default function DashboardGuru() {
                 </tbody>
               </table>
               {ujians.length === 0 && (
-                <div className="text-center py-12">
-                  <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500">Belum ada ujian yang diupload</p>
-                </div>
+    <div className="text-center py-12">
+    <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+    <p className="text-gray-500 mb-4">Belum ada ujian yang diupload</p>
+    <p className="text-sm text-gray-400">
+      Baru menggunakan aplikasi?{' '}
+      <Link href="/panduan-guru" className="text-blue-500 hover:underline font-medium">
+        Lihat panduan cepat
+      </Link>{' '}
+      untuk memulai.
+    </p>
+    </div>
               )}
             </div>
           </div>

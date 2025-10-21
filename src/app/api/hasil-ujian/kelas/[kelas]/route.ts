@@ -27,20 +27,20 @@ export async function DELETE(
   { params }: { params: Promise<{ kelas: string }> }
 ) {
   try {
-    console.log('=== DELETE HASIL UJIAN BY KELAS API CALLED ===')
+    // console.log('=== DELETE HASIL UJIAN BY KELAS API CALLED ===')
     
     const { kelas } = await params
     const guru = verifyGuruToken(request)
     
     if (!guru) {
-      console.log('Unauthorized access attempt')
+      // console.log('Unauthorized access attempt')
       return NextResponse.json(
         { message: 'Unauthorized' },
         { status: 401 }
       )
     }
 
-    console.log('Deleting hasil ujian for kelas:', kelas, 'by guru:', guru.id)
+    // console.log('Deleting hasil ujian for kelas:', kelas, 'by guru:', guru.id)
 
     // Cari semua ujian untuk guru ini dengan kelas tertentu
     const ujians = await db.ujian.findMany({
@@ -53,7 +53,7 @@ export async function DELETE(
       }
     })
 
-    console.log('Found ujians for kelas:', ujians.length)
+    // console.log('Found ujians for kelas:', ujians.length)
 
     if (ujians.length === 0) {
       return NextResponse.json(
@@ -73,7 +73,7 @@ export async function DELETE(
       }
     })
 
-    console.log('Deleted hasil ujian count:', result.count)
+    // console.log('Deleted hasil ujian count:', result.count)
 
     return NextResponse.json({
       message: `Berhasil menghapus ${result.count} hasil ujian dari kelas ${kelas}`,
