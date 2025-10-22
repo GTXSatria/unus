@@ -29,7 +29,7 @@ export default function UploadSiswa() {
     }
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     setError('')
@@ -48,9 +48,10 @@ export default function UploadSiswa() {
       
       const response = await fetch('/api/siswa/upload', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        // --- HAPUS BLOK headers INI ---
+        // headers: {
+        //   'Content-Type': 'application/json'
+        // },
         body: formDataToSend
       })
 
