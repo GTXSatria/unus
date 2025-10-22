@@ -35,7 +35,7 @@ function LoginSiswaContent() {
       const data = await response.json()
 
       if (response.ok) {
-        localStorage.setItem('siswaToken', data.token)
+        // localStorage.setItem('siswaToken', data.token)
         localStorage.setItem('siswaData', JSON.stringify(data.siswa))
         localStorage.setItem('ujianData', JSON.stringify(data.ujian))
         router.push('/ujian')

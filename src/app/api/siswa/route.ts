@@ -1,16 +1,22 @@
+// src/app/api/siswa/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import jwt from 'jsonwebtoken'
+import { cookies } from 'next/headers' // --- IMPORT HELPER COOKIES --- // --- IMPORT HELPER COOKIES ---
+
 // YANG BARU DAN KONSISTEN
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'
 
-function verifyGuruToken(request: NextRequest) {
-  const authHeader = request.headers.get('authorization')
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+// --- KOREKSI KEAMANAN: Fungsi verifikasi token dari HttpOnly cookie ---
+async function verifyGuruToken(request: NextRequest) {
+  // Baca cookie dari request menggunakan helper Next.js
+  const cookieStore = await cookies()
+  const token = cookieStore.get('guruToken')?.value
+
+  if (!token) {
     return null
   }
 
-  const token = authHeader.substring(7)
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as any
     if (decoded.role !== 'guru') {
@@ -24,7 +30,8 @@ function verifyGuruToken(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    const guru = verifyGuruToken(request)
+    // Verifikasi token (sekarang membaca dari cookie)
+    const guru = await verifyGuruToken(request)
     if (!guru) {
       return NextResponse.json(
         { message: 'Unauthorized' },

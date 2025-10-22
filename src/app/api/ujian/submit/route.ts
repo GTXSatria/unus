@@ -1,16 +1,22 @@
+// src/app/api/ujian/submit/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import jwt from 'jsonwebtoken'
+import { cookies } from 'next/headers' // --- IMPORT HELPER COOKIES --- // --- IMPORT HELPER COOKIES ---
+
 // YANG BARU DAN KONSISTEN
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'
 
-function verifySiswaToken(request: NextRequest) {
-  const authHeader = request.headers.get('authorization')
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+// --- KOREKSI KEAMANAN: Fungsi verifikasi token dari HttpOnly cookie ---
+async function verifySiswaToken(request: NextRequest) {
+  // Baca cookie dari request menggunakan helper Next.js
+  const cookieStore = await cookies()
+  const token = cookieStore.get('siswaToken')?.value
+
+  if (!token) {
     return null
   }
 
-  const token = authHeader.substring(7)
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as any
     if (decoded.role !== 'siswa') {
@@ -24,7 +30,8 @@ function verifySiswaToken(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const siswa = verifySiswaToken(request)
+    // Verifikasi token (sekarang membaca dari cookie)
+    const siswa = await verifySiswaToken(request)
     if (!siswa) {
       return NextResponse.json(
         { message: 'Unauthorized' },
@@ -54,8 +61,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Ambil kunci jawaban
-    // KODE YANG SUDAH DIPERBAIKI
-const kunciJawaban = JSON.parse(ujian.kunciJawaban as string)
+    const kunciJawaban = JSON.parse(ujian.kunciJawaban as string)
 
     // Hitung skor
     let benar = 0
@@ -77,26 +83,27 @@ const kunciJawaban = JSON.parse(ujian.kunciJawaban as string)
     // Cek apakah siswa sudah mulai ujian ini
     let existingHasil = await db.hasilUjian.findFirst({
       where: {
-      ujianId: siswa.ujianId,
-      siswaId: siswa.id,
+        ujianId: siswa.ujianId,
+        siswaId: siswa.id,
       }
     })
 
-if (!existingHasil) {
-  const baru = await db.hasilUjian.create({
-    data: {
-      ujianId: siswa.ujianId,
-      siswaId: siswa.id,
-      waktuMulai: new Date(),
-      jawaban: '{}',     // ✅ simpan sebagai string kosong (bukan object)
-      skor: 0,
-      benar: 0,
-      salah: 0,
-      waktuSelesai: null
+    if (!existingHasil) {
+      // Jika tidak ada record, buat baru. Ini mungkin terjadi jika API start tidak dipanggil.
+      const baru = await db.hasilUjian.create({
+        data: {
+          ujianId: siswa.ujianId,
+          siswaId: siswa.id,
+          waktuMulai: new Date(),
+          jawaban: '{}',
+          skor: 0,
+          benar: 0,
+          salah: 0,
+          waktuSelesai: null
+        }
+      })
+      existingHasil = baru
     }
-  })
-  existingHasil = baru
-}
 
     // Update hasil ujian yang sudah ada
     const hasil = await db.hasilUjian.update({
@@ -111,14 +118,22 @@ if (!existingHasil) {
     })
 
     return NextResponse.json({
-      message: 'Jawaban berhasil disubmit',
-      hasil: {
-        skor,
-        benar,
-        salah,
-        totalSoal: ujian.jumlahSoal
-      }
-    })
+  message: 'Jawaban berhasil disubmit',
+  hasil: {
+    skor,
+    benar,
+    salah,
+    totalSoal: ujian.jumlahSoal
+  }
+}, {
+  // --- TAMBAHKAN OBJECT headers INI ---
+  headers: {
+    'Cache-Control': 'no-store, no-cache, must-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0'
+  }
+})
+
   } catch (error) {
     console.error('Submit ujian error:', error)
     return NextResponse.json(

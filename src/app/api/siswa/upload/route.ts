@@ -1,17 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import jwt from 'jsonwebtoken'
+import { cookies } from 'next/headers'
 import * as XLSX from 'xlsx'
 // YANG BARU DAN KONSISTEN
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'
 
-function verifyGuruToken(request: NextRequest) {
-  const authHeader = request.headers.get('authorization')
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+async function verifyGuruToken(request: NextRequest) {
+  const cookieStore = await cookies()
+  const token = cookieStore.get('guruToken')?.value
+
+    if (!token) {
     return null
   }
-
-  const token = authHeader.substring(7)
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as any
     if (decoded.role !== 'guru') {
@@ -27,7 +28,7 @@ export async function POST(request: NextRequest) {
   try {
     // console.log('Upload siswa API called')
     
-    const guru = verifyGuruToken(request)
+    const guru = await verifyGuruToken(request)
     if (!guru) {
       // console.log('Unauthorized access attempt')
       return NextResponse.json(

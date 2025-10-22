@@ -16,7 +16,8 @@ import {
   Download,
   ChevronDown,
   ChevronRight,
-  HelpCircle // Tambahkan ini
+  HelpCircle,
+  X
 } from 'lucide-react'
 
 interface Ujian {
@@ -57,7 +58,7 @@ interface HasilUjian {
 
 export default function DashboardGuru() {
   const [activeTab, setActiveTab] = useState('ujian')
-  const [isPanduanOpen, setIsPanduanOpen] = useState(false) // Tambahkan state ini
+  const [isPanduanOpen, setIsPanduanOpen] = useState(false)
   const [ujians, setUjians] = useState<Ujian[]>([])
   const [siswaPerKelas, setSiswaPerKelas] = useState<Record<string, Siswa[]>>({})
   const [hasilUjians, setHasilUjians] = useState<HasilUjian[]>([])
@@ -67,24 +68,36 @@ export default function DashboardGuru() {
   const router = useRouter()
 
   useEffect(() => {
-    const token = localStorage.getItem('guruToken')
-    const userData = localStorage.getItem('guruData')
-    
-    if (!token || !userData) {
-      router.push('/login/guru')
-      return
-    }
+    const checkAuth = async () => {
+      try {
+        const response = await fetch('/api/auth/me');
+        if (!response.ok) {
+          router.push('/login/guru');
+          return;
+        }
+        const userData = await response.json();
+        setGuruData(userData);
+      } catch (error) {
+        console.error('Auth check failed:', error);
+        router.push('/login/guru');
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    setGuruData(JSON.parse(userData))
-    fetchData()
-  }, [router])
+    checkAuth();
+  }, [router]);
+
+  useEffect(() => {
+    if (guruData) {
+      fetchData();
+    }
+  }, [guruData]);
 
   const fetchData = async () => {
     try {
-      const token = localStorage.getItem('guruToken')
       const headers = {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       }
 
       const [ujianRes, siswaRes, hasilRes] = await Promise.all([
@@ -131,11 +144,10 @@ export default function DashboardGuru() {
     if (!confirm('Apakah Anda yakin ingin menghapus ujian ini?')) return
 
     try {
-      const token = localStorage.getItem('guruToken')
       const response = await fetch(`/api/ujian/${id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         }
       })
 
@@ -155,11 +167,10 @@ export default function DashboardGuru() {
     if (!confirm('Apakah Anda yakin ingin menghapus siswa ini?')) return
 
     try {
-      const token = localStorage.getItem('guruToken')
       const response = await fetch(`/api/siswa/${id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         }
       })
 
@@ -175,11 +186,10 @@ export default function DashboardGuru() {
     if (!confirm(`Apakah Anda yakin ingin menghapus semua siswa kelas ${kelas}?`)) return
 
     try {
-      const token = localStorage.getItem('guruToken')
       const response = await fetch(`/api/siswa/kelas/${kelas}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         }
       })
 
@@ -195,11 +205,10 @@ export default function DashboardGuru() {
     if (!confirm('Apakah Anda yakin ingin menghapus hasil ujian ini?')) return
 
     try {
-      const token = localStorage.getItem('guruToken')
       const response = await fetch(`/api/hasil-ujian/${id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         }
       })
 
@@ -211,15 +220,36 @@ export default function DashboardGuru() {
     }
   }
 
+  const handleDeleteHasilPerKelas = async (kelas: string) => {
+    if (!confirm(`Apakah Anda yakin ingin menghapus semua hasil ujian kelas ${kelas}?`)) return
+
+    try {
+      const response = await fetch(`/api/hasil-ujian/kelas/${kelas}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+
+      if (response.ok) {
+        fetchData()
+      } else {
+        alert('Gagal menghapus hasil ujian kelas ini')
+      }
+    } catch (error) {
+      console.error('Error deleting hasil per kelas:', error)
+      alert('Terjadi kesalahan saat menghapus hasil ujian kelas ini')
+    }
+  }
+
   const handleDeleteKunciJawaban = async (id: string) => {
     if (!confirm('Apakah Anda yakin ingin menghapus kunci jawaban ini?')) return
 
     try {
-      const token = localStorage.getItem('guruToken')
       const response = await fetch(`/api/ujian/${id}/kunci-jawaban`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         }
       })
 
@@ -297,28 +327,26 @@ export default function DashboardGuru() {
                 <p className="text-sm text-gray-500">Dashboard Guru</p>
               </div>
             </div>
-<div className="flex items-center space-x-4">
-  {/* Tambahkan tombol ini */}
-  <button
-  onClick={() => setIsPanduanOpen(true)}
-  className="flex items-center text-gray-700 bg-transparent border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors"
->
-  <HelpCircle className="w-4 h-4 mr-1" />
-  Panduan
-</button>
+            <div className="flex items-center space-x-4">
+              <button
+              onClick={() => setIsPanduanOpen(true)}
+              className="text-blue-600 hover:text-blue-800 flex items-center text-lg font-bold"
+              >
+              <HelpCircle className="w-5 h-5 mr-2" />
+              Panduan
+              </button>
 
-  <span className="text-sm text-blue-600">
-    {guruData?.name}
-  </span>
-
-  <button
-    onClick={handleLogout}
-    className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center"
-  >
-    <LogOut className="w-4 h-4 mr-1" />
-    Logout
-  </button>
-</div>
+              <span className="text-sm text-blue-600">
+                {guruData?.name}
+              </span>
+              <button
+                onClick={handleLogout}
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center"
+              >
+                <LogOut className="w-4 h-4 mr-1" />
+                Logout
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -429,17 +457,20 @@ export default function DashboardGuru() {
                 </tbody>
               </table>
               {ujians.length === 0 && (
-    <div className="text-center py-12">
-    <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-    <p className="text-gray-500 mb-4">Belum ada ujian yang diupload</p>
-    <p className="text-sm text-gray-400">
-      Baru menggunakan aplikasi?{' '}
-      <Link href="/panduan-guru" className="text-blue-500 hover:underline font-medium">
-        Lihat panduan cepat
-      </Link>{' '}
-      untuk memulai.
-    </p>
-    </div>
+                <div className="text-center py-12">
+                  <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-500 mb-4">Belum ada ujian yang diupload</p>
+                  <p className="text-sm text-gray-400">
+                    Baru menggunakan aplikasi?{' '}
+                    <button
+                      onClick={() => setIsPanduanOpen(true)}
+                      className="text-blue-600 hover:text-blue-800"
+                    >
+                      Lihat Panduan Cepat
+                    </button>
+                    {' '}untuk memulai.
+                  </p>
+                </div>
               )}
             </div>
           </div>
@@ -658,59 +689,41 @@ export default function DashboardGuru() {
                         Kelas {kelas}
                       </h3>
                     </div>
-<div className="flex flex-wrap items-center justify-end gap-2">
-  <span className="text-sm text-gray-500">
-    {hasilList.length} siswa
-  </span>
-  <div className="text-sm">
-    <span className="font-medium text-gray-700">
-      Rata-rata: 
-    </span>
-    <span className="ml-1 text-blue-600 font-semibold">
-      {Math.round(hasilList.reduce((sum, h) => sum + h.skor, 0) / hasilList.length)}%
-    </span>
-  </div>
-
-  {/* Tombol Hapus Kelas */}
-  <button
-    onClick={(e) => {
-      e.stopPropagation()
-      if (confirm(`Apakah Anda yakin ingin menghapus semua hasil ujian kelas ${kelas}?`)) {
-        fetch(`/api/hasil-ujian/kelas/${kelas}`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('guruToken')}`
-          }
-        }).then(res => {
-          if (res.ok) {
-            alert(`Berhasil menghapus hasil ujian kelas ${kelas}`)
-            window.location.reload()
-          } else {
-            alert('Gagal menghapus hasil ujian kelas ini')
-          }
-        })
-      }
-    }}
-    className="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700 flex items-center"
-  >
-    <Trash2 className="w-3 h-3 mr-1" />
-    Hapus Kelas
-  </button>
-
-  {/* Tombol Export Kelas */}
-  <button
-    onClick={(e) => {
-      e.stopPropagation()
-      handleExportPerKelas(kelas, hasilList)
-    }}
-    className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 flex items-center"
-  >
-    <Download className="w-3 h-3 mr-1" />
-    Export Kelas
-  </button>
-</div>
-</div>
-</div>
+                    <div className="flex flex-wrap items-center justify-end gap-2">
+                      <span className="text-sm text-gray-500">
+                        {hasilList.length} siswa
+                      </span>
+                      <div className="text-sm">
+                        <span className="font-medium text-gray-700">
+                          Rata-rata: 
+                        </span>
+                        <span className="ml-1 text-blue-600 font-semibold">
+                          {Math.round(hasilList.reduce((sum, h) => sum + h.skor, 0) / hasilList.length)}%
+                        </span>
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleDeleteHasilPerKelas(kelas)
+                        }}
+                        className="text-red-600 hover:text-red-700 text-sm flex items-center"
+                      >
+                        <Trash2 className="w-4 h-4 mr-1" />
+                        Hapus Kelas
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleExportPerKelas(kelas, hasilList)
+                        }}
+                        className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 flex items-center"
+                      >
+                        <Download className="w-3 h-3 mr-1" />
+                        Export Kelas
+                      </button>
+                    </div>
+                  </div>
+                </div>
                 {/* Detail Hasil per Kelas */}
                 {expandedKelas[kelas] && (
                   <div className="mt-2 bg-white rounded-lg shadow overflow-hidden">
@@ -804,6 +817,70 @@ export default function DashboardGuru() {
           </div>
         )}
       </main>
+
+      {/* Modal Panduan Cepat */}
+      {isPanduanOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold text-gray-900">Panduan Cepat Penggunaan Aplikasi</h2>
+                <button
+                  onClick={() => setIsPanduanOpen(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-2">1. Upload Ujian</h3>
+                  <p className="text-gray-600 text-sm">
+                    Klik tab "Upload Ujian" lalu klik tombol "Upload Ujian Baru" untuk menambahkan soal ujian baru.
+                    Pastikan format file sesuai dengan template yang telah disediakan.
+                  </p>
+                </div>
+                
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-2">2. Upload Data Siswa</h3>
+                  <p className="text-gray-600 text-sm">
+                    Klik tab "Data Siswa" lalu klik "Upload Data Siswa" untuk menambahkan data siswa.
+                    Data siswa diperlukan untuk login dan penilaian.
+                  </p>
+                </div>
+                
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-2">3. Melihat Hasil Ujian</h3>
+                  <p className="text-gray-600 text-sm">
+                    Klik tab "Hasil Ujian" untuk melihat hasil ujian siswa.
+                    Anda dapat melihat hasil per kelas atau mengekspor semua hasil dalam format CSV.
+                  </p>
+                </div>
+                
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-blue-900 mb-2">Tips Tambahan</h3>
+                  <ul className="text-blue-800 text-sm space-y-1 list-disc list-inside">
+                    <li>Gunakan format file yang sesuai untuk menghindari kesalahan saat upload</li>
+                    <li>Periksa kembali data sebelum menyimpan</li>
+                    <li>Backup data secara berkala untuk menghindari kehilangan data</li>
+                    <li>Untuk pertanyaan lebih lanjut, hubungi administrator sistem</li>
+                  </ul>
+                </div>
+              </div>
+              
+              <div className="mt-6 flex justify-end">
+                <button
+                  onClick={() => setIsPanduanOpen(false)}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                >
+                  Mengerti
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import { cookies } from 'next/headers'
 // YANG BARU DAN KONSISTEN
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'
 

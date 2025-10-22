@@ -31,6 +31,7 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+public/uploads/pdf/
 
 # Database files
 *.db

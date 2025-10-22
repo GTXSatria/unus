@@ -1,25 +1,30 @@
+// src/app/api/ujian/upload/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import jwt from 'jsonwebtoken'
 import * as XLSX from 'xlsx'
-import { createClient } from '@supabase/supabase-js' // <-- 1. IMPORT SUPABASE CLIENT
+import { createClient } from '@supabase/supabase-js'
+import { cookies } from 'next/headers' // --- IMPORT HELPER COOKIES ---
 
 // YANG BARU DAN KONSISTEN
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'
 
-// 2. INISIALISASI SUPABASE CLIENT (GUNAKAN SERVICE ROLE UNTUK OPERASI SERVER)
+// INISIALISASI SUPABASE CLIENT (GUNAKAN SERVICE ROLE UNTUK OPERASI SERVER)
 const supabase = createClient(
   process.env.NEXT_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
-function verifyGuruToken(request: NextRequest) {
-  const authHeader = request.headers.get('authorization')
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+// --- KOREKSI KEAMANAN: Fungsi verifikasi token dari HttpOnly cookie ---
+async function verifyGuruToken(request: NextRequest) {
+  // Baca cookie dari request menggunakan helper Next.js
+  const cookieStore = await cookies()
+  const token = cookieStore.get('guruToken')?.value
+
+  if (!token) {
     return null
   }
 
-  const token = authHeader.substring(7)
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as any
     if (decoded.role !== 'guru') {
@@ -33,7 +38,8 @@ function verifyGuruToken(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const guru = verifyGuruToken(request)
+    // Verifikasi token (sekarang membaca dari cookie)
+    const guru = await verifyGuruToken(request)
     if (!guru) {
       return NextResponse.json(
         { message: 'Unauthorized' },
@@ -72,22 +78,22 @@ export async function POST(request: NextRequest) {
 
     // --- MODIFIKASI UTAMA: UPLOAD KE SUPABASE STORAGE ---
 
-    // 3. SIAPKAN FILE PDF UNTUK DIUPLOAD
+    // SIAPKAN FILE PDF UNTUK DIUPLOAD
     const pdfBytes = await pdfFile.arrayBuffer()
     const pdfBuffer = Buffer.from(pdfBytes)
     
-    // 4. BUAT PATH UNTUK FILE DI BUCKET SESUAI STRUKTUR YANG DIINGINKAN
+    // BUAT PATH UNTUK FILE DI BUCKET SESUAI STRUKTUR YANG DIINGINKAN
     const pdfStoragePath = `${guru.id}/${kelas}/${kodeUjian}.pdf`
 
-    // 5. UPLOAD FILE PDF KE BUCKET 'Soal-ujian'
+    // UPLOAD FILE PDF KE BUCKET 'Soal-ujian'
     const { data: uploadData, error: uploadError } = await supabase.storage
-      .from('soal-ujian') // <-- NAMA BUCKET
+      .from('soal-ujian') // NAMA BUCKET
       .upload(pdfStoragePath, pdfBuffer, {
         contentType: 'application/pdf',
         upsert: false // Jangan timpa jika file sudah ada
       })
 
-    // 6. CEK JIKA UPLOAD GAGAL
+    // CEK JIKA UPLOAD GAGAL
     if (uploadError) {
       console.error('Gagal upload PDF ke Supabase:', uploadError)
       return NextResponse.json(
@@ -132,16 +138,23 @@ export async function POST(request: NextRequest) {
         jumlahSoal: parseInt(jumlahSoal),
         lamaUjian: parseInt(lamaUjian),
         tipePilihan,
-        pdfPath: pdfStoragePath, // <-- 7. SIMPAN PATH DARI SUPABASE STORAGE
-        kunciJawaban: JSON.stringify(kunciJawaban), // <-- UBAH MENJADI STRING JSON
+        pdfPath: pdfStoragePath, // SIMPAN PATH DARI SUPABASE STORAGE
+        kunciJawaban: JSON.stringify(kunciJawaban), // UBAH MENJADI STRING JSON
         guruId: guru.id
       }
     })
 
     return NextResponse.json({
-      message: 'Ujian berhasil diupload',
-      ujian
-    })
+  message: 'Ujian berhasil diupload',
+  ujian
+}, {
+  // --- TAMBAHKAN OBJECT headers INI ---
+  headers: {
+    'Cache-Control': 'no-store, no-cache, must-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0'
+  }
+})
   } catch (error) {
     console.error('Upload ujian error:', error)
     return NextResponse.json(

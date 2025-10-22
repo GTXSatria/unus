@@ -16,7 +16,8 @@ npm install -g supabase
 npm install
 npx prisma generate
 npx prisma db push
-npx tsc --noEmit
+npx tsc --noEmit --pretty false
+npx tsc --noEmit --pretty
 npm run build
 
 npm run db:push

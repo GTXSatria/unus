@@ -3,8 +3,9 @@ import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
 import { createClient } from '@supabase/supabase-js'
 import jwt from 'jsonwebtoken'
+import { cookies } from 'next/headers' // --- IMPORT HELPER COOKIES ---
 
-// Pastikan environment variable ada, kalau tidak throw error
+// Pastikan environment variable ada
 const SUPABASE_URL = process.env.NEXT_SUPABASE_URL
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'
@@ -16,11 +17,16 @@ if (!SUPABASE_URL || !SUPABASE_KEY) {
 // Inisialisasi Supabase Client
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
-function verifySiswaToken(request: NextRequest) {
-  const authHeader = request.headers.get('authorization')
-  if (!authHeader || !authHeader.startsWith('Bearer ')) return null
+// --- KOREKSI KEAMANAN: Fungsi verifikasi token dari HttpOnly cookie ---
+async function verifySiswaToken(request: NextRequest) {
+  // Baca cookie dari request menggunakan helper Next.js
+  const cookieStore = await cookies()
+  const token = cookieStore.get('siswaToken')?.value
 
-  const token = authHeader.substring(7)
+  if (!token) {
+    return null
+  }
+
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as any
     if (decoded.role !== 'siswa') return null
@@ -30,17 +36,15 @@ function verifySiswaToken(request: NextRequest) {
   }
 }
 
-// ✅ PERUBAHAN PADA BARIS INI
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ kodeUjian: string }> } // Tipe params sekarang Promise
+  { params }: { params: Promise<{ kodeUjian: string }> }
 ) {
   try {
-    // ✅ TAMBAHKAN `await` DI SINI
     const { kodeUjian } = await params
 
-    // Verifikasi token
-    const siswa = verifySiswaToken(request)
+    // Verifikasi token (sekarang membaca dari cookie)
+    const siswa = await verifySiswaToken(request)
     if (!siswa) {
       return new Response(JSON.stringify({ message: 'Unauthorized' }), {
         status: 401,
@@ -80,6 +84,10 @@ export async function GET(
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `inline; filename="${ujian.namaUjian}.pdf"`,
+        // --- TAMBAHKAN HEADER INI ---
+    'Cache-Control': 'no-store, no-cache, must-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0'
       },
     })
   } catch (err) {

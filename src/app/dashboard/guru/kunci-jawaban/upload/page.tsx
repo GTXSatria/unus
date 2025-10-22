@@ -34,21 +34,32 @@ export default function UploadKunciJawaban() {
   const router = useRouter()
 
   useEffect(() => {
-    const token = localStorage.getItem('guruToken')
-    if (!token) {
-      router.push('/login/guru')
-      return
-    }
+    // Check authentication using cookies
+    const checkAuth = async () => {
+      try {
+        const response = await fetch('/api/auth/me');
+        if (!response.ok) {
+          router.push('/login/guru');
+          return;
+        }
+        const userData = await response.json();
+        // User is authenticated, proceed
+      } catch (error) {
+        console.error('Auth check failed:', error);
+        router.push('/login/guru');
+        return;
+      }
+    };
 
-    fetchUjians()
+    checkAuth();
+    fetchUjians();
   }, [router])
 
   const fetchUjians = async () => {
     try {
-      const token = localStorage.getItem('guruToken')
       const response = await fetch('/api/ujian', {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         }
       })
 
@@ -84,15 +95,11 @@ export default function UploadKunciJawaban() {
     setMessage('')
 
     try {
-      const token = localStorage.getItem('guruToken')
       const formData = new FormData()
       formData.append('file', file)
 
       const response = await fetch(`/api/ujian/${selectedUjian}/kunci-jawaban/upload`, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
         body: formData
       })
 

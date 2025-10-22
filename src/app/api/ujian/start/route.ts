@@ -1,16 +1,22 @@
+// src/app/api/ujian/start/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import jwt from 'jsonwebtoken'
+import { cookies } from 'next/headers' // --- IMPORT HELPER COOKIES --- // --- IMPORT HELPER COOKIES ---
+
 // YANG BARU DAN KONSISTEN
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'
 
-function verifySiswaToken(request: NextRequest) {
-  const authHeader = request.headers.get('authorization')
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+// --- KOREKSI KEAMANAN: Fungsi verifikasi token dari HttpOnly cookie ---
+async function verifySiswaToken(request: NextRequest) {
+  // Baca cookie dari request menggunakan helper Next.js
+  const cookieStore = await cookies()
+  const token = cookieStore.get('siswaToken')?.value
+
+  if (!token) {
     return null
   }
 
-  const token = authHeader.substring(7)
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as any
     if (decoded.role !== 'siswa') {
@@ -24,7 +30,8 @@ function verifySiswaToken(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const siswa = verifySiswaToken(request)
+    // Verifikasi token (sekarang membaca dari cookie)
+    const siswa = await verifySiswaToken(request)
     if (!siswa) {
       return NextResponse.json(
         { message: 'Unauthorized' },
@@ -65,11 +72,18 @@ export async function POST(request: NextRequest) {
       }
     })
 
-    return NextResponse.json({
-      message: 'Waktu mulai dicatat',
-      waktuMulai: hasil.waktuMulai,
-      sudahMulai: false
-    })
+return NextResponse.json({
+  message: 'Waktu mulai dicatat',
+  waktuMulai: hasil.waktuMulai,
+  sudahMulai: false
+}, {
+  // --- TAMBAHKAN OBJECT headers INI ---
+  headers: {
+    'Cache-Control': 'no-store, no-cache, must-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0'
+  }
+})
 
   } catch (error) {
     console.error('Start ujian error:', error)

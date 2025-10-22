@@ -36,19 +36,19 @@ export default function HasilUjianList() {
 
   // Fetch data hasil ujian
   useEffect(() => {
-   console.log('Component mounted');
+   // console.log('Component mounted');
   fetchHasilUjian();
 }, [filterKelas, filterUjian]);
 
   const fetchHasilUjian = async () => {
     try {
-      console.log('=== FETCHING HASIL UJIAN ===')
-      // console.log('Kelas list:', kelasList); // Di-comment
-      // console.log('Ujian list:', ujianList); // Di-comment
+      // console.log('=== FETCHING HASIL UJIAN ===')
+      // // console.log('Kelas list:', kelasList); // Di-comment
+      // // console.log('Ujian list:', ujianList); // Di-comment
       
       const token = localStorage.getItem('token')
       if (!token) {
-        console.log('No token found, redirecting to login')
+        // console.log('No token found, redirecting to login')
         router.push('/login/guru')
         return
       }
@@ -59,20 +59,20 @@ export default function HasilUjianList() {
       if (filterUjian) queryParams.append('ujian', filterUjian)
       
       const url = `/api/hasil-ujian${queryParams.toString() ? `?${queryParams.toString()}` : ''}`
-      console.log('Fetching from URL:', url)
+      // console.log('Fetching from URL:', url)
 
       const response = await fetch(url, {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         }
       })
 
-      console.log('Response status:', response.status)
+      // console.log('Response status:', response.status)
 
       if (response.ok) {
         const data = await response.json()
-        console.log('Hasil ujian data received successfully.'); // Log aman
-        // console.log('Data count:', data.length) // di koment
+        // console.log('Hasil ujian data received successfully.'); // Log aman
+        // // console.log('Data count:', data.length) // di koment
         
         setHasilUjian(data)
         
@@ -83,8 +83,8 @@ export default function HasilUjianList() {
       namaUjian: item.ujian.namaUjian
       })))] as { id: string, namaUjian: string }[];
 
-        console.log('Kelas list:', uniqueKelas);
-        console.log('Kelas list length:', uniqueKelas.length);
+        // console.log('Kelas list:', uniqueKelas);
+        // console.log('Kelas list length:', uniqueKelas.length);
 
       setKelasList(uniqueKelas)
       setUjianList(uniqueUjian)
@@ -109,7 +109,7 @@ export default function HasilUjianList() {
     }
 
     try {
-      console.log(`=== DELETING HASIL UJIAN FOR KELAS: ${kelas} ===`)
+      // console.log(`=== DELETING HASIL UJIAN FOR KELAS: ${kelas} ===`)
       
       const token = localStorage.getItem('token')
       if (!token) {
@@ -120,15 +120,15 @@ export default function HasilUjianList() {
       const response = await fetch(`/api/hasil-ujian/kelas/${kelas}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         }
       })
 
-      console.log('Delete response status:', response.status)
+      // console.log('Delete response status:', response.status)
 
       if (response.ok) {
         const data = await response.json()
-        console.log('Delete response:', data)
+        // console.log('Delete response:', data)
         alert(data.message)
         // Refresh daftar hasil ujian
         fetchHasilUjian()
@@ -150,7 +150,7 @@ export default function HasilUjianList() {
     }
 
     try {
-      console.log(`=== DELETING HASIL UJIAN: ${id} ===`)
+      // console.log(`=== DELETING HASIL UJIAN: ${id} ===`)
       
       const token = localStorage.getItem('token')
       if (!token) {
@@ -161,15 +161,15 @@ export default function HasilUjianList() {
       const response = await fetch(`/api/hasil-ujian/${id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         }
       })
 
-      console.log('Delete response status:', response.status)
+      // console.log('Delete response status:', response.status)
 
       if (response.ok) {
         const data = await response.json()
-        console.log('Delete response:', data)
+        // console.log('Delete response:', data)
         alert(data.message)
         // Refresh daftar hasil ujian
         fetchHasilUjian()
@@ -186,7 +186,7 @@ export default function HasilUjianList() {
 
   // Fungsi untuk export data ke CSV
   const handleExportCSV = () => {
-    console.log('=== EXPORTING TO CSV ===')
+    // console.log('=== EXPORTING TO CSV ===')
     
     // Create CSV content
     const headers = ['Nama Siswa', 'NISN', 'Kelas', 'Ujian', 'Skor', 'Benar', 'Salah', 'Tanggal']
@@ -217,7 +217,7 @@ export default function HasilUjianList() {
     document.body.removeChild(link)
     URL.revokeObjectURL(url)
     
-    console.log('CSV exported successfully')
+    // console.log('CSV exported successfully')
   }
 
   // Render loading state
@@ -231,7 +231,7 @@ export default function HasilUjianList() {
 
   // Render error state
   if (error) {
-    console.log('Rendering delete buttons for kelas:', kelasList);
+    // console.log('Rendering delete buttons for kelas:', kelasList);
     return (
       <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
         <p className="font-bold">Error:</p>

@@ -40,21 +40,32 @@ export default function KunciJawabanDetail() {
   const params = useParams()
 
   useEffect(() => {
-    const token = localStorage.getItem('guruToken')
-    if (!token) {
-      router.push('/login/guru')
-      return
-    }
+    // Check authentication using cookies
+    const checkAuth = async () => {
+      try {
+        const response = await fetch('/api/auth/me');
+        if (!response.ok) {
+          router.push('/login/guru');
+          return;
+        }
+        const userData = await response.json();
+        // User is authenticated, proceed
+      } catch (error) {
+        console.error('Auth check failed:', error);
+        router.push('/login/guru');
+        return;
+      }
+    };
 
-    fetchUjian()
+    checkAuth();
+    fetchUjian();
   }, [router, params.id])
 
   const fetchUjian = async () => {
     try {
-      const token = localStorage.getItem('guruToken')
       const response = await fetch(`/api/ujian/${params.id}`, {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         }
       })
 
@@ -84,11 +95,9 @@ export default function KunciJawabanDetail() {
   const handleSave = async () => {
     setIsSaving(true)
     try {
-      const token = localStorage.getItem('guruToken')
       const response = await fetch(`/api/ujian/${params.id}/kunci-jawaban`, {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ kunciJawaban })
@@ -113,11 +122,10 @@ export default function KunciJawabanDetail() {
     if (!confirm('Apakah Anda yakin ingin menghapus semua kunci jawaban?')) return
 
     try {
-      const token = localStorage.getItem('guruToken')
       const response = await fetch(`/api/ujian/${params.id}/kunci-jawaban`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         }
       })
 

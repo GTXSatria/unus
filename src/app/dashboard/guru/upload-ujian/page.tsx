@@ -78,12 +78,9 @@ export default function UploadUjian() {
       formDataToSend.append('pdfFile', pdfFile)
       formDataToSend.append('kunciFile', kunciFile)
 
-      const token = localStorage.getItem('guruToken')
+      
       const response = await fetch('/api/ujian/upload', {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
         body: formDataToSend
       })
 
@@ -138,7 +135,7 @@ export default function UploadUjian() {
                     name="kodeUjian"
                     value={formData.kodeUjian}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Contoh: MTK001"
                     required
                   />

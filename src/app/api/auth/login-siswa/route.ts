@@ -1,6 +1,9 @@
+// src/app/api/auth/login-siswa/route.ts
+
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import jwt from 'jsonwebtoken'
+import { cookies } from 'next/headers'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'
 
@@ -69,9 +72,13 @@ export async function POST(request: NextRequest) {
       { expiresIn: '24h' }
     )
 
-    return NextResponse.json({
+    // --- KOREKSI KEAMANAN: Gunakan HttpOnly Cookie ---
+    // Kita tidak lagi mengirim token di body JSON untuk mencegah pencurian via XSS.
+    // Sebagai gantinya, kita simpan token di HttpOnly cookie yang lebih aman.
+
+    const response = NextResponse.json({
       message: 'Login berhasil',
-      token,
+      // Token DIHAPUS dari sini
       siswa: {
         id: siswa.id,
         nisn: siswa.nisn,
@@ -86,8 +93,23 @@ export async function POST(request: NextRequest) {
         lamaUjian: ujian.lamaUjian,
         tipePilihan: ujian.tipePilihan
       }
-    })
+    });
+
+    // Set cookie dengan token
+    response.cookies.set({
+      name: 'siswaToken', // Nama cookie berbeda untuk membedakan
+      value: token,       // Nilai token
+      httpOnly: true,     // Penting: Tidak bisa diakses via JavaScript
+      secure: process.env.NODE_ENV === 'production', // Hanya kirim via HTTPS
+      sameSite: 'strict', // Perlindungan dari CSRF
+      maxAge: 60 * 60 * 24, // Umur cookie: 1 hari
+      path: '/',          // Cookie berlaku untuk seluruh situs
+    });
+
+    return response;
+
   } catch (error) {
+    // console.error aman digunakan untuk logging error di server
     console.error('Login siswa error:', error)
     return NextResponse.json(
       { message: 'Terjadi kesalahan server' },

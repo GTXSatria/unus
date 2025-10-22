@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { BookOpen, Eye, EyeOff, Mail, Lock, UserPlus } from 'lucide-react'
 
-
 export default function LoginGuru() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -22,22 +21,22 @@ export default function LoginGuru() {
     try {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, role: 'guru' }),
       })
 
       const data = await response.json()
 
       if (response.ok) {
-        localStorage.setItem('guruToken', data.token)
-        localStorage.setItem('guruData', JSON.stringify(data.user))
-        router.push('/dashboard/guru')
+        // --- BARIS INI BISA DIPERTAHANKAN SEMENTARA ---
+        localStorage.setItem('guruData', JSON.stringify(data.user));
+        router.push('/dashboard/guru');
       } else {
-        setError(data.message || 'Login gagal')
+        // Tambahkan pesan error dari server jika ada
+        setError(data.message || 'Login gagal. Periksa kembali email dan password Anda.');
       }
     } catch (error) {
+      console.error('Login error:', error);
       setError('Terjadi kesalahan. Silakan coba lagi.')
     } finally {
       setIsLoading(false)

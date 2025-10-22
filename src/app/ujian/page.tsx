@@ -13,11 +13,15 @@ import {
   X
 } from 'lucide-react'
 
+// Dynamic import dengan loading yang lebih baik
 const PdfViewer = dynamic(() => import('./PdfViewer'), {
   ssr: false,
   loading: () => (
     <div className="flex-1 flex items-center justify-center text-gray-500">
-      Memuat soal...
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+        <p>Memuat soal...</p>
+      </div>
     </div>
   )
 })
@@ -50,11 +54,10 @@ export default function UjianPage() {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
   const [showJawaban, setShowJawaban] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-
+  const [error, setError] = useState<string | null>(null)
   const [isReadyForFullscreen, setIsReadyForFullscreen] = useState(false)
   const [hasStarted, setHasStarted] = useState(false)
   const [startTime, setStartTime] = useState<Date | null>(null)
-  const [error, setError] = useState<string | null>(null)
 
   const router = useRouter()
   const timerRef = useRef<NodeJS.Timeout | null>(null)
@@ -62,15 +65,14 @@ export default function UjianPage() {
   // Helper function untuk client-side checks
   const isClient = typeof window !== 'undefined'
 
-  // ------------------- Ambil data awal -------------------
+  // Ambil data awal
   useEffect(() => {
     if (!isClient) return
 
-    const token = localStorage.getItem('siswaToken')
     const siswaDataStr = localStorage.getItem('siswaData')
     const ujianDataStr = localStorage.getItem('ujianData')
 
-    if (!token || !siswaDataStr || !ujianDataStr) {
+    if (!siswaDataStr || !ujianDataStr) {
       router.push('/login/siswa')
       return
     }
@@ -81,7 +83,11 @@ export default function UjianPage() {
 
       setSiswaData(siswa)
       setUjianData(ujian)
-      setPdfUrl(`/api/ujian/pdf/${ujian.kodeUjian}`)
+      
+      // Build PDF URL dengan timestamp untuk cache busting
+      const pdfUrl = `/api/ujian/pdf/${ujian.kodeUjian}?t=${Date.now()}`
+      setPdfUrl(pdfUrl)
+      
       setIsLoading(false)
     } catch (err) {
       console.error('Error parsing stored data:', err)
@@ -90,15 +96,13 @@ export default function UjianPage() {
     }
   }, [router, isClient])
 
-  // ------------------- Cek hasil sebelumnya -------------------
+  // Cek hasil sebelumnya
   useEffect(() => {
     if (!ujianData || !siswaData || !isClient) return
 
-    const token = localStorage.getItem('siswaToken')
-
     const initializeExam = async () => {
       try {
-        await checkExistingResult(token!, siswaData.id, ujianData.id)
+        await checkExistingResult(siswaData.id, ujianData.id)
       } catch (error) {
         console.error('Error during exam initialization:', error)
         setError('Gagal menginisialisasi ujian')
@@ -108,38 +112,31 @@ export default function UjianPage() {
     initializeExam()
   }, [ujianData, siswaData, isClient])
 
-  const checkExistingResult = async (token: string, siswaId: string, ujianId: string) => {
+  const checkExistingResult = async (siswaId: string, ujianId: string) => {
     try {
       const response = await fetch('/api/hasil/check', {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json', 
-          Authorization: `Bearer ${token}` 
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ siswaId, ujianId })
       })
       const data = await response.json()
 
       if (response.ok && data.hasExistingResult) {
-        // Jika sudah ada hasil, tampilkan hasil
         setResult(data.hasil)
         setShowResult(true)
       } else if (response.ok && data.sudahMulai) {
-        // Jika sudah mulai tapi belum selesai, set waktu mulai
         setStartTime(new Date(data.waktuMulai))
-        // Jangan otomatis set isExamStarted di sini
       }
     } catch (error) {
       console.error('Error checking existing result:', error)
     }
   }
 
-  // ------------------- Mulai Ujian -------------------
+  // Mulai Ujian
   const handleStartExam = async () => {
     if (!isClient) return
 
     try {
-      // Coba fullscreen
       if (document.documentElement.requestFullscreen) {
         await document.documentElement.requestFullscreen()
       }
@@ -147,18 +144,9 @@ export default function UjianPage() {
       setIsReadyForFullscreen(true)
       setHasStarted(true)
 
-      const token = localStorage.getItem('siswaToken')
-      if (!token) {
-        router.push('/login/siswa')
-        return
-      }
-
       const response = await fetch('/api/ujian/start', {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json', 
-          Authorization: `Bearer ${token}` 
-        },
+        headers: { 'Content-Type': 'application/json' },
       })
       const data = await response.json()
 
@@ -181,7 +169,7 @@ export default function UjianPage() {
     }
   }
 
-  // ------------------- Anti-cheat & fullscreen -------------------
+  // Anti-cheat & fullscreen
   useEffect(() => {
     if (!isReadyForFullscreen || !isClient) return
 
@@ -226,7 +214,7 @@ export default function UjianPage() {
     }
   }, [isReadyForFullscreen, isClient])
 
-  // ------------------- Timer -------------------
+  // Timer
   useEffect(() => {
     if (!hasStarted || !startTime || !isExamStarted) return
 
@@ -255,7 +243,7 @@ export default function UjianPage() {
       : `${minutes}:${secs.toString().padStart(2, '0')}`
   }
 
-  // ------------------- Jawaban -------------------
+  // Jawaban
   const handleJawabanChange = (soalNomor: number, value: string) => {
     setJawaban(prev => ({
       ...prev,
@@ -269,17 +257,10 @@ export default function UjianPage() {
     try {
       setIsSubmitting(true)
 
-      const token = localStorage.getItem('siswaToken')
-      if (!token) {
-        router.push('/login/siswa')
-        return
-      }
-
       const response = await fetch('/api/ujian/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ jawaban }),
       })
@@ -307,7 +288,7 @@ export default function UjianPage() {
           console.warn(err) 
         }
       } else if (response.status === 401) {
-        console.warn('Token tidak valid atau sesi habis.')
+        console.warn('Sesi habis atau tidak valid.')
         router.push('/login/siswa')
       } else {
         console.error('Submit error:', data.message || 'Terjadi kesalahan server.')
@@ -324,7 +305,6 @@ export default function UjianPage() {
   const handleLogout = () => {
     if (!isClient) return
     
-    localStorage.removeItem('siswaToken')
     localStorage.removeItem('siswaData')
     localStorage.removeItem('ujianData')
     router.push('/')
@@ -337,7 +317,6 @@ export default function UjianPage() {
       : ['A', 'B', 'C', 'D']
   }
 
-  // ------------------- Render -------------------
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -489,7 +468,6 @@ export default function UjianPage() {
       <div className="flex-1 flex relative">
         <PdfViewer
           pdfUrl={pdfUrl}
-          token={isClient ? localStorage.getItem('siswaToken') : null}
           ujianData={ujianData}
         />
 

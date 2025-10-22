@@ -44,10 +44,10 @@ export default function EditUjian() {
 
   const fetchUjianData = async () => {
     try {
-      const token = localStorage.getItem('guruToken')
+      
       const response = await fetch(`/api/ujian/${params.id}`, {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         }
       })
 
@@ -122,12 +122,13 @@ export default function EditUjian() {
         formDataToSend.append('kunciFile', kunciFile)
       }
 
-      const token = localStorage.getItem('guruToken')
+      
       const response = await fetch(`/api/ujian/${params.id}`, {
         method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
+        // --- KOREKSI: HAPUS BARIS headers ini ---
+        // headers: {
+        //   'Content-Type': 'application/json'
+        // },
         body: formDataToSend
       })
 
@@ -193,7 +194,7 @@ export default function EditUjian() {
                     name="kodeUjian"
                     value={formData.kodeUjian}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Contoh: MTK001"
                     required
                   />

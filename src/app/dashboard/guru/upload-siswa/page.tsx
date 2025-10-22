@@ -45,11 +45,11 @@ export default function UploadSiswa() {
       const formDataToSend = new FormData()
       formDataToSend.append('file', file)
 
-      const token = localStorage.getItem('guruToken')
+      
       const response = await fetch('/api/siswa/upload', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: formDataToSend
       })
