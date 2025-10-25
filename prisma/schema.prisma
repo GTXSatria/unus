@@ -70,6 +70,6 @@ model HasilUjian {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   
-  ujian       Ujian    @relation(fields: [ujianId], references: [id])
+  ujian       Ujian    @relation(fields: [ujianId], references: [id], onDelete: Cascade)
   siswa       Siswa    @relation(fields: [siswaId], references: [id])
 }

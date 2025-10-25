@@ -188,7 +188,10 @@ export async function DELETE(
   try {
     const guru = await verifyGuruToken(request)
     if (!guru) {
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401, headers: noCacheHeaders })
+      return NextResponse.json(
+        { message: 'Unauthorized' },
+        { status: 401, headers: noCacheHeaders }
+      )
     }
 
     const { id: ujianId } = await params
@@ -198,28 +201,41 @@ export async function DELETE(
     })
 
     if (!ujian) {
-      return NextResponse.json({ message: 'Ujian tidak ditemukan atau Anda tidak memiliki akses' }, { status: 404, headers: noCacheHeaders })
+      return NextResponse.json(
+        { message: 'Ujian tidak ditemukan atau Anda tidak memiliki akses' },
+        { status: 404, headers: noCacheHeaders }
+      )
     }
 
-    // --- PERBAIKAN: Hapus file dari Supabase sebelum hapus record ---
+    // --- Hapus file dari Supabase sebelum hapus record ---
     if (ujian.pdfPath) {
       const { error: deleteError } = await supabase.storage
         .from('soal-ujian')
         .remove([ujian.pdfPath])
-      
+
       if (deleteError) {
-        console.error('Gagal menghapus file dari Supabase:', deleteError)
-        // Tidak perlu gagalkan operasi hapus, tapi log error-nya
+        console.error('Gagal menghapus file dari storage.')
       }
     }
 
+    // --- Hapus record ujian dari database ---
     await db.ujian.delete({
       where: { id: ujianId }
     })
 
-    return NextResponse.json({ message: 'Ujian berhasil dihapus' }, { headers: noCacheHeaders })
+    return NextResponse.json(
+      { message: 'Ujian berhasil dihapus' },
+      { headers: noCacheHeaders }
+    )
   } catch (error) {
-    console.error('Delete ujian error:', error)
-    return NextResponse.json({ message: 'Terjadi kesalahan server' }, { status: 500, headers: noCacheHeaders })
+    if (error instanceof Error) {
+      console.error('Delete ujian gagal:', error.message)
+    } else {
+      console.error('Delete ujian gagal: error tidak dikenal')
+    }
+    return NextResponse.json(
+      { message: 'Terjadi kesalahan server' },
+      { status: 500, headers: noCacheHeaders }
+    )
   }
 }
