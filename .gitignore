@@ -32,6 +32,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 public/uploads/pdf/
+prompt-project.txt
+VS-CODE-TESTING.md
 
 # Database files
 *.db

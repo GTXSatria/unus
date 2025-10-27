@@ -4,24 +4,34 @@
 # Quick setup (recommended)
 ./test-setup.sh
 
-# Manual setup local
+# Manual setup local jika hapus Cache (next,node,lock)
+npx next build --no-cache
+npm install
+npx prisma generate
+npx tsc --noEmit --pretty false
+npm run build
+npm run dev
+
+# jika File awal ambil dari Back up
+npm install
 npm install -D tailwindcss-animate
 npm install -D tailwindcss postcss autoprefixer @tailwindcss/postcss
 npm install dotenv
+npm install @supabase/ssr
 npm install @supabase/supabase-js
 npm install @prisma/client
+# jika ada perubahan prisma
+npx prisma generate               :  WAJIB dijalankan setiap kali kamu mengubah file prisma/schema.prisma.
+npx prisma db push                : HATI-HATI! Perintah ini menerapkan perubahan schema ke database. 
+                                    JANGAN pernah jalankan ini jika kamu
+# perintah Cek 
+npx tsc --noEmit --pretty false   : Ini untuk mengecek error TypeScript. Bagus dijalankan sebelum build.
+npm run lint
+npm run build                     : Ini untuk membangun aplikasi versi production.
+# perintah 1x di 1 komputer
 npm install -g prisma
 npm install -g vercel
-npm install -g supabase
-npm install
-npx prisma generate
-npx prisma db push
-npx tsc --noEmit --pretty false
-npx tsc --noEmit --pretty
-npm run build
 
-npm run db:push
-npm run lint
 # perintah debug
 node check-env.js
 node debug-local-data.js

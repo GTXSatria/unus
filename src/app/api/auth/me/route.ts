@@ -21,7 +21,13 @@ export async function GET(request: NextRequest) {
     }
 
     const guru = await db.guru.findUnique({
-      where: { id: decoded.id }
+      where: { id: decoded.id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true // <-- TAMBAHKAN INI
+      }
     });
 
     if (!guru) {
@@ -29,11 +35,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Jangan kembalikan password!
-    return NextResponse.json({
-      id: guru.id,
-      name: guru.name,
-      email: guru.email
-    });
+    return NextResponse.json(guru); // <-- KEMBALIKAN SELURUH OBJEK GURU
 
   } catch (error) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

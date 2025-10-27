@@ -17,7 +17,9 @@ import {
   ChevronDown,
   ChevronRight,
   HelpCircle,
-  X
+  X,
+  Mail,
+  Send
 } from 'lucide-react'
 
 interface Ujian {
@@ -59,6 +61,13 @@ interface HasilUjian {
 export default function DashboardGuru() {
   const [activeTab, setActiveTab] = useState('ujian')
   const [isPanduanOpen, setIsPanduanOpen] = useState(false)
+  const [isPesanOpen, setIsPesanOpen] = useState(false)
+  const [isTulisPesanOpen, setIsTulisPesanOpen] = useState(false)
+  const [pesanList, setPesanList] = useState<any[]>([])
+  const [pesanContent, setPesanContent] = useState('')
+  const [isLoadingPesan, setIsLoadingPesan] = useState(false)
+  const [expandedPesanId, setExpandedPesanId] = useState<string | null>(null)
+  const [unreadCount, setUnreadCount] = useState(0)
   const [ujians, setUjians] = useState<Ujian[]>([])
   const [siswaPerKelas, setSiswaPerKelas] = useState<Record<string, Siswa[]>>({})
   const [hasilUjians, setHasilUjians] = useState<HasilUjian[]>([])
@@ -91,8 +100,15 @@ export default function DashboardGuru() {
   useEffect(() => {
     if (guruData) {
       fetchData();
+      fetchPesan(); // <-- TAMBAHKAN INI
     }
   }, [guruData]);
+
+    useEffect(() => {
+    if (isPesanOpen) {
+      markAsRead();
+    }
+  }, [isPesanOpen]);
 
   const fetchData = async () => {
     try {
@@ -134,11 +150,88 @@ export default function DashboardGuru() {
     }
   }
 
-  const handleLogout = () => {
-    localStorage.removeItem('guruToken')
-    localStorage.removeItem('guruData')
-    router.push('/')
+const handleLogout = async () => {
+  try {
+    const response = await fetch('/api/auth/logout', { method: 'POST' });
+    if (response.ok) {
+      router.push('/login/guru');
+    } else {
+      console.error('Logout gagal');
+    }
+  } catch (error) {
+    console.error('Terjadi kesalahan saat logout:', error);
   }
+}
+
+  const fetchPesan = async () => {
+    try {
+      const response = await fetch('/api/pesan');
+      if (response.ok) {
+        const data = await response.json();
+        setPesanList(data.messages);
+        setUnreadCount(data.unreadCount);
+      }
+    } catch (error) {
+      console.error('Gagal mengambil pesan:', error);
+    }
+  };
+
+  const handleTulisPesan = async () => {
+    if (!pesanContent.trim()) {
+      alert('Pesan tidak boleh kosong.');
+      return;
+    }
+    setIsLoadingPesan(true);
+    try {
+      const response = await fetch('/api/pesan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isi: pesanContent }),
+      });
+
+      if (response.ok) {
+        setPesanContent('');
+        setIsTulisPesanOpen(false);
+        fetchPesan(); // Refresh daftar pesan
+        alert('Saran berhasil dikirim!');
+      } else {
+        alert('Gagal mengirim pesan.');
+      }
+    } catch (error) {
+      console.error('Gagal mengirim pesan:', error);
+      alert('Terjadi kesalahan saat mengirim pesan.');
+    } finally {
+      setIsLoadingPesan(false);
+    }
+  };
+
+  const handleHapusPesan = async (path: string) => {
+    if (!confirm('Apakah Anda yakin ingin menghapus pesan ini?')) return;
+    
+    try {
+      const response = await fetch(`/api/pesan/${path}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        fetchPesan(); // Refresh daftar pesan
+      } else {
+        alert('Gagal menghapus pesan.');
+      }
+    } catch (error) {
+      console.error('Gagal menghapus pesan:', error);
+      alert('Terjadi kesalahan saat menghapus pesan.');
+    }
+  };
+
+  const markAsRead = async () => {
+    try {
+      await fetch('/api/pesan/mark-as-read', { method: 'POST' });
+      setUnreadCount(0); // Langsung update state agar titik merah hilang
+    } catch (error) {
+      console.error('Gagal menandai pesan sebagai dibaca:', error);
+    }
+  };
 
   const handleDeleteUjian = async (id: string) => {
     if (!confirm('Apakah Anda yakin ingin menghapus ujian ini?')) return
@@ -328,7 +421,108 @@ export default function DashboardGuru() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <button
+                {/* --- TAMBAHKAN KODE INI --- */}
+                {guruData?.role === 'ADMIN' && (
+                <Link
+                href="/dashboard/admin"
+                className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 flex items-center"
+                >
+                Menu Admin
+                </Link>
+                )}
+
+                <div className="relative">
+                <button
+                onClick={() => setIsPesanOpen(!isPesanOpen)}
+                className="text-gray-600 hover:text-gray-900 p-2 rounded-lg hover:bg-gray-100 relative"
+                >
+                <Mail className="w-5 h-5" />
+                {unreadCount > 0 && (
+                <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
+                )}
+                </button>
+
+                {isPesanOpen && (
+                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border z-20">
+                        <div className="p-3 border-b flex justify-between items-center">
+                        <h3 className="text-sm font-semibold text-gray-900">Pesan Masuk</h3>
+                        <button
+                        onClick={() => setIsPesanOpen(false)}
+                        className="text-gray-400 hover:text-gray-600"
+                        >
+                        <X className="w-4 h-4" />
+                        </button>
+                        </div>
+
+                    <div className="p-3 border-b">
+                      <button
+                        onClick={() => { setIsTulisPesanOpen(true); setIsPesanOpen(false); }}
+                        className="w-full text-left text-sm font-medium text-blue-600 hover:text-blue-800"
+                      >
+                        + Tulis Pesan (Saran & Kritik)
+                      </button>
+                    </div>
+                    <div className="max-h-60 overflow-y-auto">
+                      {pesanList.length > 0 ? (
+                        pesanList.map((pesan) => (
+                          <div key={pesan.id} className="p-3 border-b hover:bg-gray-50">
+                            <div className="flex justify-between items-start">
+                              <div className="flex-1 mr-2">
+                                <p className="text-xs font-semibold text-gray-700">{pesan.judul}</p>
+                                <p className="text-xs text-gray-500">{pesan.dari} - {new Date(pesan.createdAt).toLocaleDateString('id-ID')}</p>
+                    <div className="flex-1 mr-2">
+                    <p className="text-xs font-semibold text-gray-700">{pesan.judul}</p>
+                    <p className="text-xs text-gray-500">{pesan.dari} - {new Date(pesan.createdAt).toLocaleDateString('id-ID')}</p>
+                    
+                    {/* --- AWAL PERUBAAN --- */}
+                    <div className="text-sm text-gray-600 mt-1">
+                      {expandedPesanId === pesan.id ? (
+                        <>
+                          <p>{pesan.isi}</p>
+                          <button
+                            onClick={() => setExpandedPesanId(null)}
+                            className="text-blue-600 hover:text-blue-800 text-xs font-medium"
+                          >
+                            Tutup
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <p className="line-clamp-2">{pesan.isi}</p>
+                          {pesan.isi.length > 150 && (
+                            <button
+                              onClick={() => setExpandedPesanId(pesan.id)}
+                              className="text-blue-600 hover:text-blue-800 text-xs font-medium"
+                            >
+                              Lihat Selengkapnya
+                            </button>
+                          )}
+                        </>
+                      )}
+                    </div>
+                    </div>
+                    </div>
+
+                              <button
+                                onClick={() => handleHapusPesan(pesan.id)}
+                                className="text-red-500 hover:text-red-700"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="p-4 text-center text-sm text-gray-500">
+                          Belum ada pesan.
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+            <button
               onClick={() => setIsPanduanOpen(true)}
               className="text-blue-600 hover:text-blue-800 flex items-center text-lg font-bold"
               >
@@ -875,6 +1069,47 @@ export default function DashboardGuru() {
                   className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
                 >
                   Mengerti
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+                {isTulisPesanOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-lg w-full">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold text-gray-900">Kirim Saran & Kritik</h2>
+                <button
+                  onClick={() => setIsTulisPesanOpen(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <textarea
+                value={pesanContent}
+                onChange={(e) => setPesanContent(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                rows={6}
+                placeholder="Tuliskan saran atau kritik Anda di sini..."
+              ></textarea>
+              <div className="mt-4 flex justify-end space-x-2">
+                <button
+                  onClick={() => setIsTulisPesanOpen(false)}
+                  className="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300"
+                >
+                  Batal
+                </button>
+                <button
+                  onClick={handleTulisPesan}
+                  disabled={isLoadingPesan}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center disabled:opacity-50"
+                >
+                  {isLoadingPesan ? 'Mengirim...' : 'Kirim'}
+                  <Send className="w-4 h-4 ml-2" />
                 </button>
               </div>
             </div>
