@@ -434,7 +434,7 @@ const handleLogout = async () => {
                 <div className="relative">
                 <button
                 onClick={() => setIsPesanOpen(!isPesanOpen)}
-                className="text-gray-600 hover:text-gray-900 p-2 rounded-lg hover:bg-gray-100 relative"
+                className="text-gray-400 cursor-not-allowed" // <-- UBIH KELAS WARNA MERAH
                 >
                 <Mail className="w-5 h-5" />
                 {unreadCount > 0 && (
@@ -505,7 +505,9 @@ const handleLogout = async () => {
 
                               <button
                                 onClick={() => handleHapusPesan(pesan.id)}
-                                className="text-red-500 hover:text-red-700"
+                                disabled // <-- TAMBAHKAN ATRIBUT INI UNTUK MENONAKTIFKAN
+                                  className="text-gray-400 cursor-not-allowed" // <-- UBAH WARNA DAN CURSOR
+                                  title="Fitur hapus dinonaktifkan sementara"
                               >
                                 <Trash2 className="w-4 h-4" />
                               </button>
