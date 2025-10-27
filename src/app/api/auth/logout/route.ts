@@ -6,7 +6,8 @@ import { cookies } from 'next/headers'
 const noCacheHeaders = {
   'Cache-Control': 'no-store, no-cache, must-revalidate',
   'Pragma': 'no-cache',
-  'Expires': '0'
+  'Expires': '0',
+  'Clear-Site-Data': '"cache", "cookies", "storage", "executionContexts"'
 }
 
 export async function POST() {
