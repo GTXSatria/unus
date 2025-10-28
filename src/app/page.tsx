@@ -14,20 +14,21 @@ export default function Home() {
     <div>
     <Image
       src="/logo.svg"
-      alt="Logo UNDUL KOPAI"
-      width={140}   // lebar logo (px)
-      height={100}  // tinggi logo (px)
-      className="object-contain"
+      alt="GTXEduKids - Platform Ujian Online"
+      width={240}   // lebar logo (px)
+      height={160}  // tinggi logo (px)
+      className="w-[240px] h-[160px] object-contain"
+      priority // <-- TAMBAHKAN PROPS INI
     />
+          <p className="text-2xl md:text-3xl text-gray-900">
+            Sistem Ujian Online
+          </p>
     </div>
     </div>
           <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
-            Sistem Ujian Online
+            Intelligent Evaluation Platform
           </h1>
-          <p className="text-xl text-gray-600">
-            Awali dengan Do'a Salam Sukses!
-          </p>
-        </div>
+         </div>
 
         <div className="grid md:grid-cols-2 gap-6">
           <Link href="/login/guru" className="group">
@@ -72,7 +73,7 @@ export default function Home() {
         </div>
 
         <div className="text-center mt-12 text-gray-500 text-sm">
-          © 2018 GTX EduKids (Banjar) - By Ade Susandi, S.Pd
+          © 2018 GTX Core (Banjar) - By Ade Susandi, S.Pd
         </div>
       </div>
     </div>

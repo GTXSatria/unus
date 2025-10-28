@@ -168,7 +168,13 @@ const handleLogout = async () => {
       const response = await fetch('/api/pesan');
       if (response.ok) {
         const data = await response.json();
-        setPesanList(data.messages);
+        
+        // --- LOGIKA UNTUK MEMBERSIHKAN DUPLIKAT PESAN ---
+        const uniquePesanList = data.messages.filter((pesan, index, self) =>
+          index === self.findIndex((p) => p.id === pesan.id)
+        );
+
+        setPesanList(uniquePesanList);
         setUnreadCount(data.unreadCount);
       }
     } catch (error) {
@@ -410,14 +416,14 @@ const handleLogout = async () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-blue-600 shadow-lg border-b border-blue-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <BookOpen className="w-8 h-8 text-blue-600 mr-3" />
+              <BookOpen className="w-8 h-8 text-white mr-3" />
               <div>
-                <h1 className="text-xl font-bold text-gray-900">GTX EduKids</h1>
-                <p className="text-sm text-gray-500">Dashboard Guru</p>
+                <h1 className="text-xl font-bold text-white">GTX Core</h1>
+                <p className="text-sm text-white">Dashboard Guru</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
@@ -425,119 +431,124 @@ const handleLogout = async () => {
                 {guruData?.role === 'ADMIN' && (
                 <Link
                 href="/dashboard/admin"
-                className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 flex items-center"
+                className="bg-purple-200 text-white px-4 py-2 rounded-lg hover:bg-purple-400 flex items-center"
                 >
                 Menu Admin
                 </Link>
                 )}
 
-                <div className="relative">
-                <button
-                onClick={() => setIsPesanOpen(!isPesanOpen)}
-                className="text-gray-400 cursor-not-allowed" // <-- UBIH KELAS WARNA MERAH
-                >
-                <Mail className="w-5 h-5" />
-                {unreadCount > 0 && (
-                <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
-                )}
-                </button>
+{/* --- DROPDOWN PESAN (VERSII TABEL TANPA AKSI) --- */}
+<div className="relative">
+  <button
+    onClick={() => setIsPesanOpen(!isPesanOpen)}
+    className="text-white hover:text-green-500 p-2 rounded-lg hover:bg-Yellow-300 relative"
+  >
+    <Mail className="w-5 h-5" />
+    {unreadCount > 0 && (
+      <span className="absolute top-1 right-1 h-2 w-2 bg-yellow-500 rounded-full"></span>
+    )}
+  </button>
 
-                {isPesanOpen && (
-                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border z-20">
-                        <div className="p-3 border-b flex justify-between items-center">
-                        <h3 className="text-sm font-semibold text-gray-900">Pesan Masuk</h3>
+  {isPesanOpen && (
+    <div className="absolute right-0 mt-2 w-[600px] bg-white rounded-lg shadow-lg border z-20">
+      {/* Header Dropdown */}
+      <div className="p-3 border-b flex justify-between items-center">
+        <h3 className="text-sm font-semibold text-gray-900">Pesan Masuk</h3>
+        <button
+          onClick={() => setIsPesanOpen(false)}
+          className="text-gray-400 hover:text-gray-600"
+        >
+          <X className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* Tombol Tulis Pesan */}
+      <div className="p-3 border-b">
+        <button
+          onClick={() => { setIsTulisPesanOpen(true); setIsPesanOpen(false); }}
+          className="w-full text-left text-sm font-medium text-blue-600 hover:text-blue-800"
+        >
+          + Tulis Pesan (Saran & Kritik)
+        </button>
+      </div>
+
+      {/* Tabel Pesan */}
+      <div className="max-h-80 overflow-y-auto">
+        {pesanList.length > 0 ? (
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dari</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Isi Pesan</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {pesanList.map((pesan) => (
+                <tr key={pesan.id}>
+                  <td className="px-4 py-2 whitespace-nowrap">
+                    <p className="text-xs font-medium text-gray-900">{pesan.dari}</p>
+                  </td>
+                  <td className="px-4 py-2 whitespace-nowrap">
+                    <p className="text-xs text-gray-500">{pesan.judul}</p>
+                  </td>
+                  <td className="px-4 py-2 text-sm text-gray-600">
+                    {expandedPesanId === pesan.id ? (
+                      <>
+                        <p>{pesan.isi}</p>
                         <button
-                        onClick={() => setIsPesanOpen(false)}
-                        className="text-gray-400 hover:text-gray-600"
+                          onClick={() => setExpandedPesanId(null)}
+                          className="text-blue-600 hover:text-blue-800 text-xs font-medium"
                         >
-                        <X className="w-4 h-4" />
+                          Tutup
                         </button>
-                        </div>
-
-                    <div className="p-3 border-b">
-                      <button
-                        onClick={() => { setIsTulisPesanOpen(true); setIsPesanOpen(false); }}
-                        className="w-full text-left text-sm font-medium text-blue-600 hover:text-blue-800"
-                      >
-                        + Tulis Pesan (Saran & Kritik)
-                      </button>
-                    </div>
-                    <div className="max-h-60 overflow-y-auto">
-                      {pesanList.length > 0 ? (
-                        pesanList.map((pesan) => (
-                          <div key={pesan.id} className="p-3 border-b hover:bg-gray-50">
-                            <div className="flex justify-between items-start">
-                              <div className="flex-1 mr-2">
-                                <p className="text-xs font-semibold text-gray-700">{pesan.judul}</p>
-                                <p className="text-xs text-gray-500">{pesan.dari} - {new Date(pesan.createdAt).toLocaleDateString('id-ID')}</p>
-                    <div className="flex-1 mr-2">
-                    <p className="text-xs font-semibold text-gray-700">{pesan.judul}</p>
-                    <p className="text-xs text-gray-500">{pesan.dari} - {new Date(pesan.createdAt).toLocaleDateString('id-ID')}</p>
-                    
-                    {/* --- AWAL PERUBAAN --- */}
-                    <div className="text-sm text-gray-600 mt-1">
-                      {expandedPesanId === pesan.id ? (
-                        <>
-                          <p>{pesan.isi}</p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="line-clamp-2">{pesan.isi}</p>
+                        {pesan.isi.length > 150 && (
                           <button
-                            onClick={() => setExpandedPesanId(null)}
+                            onClick={() => setExpandedPesanId(pesan.id)}
                             className="text-blue-600 hover:text-blue-800 text-xs font-medium"
                           >
-                            Tutup
+                            Lihat Selengkapnya
                           </button>
-                        </>
-                      ) : (
-                        <>
-                          <p className="line-clamp-2">{pesan.isi}</p>
-                          {pesan.isi.length > 150 && (
-                            <button
-                              onClick={() => setExpandedPesanId(pesan.id)}
-                              className="text-blue-600 hover:text-blue-800 text-xs font-medium"
-                            >
-                              Lihat Selengkapnya
-                            </button>
-                          )}
-                        </>
-                      )}
-                    </div>
-                    </div>
-                    </div>
-
-                              <button
-                                onClick={() => handleHapusPesan(pesan.id)}
-                                disabled // <-- TAMBAHKAN ATRIBUT INI UNTUK MENONAKTIFKAN
-                                  className="text-gray-400 cursor-not-allowed" // <-- UBAH WARNA DAN CURSOR
-                                  title="Fitur hapus dinonaktifkan sementara"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <div className="p-4 text-center text-sm text-gray-500">
-                          Belum ada pesan.
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
+                        )}
+                      </>
+                    )}
+                  </td>
+                  <td className="px-4 py-2 whitespace-nowrap text-xs text-gray-500">
+                    {new Date(pesan.createdAt).toLocaleDateString('id-ID')}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <div className="p-4 text-center text-sm text-gray-500">
+            Belum ada pesan.
+          </div>
+        )}
+      </div>
+    </div>
+  )}
+</div>
 
             <button
               onClick={() => setIsPanduanOpen(true)}
-              className="text-blue-600 hover:text-blue-800 flex items-center text-lg font-bold"
+              className="text-white hover:text-yellow-800 flex items-center text-lg font-bold"
               >
               <HelpCircle className="w-5 h-5 mr-2" />
               Panduan
               </button>
 
-              <span className="text-sm text-blue-600">
+              <span className="text-white font-bold">
                 {guruData?.name}
               </span>
               <button
                 onClick={handleLogout}
-                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center"
+                className="text-white hover:text-yellow-800 flex items-center text-lg font-bold"
               >
                 <LogOut className="w-4 h-4 mr-1" />
                 Logout
@@ -548,7 +559,7 @@ const handleLogout = async () => {
       </header>
 
       {/* Navigation Tabs */}
-      <div className="bg-white border-b">
+      <div className="bg-grey-100 border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex space-x-8">
             {[

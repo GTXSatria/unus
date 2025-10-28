@@ -1,4 +1,4 @@
-GTX EduKids - Sistem Ujian Online
+GTX Core - Sistem Ujian Online
 Sistem ujian online terpadu dengan Next.js 15, TypeScript, Prisma, dan Tailwind CSS untuk soal pilihan ganda.
 
 🚀 Fitur Utama
@@ -142,5 +142,5 @@ Collapse
 Copy
 1
 npm run dev
-© 2024 GTX EduKids - 083895603395 eswepe11@gmail.com
+© 2024 GTX Core - 083895603395 eswepe11@gmail.com
 

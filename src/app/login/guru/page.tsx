@@ -56,7 +56,7 @@ export default function LoginGuru() {
             Login Guru
           </h1>
           <p className="text-gray-600">
-            Masuk ke portal guru GTX EduKids
+            Masuk ke portal guru GTX Core
           </p>
         </div>
 

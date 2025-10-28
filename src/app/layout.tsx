@@ -14,21 +14,35 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GTXEduKids - Ind",
-  description: "Modern Next.js scaffold optimized for AI-powered development with Z.ai. Built with TypeScript, Tailwind CSS, and shadcn/ui.",
-  keywords: ["Z.ai", "Next.js", "TypeScript", "Tailwind CSS", "shadcn/ui", "AI development", "React"],
-  authors: [{ name: "Z.ai Team" }],
+  metadataBase: new URL('https://gtxsatria.vercel.app'),
+  
+  title: "GTX Core - Intelligent Evaluation Platform",
+  description: "Platform evaluasi cerdas untuk guru dan siswa. Kelola ujian, pantau hasil, dan sampaikan masukan dengan mudah.",
+  keywords: ["Intelligent Evaluation", "Ujian Online", "Guru", "Siswa", "GTX Core", "Pendidikan"],
+  authors: [{ name: "GTX Core Team" }],
+  
   openGraph: {
-    title: "GTXEduKids",
-    description: "ind",
-    url: "https://chat.z.ai",
-    siteName: "Z.ai",
-    type: "website",
+    title: "GTX Core - Intelligent Evaluation Platform",
+    description: "Platform evaluasi cerdas untuk guru dan siswa. Kelola ujian, pantau hasil, dan sampaikan masukan dengan mudah.",
+    url: "https://gtxsatria.vercel.app",
+    siteName: "GTX Core",
+    images: [
+      {
+        url: '/og-image.jpg', // Pastikan ini adalah og-image baru
+        width: 1200,
+        height: 630,
+        alt: 'GTX Core - Intelligent Evaluation Platform',
+      },
+    ],
+    locale: 'id_ID',
+    type: 'website',
   },
+  
   twitter: {
-    card: "summary_large_image",
-    title: "Z.ai Code Scaffold",
-    description: "AI-powered development with modern React stack",
+    card: 'summary_large_image',
+    title: "GTX Core - Intelligent Evaluation Platform",
+    description: "Platform evaluasi cerdas untuk guru dan siswa.",
+    images: ['/og-image.jpg'],
   },
 };
 
@@ -38,13 +52,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
-      >
-        {children}
-        <Toaster />
-      </body>
-    </html>
+    <html lang="id" suppressHydrationWarning><body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}>{children}<Toaster /></body></html>
   );
 }
