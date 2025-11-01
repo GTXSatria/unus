@@ -10,8 +10,8 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
       <div className="max-w-4xl w-full">
         <div className="text-center mb-12">
-          <div className="flex justify-center mb-6">
-    <div>
+    <div className="flex justify-center mb-6">
+    <div className="flex flex-col items-center text-center">
     <Image
       src="/logo.svg"
       alt="GTXEduKids - Platform Ujian Online"
@@ -20,9 +20,15 @@ export default function Home() {
       className="w-[240px] h-[160px] object-contain"
       priority // <-- TAMBAHKAN PROPS INI
     />
-          <p className="text-2xl md:text-3xl text-gray-900">
-            Sistem Ujian Online Berbasis Webs Bentuk Soal Pilihan Ganda
-          </p>
+<p className="text-center text-2xl md:text-3xl font-semibold leading-snug">
+  <span className="bg-gradient-to-r from-sky-500 to-blue-600 bg-clip-text text-transparent">
+    Sistem Ujian Online
+  </span>
+  <br />
+  <span className="bg-gradient-to-r from-sky-500 to-blue-600 bg-clip-text text-transparent">
+    Berbasis Web Bentuk Soal Pilihan Ganda
+  </span>
+</p>
     </div>
     </div>
           <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
