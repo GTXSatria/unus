@@ -21,7 +21,7 @@ export default function Home() {
       priority // <-- TAMBAHKAN PROPS INI
     />
           <p className="text-2xl md:text-3xl text-gray-900">
-            Sistem Ujian Online
+            Sistem Ujian Online Berbasis Webs Bentuk Soal Pilihan Ganda
           </p>
     </div>
     </div>

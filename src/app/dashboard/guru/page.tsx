@@ -1042,23 +1042,27 @@ const handleLogout = async () => {
               
               <div className="space-y-4">
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">1. Upload Ujian</h3>
+                  <h3 className="font-semibold text-gray-900 mb-2">1. Upload Ujian (Real/Dummy)</h3>
                   <p className="text-gray-600 text-sm">
-                    Klik tab "Upload Ujian" lalu klik tombol "Upload Ujian Baru" untuk menambahkan soal ujian baru.
-                    Pastikan format file sesuai dengan template yang telah disediakan.
+                    Klik tab "Upload Ujian" lalu klik tombol "Upload Ujian Baru" untuk menambahkan soal ujian baru, 
+                    Soal pdf bisa file apa saja untuk melakukan Dummy tidak harus lembar soal.
+                    dan pastikan soal Real/Dumy format pdf.
                   </p>
                 </div>
                 
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">2. Upload Data Siswa</h3>
+                  <h3 className="font-semibold text-gray-900 mb-2">2. Upload Data Siswa (Real/Dummy)</h3>
                   <p className="text-gray-600 text-sm">
                     Klik tab "Data Siswa" lalu klik "Upload Data Siswa" untuk menambahkan data siswa.
-                    Data siswa diperlukan untuk login dan penilaian.
+                    Data siswa diperlukan untuk login dan penilaian, untuk format data siswa lihat Template. 
+                    (Untuk Test Dummy nama dan No NISN bisa mengarang)
+                    untuk ujian real NISN bisa di ganti dengan nomor apapun Syarat nomor Unik zero kemungkinan 
+                    data yang sama antar siswa.
                   </p>
                 </div>
                 
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">3. Melihat Hasil Ujian</h3>
+                  <h3 className="font-semibold text-gray-900 mb-2">3. Melihat Hasil Ujian (Real/Dummy)</h3>
                   <p className="text-gray-600 text-sm">
                     Klik tab "Hasil Ujian" untuk melihat hasil ujian siswa.
                     Anda dapat melihat hasil per kelas atau mengekspor semua hasil dalam format CSV.
@@ -1072,6 +1076,7 @@ const handleLogout = async () => {
                     <li>Periksa kembali data sebelum menyimpan</li>
                     <li>Backup data secara berkala untuk menghindari kehilangan data</li>
                     <li>Untuk pertanyaan lebih lanjut, hubungi administrator sistem</li>
+                    <li>Anda Bisa mengirim pesan saran atau kritik ke admin dengan klik logo amplop/pesan</li>
                   </ul>
                 </div>
               </div>

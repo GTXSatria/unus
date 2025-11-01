@@ -1,7 +1,7 @@
 GTX Core - Sistem Ujian Online
 Sistem ujian online terpadu dengan Next.js 15, TypeScript, Prisma, dan Tailwind CSS untuk soal pilihan ganda.
 
-🚀 Fitur Utama
+🚀 Fitur Utama Real/Dummy
 Untuk Guru
 Dashboard Komprehensif - Kelola semua aspek ujian dari satu tempat
 Upload Ujian PDF - Upload file PDF soal ujian tanpa syarat
