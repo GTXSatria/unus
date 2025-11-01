@@ -101,6 +101,29 @@ export default function UploadUjian() {
     }
   }
 
+  // ⬇️ Tambahkan fungsi sederhana ini (SETELAH handleKunciChange)
+const downloadKunciTemplate = () => {
+  const templateContent = [
+    ['Nomor', 'Jawaban'],
+    ['1', 'A'],
+    ['2', 'B'],
+    ['3', 'C']
+  ];
+
+  const csvContent = templateContent.map(row => row.join(',')).join('\n');
+
+  const blob = new Blob([csvContent], { type: 'text/csv' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'template_kunci_jawaban.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  window.URL.revokeObjectURL(url);
+};
+
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -304,11 +327,19 @@ export default function UploadUjian() {
                       <Upload className="w-4 h-4 mr-2" />
                       Pilih File Excel
                     </button>
+                    <button
+                    type="button"
+                    onClick={downloadKunciTemplate}
+                    className="mt-3 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center mx-auto"
+                  >
+                    <FileText className="w-4 h-4 mr-2" />
+                    Download Template Kunci (Contoh 3 Soal)
+                  </button>
                   </div>
                 )}
               </div>
               <p className="text-sm text-blue-800 mt-2">
-                CONTOH Template Header Exel: Kolom A = Nomor (Di isi 1-2-3-dsb), Kolom B = Jawaban (Di isi A/B/C/D/E)
+                template berupa File CVS anda bisa merubah format CVS ke xls atau xlsx (blok kolom A klik data-Teks to Columns pilih Tab dan Desimal)
               </p>
             </div>
 
