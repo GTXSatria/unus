@@ -9,15 +9,15 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
       <div className="max-w-4xl w-full">
-        <div className="text-center mb-12">
-    <div className="flex justify-center mb-6">
+        <div className="text-center mb-1">
+    <div className="flex justify-center mb-1">
     <div className="flex flex-col items-center text-center">
     <Image
       src="/logo.svg"
       alt="GTXEduKids - Platform Ujian Online"
-      width={240}   // lebar logo (px)
-      height={160}  // tinggi logo (px)
-      className="w-[240px] h-[160px] object-contain"
+      width={300}   // lebar logo (px)
+      height={200}  // tinggi logo (px)
+      className="w-[300px] h-[200px] object-contain"
       priority // <-- TAMBAHKAN PROPS INI
     />
 <p className="text-center text-2xl md:text-3xl font-semibold leading-snug">
@@ -31,7 +31,7 @@ export default function Home() {
 </p>
     </div>
     </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+          <h1 className="text-4xl md:text-2xl font-bold text-gray-800 mb-4">
             Intelligent Evaluation Platform
           </h1>
          </div>

@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Heart, Copy } from "lucide-react"
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Image from "next/image";
 
 import { 
   BookOpen, 
@@ -428,13 +429,19 @@ const handleLogout = async () => {
       <header className="bg-blue-500 shadow-lg border-b border-blue-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <BookOpen className="w-8 h-8 text-white mr-3" />
-              <div>
-                <h1 className="text-xl font-bold text-white">GTX Core</h1>
-                <p className="text-sm text-white">Dashboard Guru</p>
-              </div>
-            </div>
+    <div className="flex flex-col items-center text-center">
+      <Image
+        src="/logo.svg"
+        alt="GTX Core Logo"
+        width={140}
+        height={100}
+        className="object-contain"
+        priority
+      />
+      <p className="text-sm text-white m-0 p-0 leading-tight">
+        Dashboard Guru
+      </p>
+    </div>
             <div className="flex items-center space-x-4">
                 {/* --- TAMBAHKAN KODE INI --- */}
                 {guruData?.role === 'ADMIN' && (
@@ -946,25 +953,25 @@ const handleLogout = async () => {
                     <table className="min-w-full divide-y divide-blue-500">
                       <thead className="bg-blue-500">
                         <tr>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                             Kode Ujian
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                             Nama Siswa
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                             NISN
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                             Skor
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                             Benar
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                             Salah
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                             Aksi
                           </th>
                         </tr>

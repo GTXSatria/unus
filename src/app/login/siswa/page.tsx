@@ -54,7 +54,7 @@ function LoginSiswaContent() {
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center justify-center mb-6">
-            <div className="bg-green-600 p-3 rounded-2xl shadow-lg">
+            <div className="bg-blue-400 p-3 rounded-2xl shadow-lg">
               <Users className="w-10 h-10 text-white" />
             </div>
           </Link>
@@ -112,7 +112,7 @@ function LoginSiswaContent() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-blue-400 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? 'Memproses...' : 'Mulai Ujian'}
             </button>
@@ -143,7 +143,7 @@ export default function LoginSiswa() {
         <div className="max-w-md w-full">
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center mb-6">
-              <div className="bg-green-600 p-3 rounded-2xl shadow-lg">
+              <div className="bg-blue-400 p-3 rounded-2xl shadow-lg">
                 <Users className="w-10 h-10 text-white" />
               </div>
             </div>
