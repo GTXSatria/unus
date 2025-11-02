@@ -1,8 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Heart, Copy } from "lucide-react"
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+
 import { 
   BookOpen, 
   Upload, 
@@ -413,10 +416,16 @@ const handleLogout = async () => {
     )
   }
 
+  const handleCopy = (text: string) => {
+  navigator.clipboard.writeText(text)
+    .then(() => alert("Nomor rekening telah disalin!"))
+    .catch(() => alert("Gagal menyalin nomor rekening"));
+};
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-blue-600 shadow-lg border-b border-blue-700">
+      <header className="bg-blue-500 shadow-lg border-b border-blue-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
@@ -441,7 +450,7 @@ const handleLogout = async () => {
 <div className="relative">
   <button
     onClick={() => setIsPesanOpen(!isPesanOpen)}
-    className="text-white hover:text-green-500 p-2 rounded-lg hover:bg-Yellow-300 relative"
+    className="text-white hover:text-white p-2 rounded-lg hover:bg-blue-900 relative"
   >
     <Mail className="w-5 h-5" />
     {unreadCount > 0 && (
@@ -453,7 +462,7 @@ const handleLogout = async () => {
     <div className="absolute right-0 mt-2 w-[600px] bg-white rounded-lg shadow-lg border z-20">
       {/* Header Dropdown */}
       <div className="p-3 border-b flex justify-between items-center">
-        <h3 className="text-sm font-semibold text-gray-900">Pesan Masuk</h3>
+        <h3 className="text-sm font-semibold text-blue-900">Pesan Masuk</h3>
         <button
           onClick={() => setIsPesanOpen(false)}
           className="text-gray-400 hover:text-gray-600"
@@ -475,20 +484,20 @@ const handleLogout = async () => {
       {/* Tabel Pesan */}
       <div className="max-h-80 overflow-y-auto">
         {pesanList.length > 0 ? (
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-blue-500">
+            <thead className="bg-blue-500">
               <tr>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dari</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Isi Pesan</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-white uppercase tracking-wider">Dari</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-white uppercase tracking-wider">Judul</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-white uppercase tracking-wider">Isi Pesan</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-white uppercase tracking-wider">Tanggal</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white divide-y divide-blue-500">
               {pesanList.map((pesan) => (
                 <tr key={pesan.id}>
                   <td className="px-4 py-2 whitespace-nowrap">
-                    <p className="text-xs font-medium text-gray-900">{pesan.dari}</p>
+                    <p className="text-xs font-medium text-blue-500">{pesan.dari}</p>
                   </td>
                   <td className="px-4 py-2 whitespace-nowrap">
                     <p className="text-xs text-gray-500">{pesan.judul}</p>
@@ -537,7 +546,7 @@ const handleLogout = async () => {
 
             <button
               onClick={() => setIsPanduanOpen(true)}
-              className="text-white hover:text-yellow-800 flex items-center text-lg font-bold"
+              className="text-white hover:text-blue-900 flex items-center text-lg font-bold"
               >
               <HelpCircle className="w-5 h-5 mr-2" />
               Panduan
@@ -548,7 +557,7 @@ const handleLogout = async () => {
               </span>
               <button
                 onClick={handleLogout}
-                className="text-white hover:text-yellow-800 flex items-center text-lg font-bold"
+                className="text-white hover:text-blue-900 flex items-center text-lg font-bold"
               >
                 <LogOut className="w-4 h-4 mr-1" />
                 Logout
@@ -559,25 +568,25 @@ const handleLogout = async () => {
       </header>
 
       {/* Navigation Tabs */}
-      <div className="bg-grey-100 border-b">
+      <div className="bg-blue-50 border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex space-x-8">
             {[
               { id: 'ujian', label: 'Upload Ujian', icon: Upload },
               { id: 'kunci', label: 'Kunci Jawaban', icon: FileText },
               { id: 'siswa', label: 'Data Siswa', icon: Users },
-              { id: 'hasil', label: 'Hasil Ujian', icon: FileText }
+              { id: 'hasil', label: 'Hasil Ujian', icon: FileText },
+              { id: 'donasi', label: 'Donasi'}
             ].map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center py-4 px-1 border-b-2 font-medium text-sm ${
                   activeTab === tab.id
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'border-blue-900 text-blue-900'
+                    : 'border-transparent text-blue-500 hover:text-blue-900 hover:border-blue-900'
                 }`}
               >
-                <tab.icon className="w-4 h-4 mr-2" />
                 {tab.label}
               </button>
             ))}
@@ -591,10 +600,10 @@ const handleLogout = async () => {
         {activeTab === 'ujian' && (
           <div>
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Upload Ujian</h2>
+              <h2 className="text-2xl font-bold text-blue-500">Upload Ujian</h2>
               <Link
                 href="/dashboard/guru/upload-ujian"
-                className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center"
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Upload Ujian Baru
@@ -602,58 +611,58 @@ const handleLogout = async () => {
             </div>
 
             <div className="bg-white rounded-lg shadow overflow-hidden">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-blue-500">
+                <thead className="bg-blue-500">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                       Kode Ujian
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                       Nama Ujian
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                       Kelas
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                       Jumlah Soal
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                       Lama Ujian
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                       Aksi
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white divide-y divide-gray-50">
                   {ujians.map((ujian) => (
                     <tr key={ujian.id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-500">
                         {ujian.kodeUjian}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-500">
                         {ujian.namaUjian}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-500">
                         {ujian.kelas}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-500">
                         {ujian.jumlahSoal}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-500">
                         {ujian.lamaUjian} menit
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex space-x-2">
                           <Link
                             href={`/dashboard/guru/edit-ujian/${ujian.id}`}
-                            className="text-blue-600 hover:text-blue-900"
+                            className="text-red-900 hover:text-blue-900"
                           >
                             <Edit className="w-4 h-4" />
                           </Link>
                           <button
                             onClick={() => handleDeleteUjian(ujian.id)}
-                            className="text-red-600 hover:text-red-900"
+                            className="text-red-900 hover:text-blue-900"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -687,11 +696,11 @@ const handleLogout = async () => {
         {activeTab === 'kunci' && (
           <div>
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Kunci Jawaban</h2>
+              <h2 className="text-2xl font-bold text-blue-500">Kunci Jawaban</h2>
               <div className="flex space-x-2">
                 <button
                   onClick={() => window.location.href = '/dashboard/guru/kunci-jawaban/upload'}
-                  className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center"
+                  className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center"
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   Upload Kunci Jawaban
@@ -700,47 +709,47 @@ const handleLogout = async () => {
             </div>
 
             <div className="bg-white rounded-lg shadow overflow-hidden">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-blue-500">
+                <thead className="bg-blue-500">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                       Kode Ujian
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                       Nama Ujian
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                       Kelas
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                       Status Kunci
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                       Aksi
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white divide-y divide-blue-500">
                   {ujians.map((ujian) => {
                     const hasKunci = ujian.kunciJawaban && ujian.kunciJawaban !== '{}' && ujian.kunciJawaban !== 'null'
                     return (
                       <tr key={ujian.id}>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-500">
                           {ujian.kodeUjian}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-500">
                           {ujian.namaUjian}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-500">
                           {ujian.kelas}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
                           {hasKunci ? (
-                            <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">
+                            <span className="bg-green-400 text-white px-2 py-1 rounded-full text-xs">
                               Sudah Ada
                             </span>
                           ) : (
-                            <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs">
+                            <span className="bg-red-400 text-white px-2 py-1 rounded-full text-xs">
                               Belum Ada
                             </span>
                           )}
@@ -784,10 +793,10 @@ const handleLogout = async () => {
         {activeTab === 'siswa' && (
           <div>
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Data Siswa</h2>
+              <h2 className="text-2xl font-bold text-blue-500">Data Siswa</h2>
               <Link
                 href="/dashboard/guru/upload-siswa"
-                className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center"
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Upload Data Siswa
@@ -807,7 +816,7 @@ const handleLogout = async () => {
                       ) : (
                         <ChevronRight className="w-5 h-5 mr-2 text-gray-500" />
                       )}
-                      <h3 className="text-lg font-semibold text-gray-900">Kelas {kelas}</h3>
+                      <h3 className="text-lg font-semibold text-blue-500">Kelas {kelas}</h3>
                       <span className="ml-2 bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-xs">
                         {siswaList.length} siswa
                       </span>
@@ -817,7 +826,7 @@ const handleLogout = async () => {
                         e.stopPropagation()
                         handleDeleteSiswaPerKelas(kelas)
                       }}
-                      className="text-red-600 hover:text-red-700 text-sm"
+                      className="text-red-600 hover:text-red-900 text-sm"
                     >
                       Hapus Kelas
                     </button>
@@ -828,7 +837,7 @@ const handleLogout = async () => {
                       {siswaList.map((siswa) => (
                         <div key={siswa.id} className="px-6 py-4 flex justify-between items-center">
                           <div>
-                            <p className="text-sm font-medium text-gray-900">{siswa.nama}</p>
+                            <p className="text-sm font-medium text-blue-500">{siswa.nama}</p>
                             <p className="text-sm text-gray-500">NISN: {siswa.nisn}</p>
                           </div>
                           <button
@@ -858,10 +867,10 @@ const handleLogout = async () => {
         {activeTab === 'hasil' && (
           <div>
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Hasil Ujian</h2>
+              <h2 className="text-2xl font-bold text-blue-500">Hasil Ujian</h2>
               <button 
                 onClick={handleExportAll}
-                className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center"
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center"
               >
                 <Download className="w-4 h-4 mr-2" />
                 Export Semua Kelas
@@ -892,7 +901,7 @@ const handleLogout = async () => {
                       ) : (
                         <ChevronRight className="w-5 h-5 text-gray-600 mr-2" />
                       )}
-                      <h3 className="text-lg font-semibold text-gray-900">
+                      <h3 className="text-lg font-semibold text-blue-500">
                         Kelas {kelas}
                       </h3>
                     </div>
@@ -923,7 +932,7 @@ const handleLogout = async () => {
                           e.stopPropagation()
                           handleExportPerKelas(kelas, hasilList)
                         }}
-                        className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 flex items-center"
+                        className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-green-700 flex items-center"
                       >
                         <Download className="w-3 h-3 mr-1" />
                         Export Kelas
@@ -934,8 +943,8 @@ const handleLogout = async () => {
                 {/* Detail Hasil per Kelas */}
                 {expandedKelas[kelas] && (
                   <div className="mt-2 bg-white rounded-lg shadow overflow-hidden">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-50">
+                    <table className="min-w-full divide-y divide-blue-500">
+                      <thead className="bg-blue-500">
                         <tr>
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Kode Ujian
@@ -960,10 +969,10 @@ const handleLogout = async () => {
                           </th>
                         </tr>
                       </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
+                      <tbody className="bg-white divide-y divide-blue-500">
                         {hasilList.map((hasil) => (
                           <tr key={hasil.id}>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-500">
                               {hasil.ujian.kodeUjian}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -1023,6 +1032,78 @@ const handleLogout = async () => {
             )}
           </div>
         )}
+
+        {activeTab === 'donasi' && (
+          <div className="p-6 bg-white rounded-lg shadow-sm border border-blue-500">
+            <h2 className="text-center text-2xl font-bold text-blue-700 mb-1">
+              ❤️ Jazakumullah khoiron katsiron
+            </h2>
+            <p className="text-sm text-black text-center mb-6">
+              Terima kasih telah mendukung pengembangan aplikasi CBT ini 🙏
+            </p>
+
+            <div className="space-y-5 max-w-md mx-auto">
+
+              {/* BJB */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 shadow-sm">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="font-semibold text-blue-800">Bank BJB</p>
+                    <p className="text-blue-500 font-medium">0142842068100</p>
+                    <p className="text-xs text-gray-600">A.n: Ade Susandi, S.Pd</p>
+                  </div>
+                  <button
+                    onClick={() => handleCopy("0142842068100")}
+                    className="text-blue-700 hover:text-blue-900"
+                  >
+                    <Copy className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* BRI */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 shadow-sm">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="font-semibold text-blue-800">Bank BRI</p>
+                    <p className="text-blue-500 font-medium">445601016460536</p>
+                    <p className="text-xs text-gray-600">A.n: Ade Susandi, S.Pd</p>
+                  </div>
+                  <button
+                    onClick={() => handleCopy("445601016460536")}
+                    className="text-blue-700 hover:text-blue-900"
+                  >
+                    <Copy className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Crypto */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 shadow-sm">
+                <div className="flex justify-between items-center">
+                  <div className="w-[100%]">
+                    <p className="font-semibold text-blue-800">Dompet (Wallet)</p>
+                    <p className="text-blue-500 font-medium break-all">
+                      0x4d9b5f58f02aaaf71d4a978f07cd21572e082966
+                    </p>
+                    <p className="text-xs text-gray-600">A.n: Ksdoel</p>
+                  </div>
+                  <button
+                    onClick={() => handleCopy("0x4d9b5f58f02aaaf71d4a978f07cd21572e082966")}
+                    className="text-blue-700 hover:text-blue-900"
+                  >
+                    <Copy className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+
+            </div>
+
+            <p className="text-center text-[11px] text-blue-500 mt-6">
+              Donasi Anda sangat berarti untuk keberlanjutan dan update fitur.
+            </p>
+          </div>
+        )}
       </main>
 
       {/* Modal Panduan Cepat */}
@@ -1031,7 +1112,7 @@ const handleLogout = async () => {
           <div className="bg-white rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold text-gray-900">Panduan Cepat Penggunaan Aplikasi</h2>
+                <h2 className="text-xl font-bold text-blue-500">Panduan Cepat Penggunaan Aplikasi</h2>
                 <button
                   onClick={() => setIsPanduanOpen(false)}
                   className="text-gray-500 hover:text-gray-700"
@@ -1042,7 +1123,7 @@ const handleLogout = async () => {
               
               <div className="space-y-4">
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">1. Upload Ujian (Real/Dummy)</h3>
+                  <h3 className="font-semibold text-blue-500 mb-2">1. Upload Ujian (Real/Dummy)</h3>
                   <p className="text-gray-600 text-sm">
                     Klik tab "Upload Ujian" lalu klik tombol "Upload Ujian Baru" untuk menambahkan soal ujian baru, 
                     Soal pdf bisa file apa saja untuk melakukan Dummy tidak harus lembar soal.
@@ -1051,7 +1132,7 @@ const handleLogout = async () => {
                 </div>
                 
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">2. Upload Data Siswa (Real/Dummy)</h3>
+                  <h3 className="font-semibold text-blue-500 mb-2">2. Upload Data Siswa (Real/Dummy)</h3>
                   <p className="text-gray-600 text-sm">
                     Klik tab "Data Siswa" lalu klik "Upload Data Siswa" untuk menambahkan data siswa.
                     Data siswa diperlukan untuk login dan penilaian, untuk format data siswa lihat Template. 
@@ -1062,7 +1143,7 @@ const handleLogout = async () => {
                 </div>
                 
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">3. Melihat Hasil Ujian (Real/Dummy)</h3>
+                  <h3 className="font-semibold text-blue-500 mb-2">3. Melihat Hasil Ujian (Real/Dummy)</h3>
                   <p className="text-gray-600 text-sm">
                     Klik tab "Hasil Ujian" untuk melihat hasil ujian siswa.
                     Anda dapat melihat hasil per kelas atau mengekspor semua hasil dalam format CSV.
@@ -1094,12 +1175,12 @@ const handleLogout = async () => {
         </div>
       )}
 
-                {isTulisPesanOpen && (
+      {isTulisPesanOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg max-w-lg w-full">
             <div className="p-6">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold text-gray-900">Kirim Saran & Kritik</h2>
+                <h2 className="text-xl font-bold text-blue-500">Kirim Saran & Kritik</h2>
                 <button
                   onClick={() => setIsTulisPesanOpen(false)}
                   className="text-gray-500 hover:text-gray-700"
