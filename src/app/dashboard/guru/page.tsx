@@ -1034,76 +1034,89 @@ const handleLogout = async () => {
         )}
 
         {activeTab === 'donasi' && (
-          <div className="p-6 bg-white rounded-lg shadow-sm border border-blue-500">
-            <h2 className="text-center text-2xl font-bold text-blue-700 mb-1">
-              ❤️ Jazakumullah khoiron katsiron
-            </h2>
-            <p className="text-sm text-black text-center mb-6">
-              Terima kasih telah mendukung pengembangan aplikasi CBT ini 🙏
-            </p>
+  <div className="p-6 bg-white rounded-lg shadow-sm border border-blue-500">
+    <h2 className="text-center text-2xl font-bold text-blue-700 mb-1">
+      ❤️ Jazakumullah khoiron katsiron
+    </h2>
+    <p className="text-sm text-black text-center mb-6">
+      Terima kasih telah mendukung pengembangan aplikasi CBT ini 🙏
+    </p>
 
-            <div className="space-y-5 max-w-md mx-auto">
+    <div className="space-y-5 max-w-md mx-auto">
 
-              {/* BJB */}
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 shadow-sm">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="font-semibold text-blue-800">Bank BJB</p>
-                    <p className="text-blue-500 font-medium">0142842068100</p>
-                    <p className="text-xs text-gray-600">A.n: Ade Susandi, S.Pd</p>
-                  </div>
-                  <button
-                    onClick={() => handleCopy("0142842068100")}
-                    className="text-blue-700 hover:text-blue-900"
-                  >
-                    <Copy className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-
-              {/* BRI */}
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 shadow-sm">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="font-semibold text-blue-800">Bank BRI</p>
-                    <p className="text-blue-500 font-medium">445601016460536</p>
-                    <p className="text-xs text-gray-600">A.n: Ade Susandi, S.Pd</p>
-                  </div>
-                  <button
-                    onClick={() => handleCopy("445601016460536")}
-                    className="text-blue-700 hover:text-blue-900"
-                  >
-                    <Copy className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Crypto */}
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 shadow-sm">
-                <div className="flex justify-between items-center">
-                  <div className="w-[100%]">
-                    <p className="font-semibold text-blue-800">Dompet (Wallet)</p>
-                    <p className="text-blue-500 font-medium break-all">
-                      0x4d9b5f58f02aaaf71d4a978f07cd21572e082966
-                    </p>
-                    <p className="text-xs text-gray-600">A.n: Ksdoel</p>
-                  </div>
-                  <button
-                    onClick={() => handleCopy("0x4d9b5f58f02aaaf71d4a978f07cd21572e082966")}
-                    className="text-blue-700 hover:text-blue-900"
-                  >
-                    <Copy className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-
-            </div>
-
-            <p className="text-center text-[11px] text-blue-500 mt-6">
-              Donasi Anda sangat berarti untuk keberlanjutan dan update fitur.
-            </p>
+      {/* BANK BJB */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 shadow-sm flex items-center justify-between">
+        <div className="flex items-center space-x-3">
+          <img
+            src="/images/bank-bjb.webp"
+            alt="Logo Bank BJB"
+            className="h-7 w-auto"
+          />
+          <div>
+            <p className="text-blue-500 font-medium">0142842068100</p>
+            <p className="text-xs text-gray-600">A.n: Ade Susandi, S.Pd</p>
           </div>
-        )}
+        </div>
+        <button
+          onClick={() => handleCopy("0142842068100")}
+          className="text-blue-700 hover:text-blue-900"
+        >
+          <Copy className="w-5 h-5" />
+        </button>
+      </div>
+
+      {/* BANK BRI */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 shadow-sm flex items-center justify-between">
+        <div className="flex items-center space-x-3">
+          <img
+            src="/images/bank-bri.webp"
+            alt="Logo Bank BRI"
+            className="h-7 w-auto"
+          />
+          <div>
+            <p className="text-blue-500 font-medium">445601016460536</p>
+            <p className="text-xs text-gray-600">A.n: Ade Susandi, S.Pd</p>
+          </div>
+        </div>
+        <button
+          onClick={() => handleCopy("445601016460536")}
+          className="text-blue-700 hover:text-blue-900"
+        >
+          <Copy className="w-5 h-5" />
+        </button>
+      </div>
+
+      {/* WALLET / CRYPTO */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 shadow-sm flex items-center justify-between">
+        <div className="flex items-center space-x-3 w-full">
+          <img
+            src="/images/wallet.webp"
+            alt="Logo e-wallet."
+            className="h-7 w-auto"
+          />
+          <div className="flex-1">
+            <p className="font-semibold text-blue-800">e-wallet</p>
+            <p className="text-blue-500 font-medium break-all">
+              0x4d9b5f58f02aaaf71d4a978f07cd21572e082966
+            </p>
+            <p className="text-xs text-gray-600">A.n: Ksdoel</p>
+          </div>
+        </div>
+        <button
+          onClick={() => handleCopy("0x4d9b5f58f02aaaf71d4a978f07cd21572e082966")}
+          className="text-blue-700 hover:text-blue-900"
+        >
+          <Copy className="w-5 h-5" />
+        </button>
+      </div>
+    </div>
+
+    <p className="text-center text-[11px] text-blue-500 mt-6">
+      Donasi Anda sangat berarti untuk keberlanjutan dan pengembangan fitur baru GTX Core.
+    </p>
+  </div>
+)}
+
       </main>
 
       {/* Modal Panduan Cepat */}
