@@ -570,11 +570,11 @@ const kirimJawaban = async () => {
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div className="bg-white rounded-xl shadow-lg p-6 w-96 text-center">
       <h2 className="text-lg font-semibold text-gray-800 mb-2">Konfirmasi Pengiriman</h2>
-      <p className="text-sm text-gray-700 mb-4">
-        Soal belum dijawab:
-        <span className="font-semibold text-red-600"> {soalBelumDijawab.join(", ")} </span>
+      <p className="text-sm text-black mb-4">
+        Ada soal yang belum dijawab yaitu nomor:
+        <span className="font-semibold text-red-900"> {soalBelumDijawab.join(", ")} </span>
       </p>
-      <p className="text-sm text-gray-700 mb-6">Apakah Anda yakin ingin mengirim jawaban sekarang?</p>
+      <p className="text-sm text-black mb-6">Apakah Anda yakin ingin mengirim jawaban sekarang?</p>
 
       <div className="flex justify-center gap-3">
         <button
