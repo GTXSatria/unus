@@ -188,10 +188,10 @@ export default function KunciJawabanDetail() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-300 to-blue-900 flex items-center justify-center p-4">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Memuat data...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
+          <p className="mt-4 text-white">Memuat data...</p>
         </div>
       </div>
     )
@@ -214,21 +214,21 @@ export default function KunciJawabanDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-300 to-blue-900">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-gradient-to-br from-blue-300 to-blue-900 shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Link
                 href="/dashboard/guru"
-                className="mr-4 text-gray-600 hover:text-gray-700"
+                className="mr-4 text-white hover:text-gray-700"
               >
                 <ArrowLeft className="w-5 h-5" />
               </Link>
               <div className="flex flex-col">
-                <h1 className="text-xl font-bold text-gray-900">Kunci Jawaban</h1>
-                <p className="text-sm text-gray-500">{ujian.kodeUjian} - {ujian.namaUjian}</p>
+                <h1 className="text-xl font-bold text-white">Kunci Jawaban</h1>
+                <p className="text-sm text-white">{ujian.kodeUjian} - {ujian.namaUjian}</p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
@@ -312,8 +312,8 @@ export default function KunciJawabanDetail() {
         )}
 
         {/* Kunci Jawaban Table */}
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <div className="px-6 py-4 bg-gray-50 border-b">
+        <div className="bg-gradient-to-br from-blue-300 to-blue-900 rounded-lg shadow overflow-hidden">
+          <div className="px-6 py-4 bg-gradient-to-br from-blue-300 to-blue-900 border-b">
             <h3 className="text-lg font-semibold text-gray-900">
               Daftar Kunci Jawaban ({ujian.jumlahSoal} Soal)
             </h3>

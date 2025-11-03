@@ -408,10 +408,10 @@ const handleLogout = async () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-300 to-blue-900 flex items-center justify-center p-4">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Memuat data...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
+          <p className="mt-4 text-gray-200">Memuat data...</p>
         </div>
       </div>
     )
@@ -424,9 +424,9 @@ const handleLogout = async () => {
 };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-300 to-blue-900">
       {/* Header */}
-      <header className="bg-blue-500 shadow-lg border-b border-blue-700">
+      <header className="bg-gradient-to-br from-blue-300 to-blue-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
     <div className="flex flex-col items-center text-center">
@@ -447,7 +447,7 @@ const handleLogout = async () => {
                 {guruData?.role === 'ADMIN' && (
                 <Link
                 href="/dashboard/admin"
-                className="bg-purple-200 text-white px-4 py-2 rounded-lg hover:bg-purple-400 flex items-center"
+                className="bg-gray-200 text-blue-600 px-4 py-2 rounded-lg hover:bg-purple-400 flex items-center"
                 >
                 Menu Admin
                 </Link>
@@ -457,7 +457,7 @@ const handleLogout = async () => {
 <div className="relative">
   <button
     onClick={() => setIsPesanOpen(!isPesanOpen)}
-    className="text-white hover:text-white p-2 rounded-lg hover:bg-blue-900 relative"
+    className="text-white hover:text-white p-2 rounded-lg hover:bg-blue-600 relative"
   >
     <Mail className="w-5 h-5" />
     {unreadCount > 0 && (
@@ -466,25 +466,25 @@ const handleLogout = async () => {
   </button>
 
   {isPesanOpen && (
-    <div className="absolute right-0 mt-2 w-[600px] bg-white rounded-lg shadow-lg border z-20">
+    <div className="absolute right-0 mt-0 w-[600px] bg-gradient-to-br from-blue-300 to-blue-900 rounded-lg shadow-lg border z-50">
       {/* Header Dropdown */}
       <div className="p-3 border-b flex justify-between items-center">
-        <h3 className="text-sm font-semibold text-blue-900">Pesan Masuk</h3>
+        <h3 className="text-sm font-semibold text-gray-200">Pesan Masuk</h3>
         <button
           onClick={() => setIsPesanOpen(false)}
-          className="text-gray-400 hover:text-gray-600"
+          className="text-gray-200 hover:text-gray-200"
         >
           <X className="w-4 h-4" />
         </button>
       </div>
 
       {/* Tombol Tulis Pesan */}
-      <div className="p-3 border-b">
+      <div className="bg-gray-100 text-blue-600 px-4 py-2 rounded-lg hover:bg-purple-400 flex items-center">
         <button
           onClick={() => { setIsTulisPesanOpen(true); setIsPesanOpen(false); }}
           className="w-full text-left text-sm font-medium text-blue-600 hover:text-blue-800"
         >
-          + Tulis Pesan (Saran & Kritik)
+          + Saran & Kritik (Klik Disini)
         </button>
       </div>
 
@@ -492,7 +492,7 @@ const handleLogout = async () => {
       <div className="max-h-80 overflow-y-auto">
         {pesanList.length > 0 ? (
           <table className="min-w-full divide-y divide-blue-500">
-            <thead className="bg-blue-500">
+            <thead className="bg-gradient-to-br from-blue-300 to-blue-900">
               <tr>
                 <th className="px-4 py-2 text-left text-xs font-medium text-white uppercase tracking-wider">Dari</th>
                 <th className="px-4 py-2 text-left text-xs font-medium text-white uppercase tracking-wider">Judul</th>
@@ -564,8 +564,7 @@ const handleLogout = async () => {
               </span>
               <button
                 onClick={handleLogout}
-                className="text-white hover:text-blue-900 flex items-center text-lg font-bold"
-              >
+                className="bg-gradient-to-br from-blue-300 to-blue-900 hover:from-blue-900 hover:to-blue-300 hover:bg-gradient-to-br text-white px-4 py-2 rounded-lg flex items-center">
                 <LogOut className="w-4 h-4 mr-1" />
                 Logout
               </button>
@@ -607,19 +606,18 @@ const handleLogout = async () => {
         {activeTab === 'ujian' && (
           <div>
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-blue-500">Upload Ujian</h2>
+              <h2 className="text-2xl font-bold text-gray-100">Upload Ujian</h2>
               <Link
                 href="/dashboard/guru/upload-ujian"
-                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center"
-              >
+                className="bg-gradient-to-br from-blue-300 to-blue-900 hover:from-blue-900 hover:to-blue-300 hover:bg-gradient-to-br text-white px-4 py-2 rounded-lg flex items-center">
                 <Plus className="w-4 h-4 mr-2" />
                 Upload Ujian Baru
               </Link>
             </div>
 
             <div className="bg-white rounded-lg shadow overflow-hidden">
-              <table className="min-w-full divide-y divide-blue-500">
-                <thead className="bg-blue-500">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gradient-to-br from-blue-300 to-blue-900">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                       Kode Ujian
@@ -703,12 +701,11 @@ const handleLogout = async () => {
         {activeTab === 'kunci' && (
           <div>
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-blue-500">Kunci Jawaban</h2>
+              <h2 className="text-2xl font-bold text-gray-100">Kunci Jawaban</h2>
               <div className="flex space-x-2">
                 <button
                   onClick={() => window.location.href = '/dashboard/guru/kunci-jawaban/upload'}
-                  className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center"
-                >
+                  className="bg-gradient-to-br from-blue-300 to-blue-900 hover:from-blue-900 hover:to-blue-300 hover:bg-gradient-to-br text-white px-4 py-2 rounded-lg flex items-center">
                   <Plus className="w-4 h-4 mr-2" />
                   Upload Kunci Jawaban
                 </button>
@@ -717,7 +714,7 @@ const handleLogout = async () => {
 
             <div className="bg-white rounded-lg shadow overflow-hidden">
               <table className="min-w-full divide-y divide-blue-500">
-                <thead className="bg-blue-500">
+                <thead className="bg-gradient-to-br from-blue-300 to-blue-900">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                       Kode Ujian
@@ -800,11 +797,10 @@ const handleLogout = async () => {
         {activeTab === 'siswa' && (
           <div>
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-blue-500">Data Siswa</h2>
+              <h2 className="text-2xl font-bold text-white">Data Siswa</h2>
               <Link
                 href="/dashboard/guru/upload-siswa"
-                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center"
-              >
+                className="bg-gradient-to-br from-blue-300 to-blue-900 hover:from-blue-900 hover:to-blue-300 hover:bg-gradient-to-br text-white px-4 py-2 rounded-lg flex items-center">
                 <Plus className="w-4 h-4 mr-2" />
                 Upload Data Siswa
               </Link>
@@ -814,17 +810,17 @@ const handleLogout = async () => {
               {Object.entries(siswaPerKelas).map(([kelas, siswaList]) => (
                 <div key={kelas} className="bg-white rounded-lg shadow overflow-hidden">
                   <div
-                    className="bg-gray-50 px-6 py-4 flex justify-between items-center cursor-pointer hover:bg-gray-100"
+                    className="bg-gradient-to-br from-blue-300 to-blue-900 hover:from-blue-900 hover:to-blue-300 hover:bg-gradient-to-br text-white px-4 py-2 flex justify-between items-center"
                     onClick={() => toggleKelas(kelas)}
                   >
                     <div className="flex items-center">
                       {expandedKelas[kelas] ? (
-                        <ChevronDown className="w-5 h-5 mr-2 text-gray-500" />
+                        <ChevronDown className="w-5 h-5 mr-2 text-white" />
                       ) : (
-                        <ChevronRight className="w-5 h-5 mr-2 text-gray-500" />
+                        <ChevronRight className="w-5 h-5 mr-2 text-white" />
                       )}
-                      <h3 className="text-lg font-semibold text-blue-500">Kelas {kelas}</h3>
-                      <span className="ml-2 bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-xs">
+                      <h3 className="text-lg font-semibold text-white">Kelas {kelas}</h3>
+                      <span className="ml-2 bg-gray-100 text-blue-600 px-2 py-1 rounded-full text-xs">
                         {siswaList.length} siswa
                       </span>
                     </div>
@@ -833,7 +829,7 @@ const handleLogout = async () => {
                         e.stopPropagation()
                         handleDeleteSiswaPerKelas(kelas)
                       }}
-                      className="text-red-600 hover:text-red-900 text-sm"
+                      className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-700 flex items-center"
                     >
                       Hapus Kelas
                     </button>
@@ -844,8 +840,8 @@ const handleLogout = async () => {
                       {siswaList.map((siswa) => (
                         <div key={siswa.id} className="px-6 py-4 flex justify-between items-center">
                           <div>
-                            <p className="text-sm font-medium text-blue-500">{siswa.nama}</p>
-                            <p className="text-sm text-gray-500">NISN: {siswa.nisn}</p>
+                            <p className="text-sm font-medium text-gray-700">{siswa.nama}</p>
+                            <p className="text-sm text-gray-700">NISN: {siswa.nisn}</p>
                           </div>
                           <button
                             onClick={() => handleDeleteSiswa(siswa.id)}
@@ -863,8 +859,8 @@ const handleLogout = async () => {
 
             {Object.keys(siswaPerKelas).length === 0 && (
               <div className="text-center py-12">
-                <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-500">Belum ada data siswa</p>
+                <Users className="w-12 h-12 text-white mx-auto mb-4" />
+                <p className="text-white">Belum ada data siswa</p>
               </div>
             )}
           </div>
@@ -874,11 +870,10 @@ const handleLogout = async () => {
         {activeTab === 'hasil' && (
           <div>
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-blue-500">Hasil Ujian</h2>
+              <h2 className="text-2xl font-bold text-white">Hasil Ujian</h2>
               <button 
                 onClick={handleExportAll}
-                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center"
-              >
+                className="bg-gradient-to-br from-blue-300 to-blue-900 hover:from-blue-900 hover:to-blue-300 hover:bg-gradient-to-br text-white px-4 py-2 rounded-lg flex items-center">
                 <Download className="w-4 h-4 mr-2" />
                 Export Semua Kelas
               </button>
@@ -898,29 +893,29 @@ const handleLogout = async () => {
               <div key={kelas} className="mb-6">
                 {/* Header Kelas */}
                 <div 
-                  className="bg-gray-50 border border-gray-200 rounded-lg p-4 cursor-pointer hover:bg-gray-100 transition-colors"
+                  className="bg-gradient-to-br from-blue-300 to-blue-900 hover:from-blue-900 hover:to-blue-300 hover:bg-gradient-to-br text-white px-4 py-2 rounded-lg"
                   onClick={() => toggleKelas(kelas)}
-                >
+                  >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       {expandedKelas[kelas] ? (
-                        <ChevronDown className="w-5 h-5 text-gray-600 mr-2" />
+                        <ChevronDown className="w-5 h-5 text-white mr-2" />
                       ) : (
-                        <ChevronRight className="w-5 h-5 text-gray-600 mr-2" />
+                        <ChevronRight className="w-5 h-5 text-white mr-2" />
                       )}
-                      <h3 className="text-lg font-semibold text-blue-500">
+                      <h3 className="text-lg font-semibold text-white">
                         Kelas {kelas}
                       </h3>
                     </div>
                     <div className="flex flex-wrap items-center justify-end gap-2">
-                      <span className="text-sm text-gray-500">
+                      <span className="text-sm text-white">
                         {hasilList.length} siswa
                       </span>
                       <div className="text-sm">
-                        <span className="font-medium text-gray-700">
+                        <span className="font-medium text-white">
                           Rata-rata: 
                         </span>
-                        <span className="ml-1 text-blue-600 font-semibold">
+                        <span className="ml-1 text-white font-semibold">
                           {Math.round(hasilList.reduce((sum, h) => sum + h.skor, 0) / hasilList.length)}%
                         </span>
                       </div>
@@ -929,7 +924,7 @@ const handleLogout = async () => {
                           e.stopPropagation()
                           handleDeleteHasilPerKelas(kelas)
                         }}
-                        className="text-red-600 hover:text-red-700 text-sm flex items-center"
+                        className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-700 flex items-center"
                       >
                         <Trash2 className="w-4 h-4 mr-1" />
                         Hapus Kelas
@@ -939,7 +934,7 @@ const handleLogout = async () => {
                           e.stopPropagation()
                           handleExportPerKelas(kelas, hasilList)
                         }}
-                        className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-green-700 flex items-center"
+                        className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 flex items-center"
                       >
                         <Download className="w-3 h-3 mr-1" />
                         Export Kelas
@@ -951,7 +946,7 @@ const handleLogout = async () => {
                 {expandedKelas[kelas] && (
                   <div className="mt-2 bg-white rounded-lg shadow overflow-hidden">
                     <table className="min-w-full divide-y divide-blue-500">
-                      <thead className="bg-blue-500">
+                      <thead className="bg-gradient-to-br from-blue-300 to-blue-900 hover:from-blue-900 hover:to-blue-300 hover:bg-gradient-to-br text-white px-4 py-2 rounded-lg">
                         <tr>
                           <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                             Kode Ujian
@@ -1021,8 +1016,8 @@ const handleLogout = async () => {
                     </table>
                     {hasilList.length === 0 && (
                       <div className="text-center py-8">
-                        <FileText className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                        <p className="text-gray-500 text-sm">Belum ada hasil ujian untuk kelas ini</p>
+                        <FileText className="w-8 h-8 text-white mx-auto mb-2" />
+                        <p className="text-white text-sm">Belum ada hasil ujian untuk kelas ini</p>
                       </div>
                     )}
                   </div>
@@ -1033,19 +1028,19 @@ const handleLogout = async () => {
             {/* Jika tidak ada hasil sama sekali */}
             {hasilUjians.length === 0 && (
               <div className="text-center py-12">
-                <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-500">Belum ada hasil ujian</p>
+                <FileText className="w-12 h-12 text-white mx-auto mb-4" />
+                <p className="text-white">Belum ada hasil ujian</p>
               </div>
             )}
           </div>
         )}
 
         {activeTab === 'donasi' && (
-  <div className="p-6 bg-white rounded-lg shadow-sm border border-blue-500">
-    <h2 className="text-center text-2xl font-bold text-blue-700 mb-1">
+  <div className="p-6 bg-gradient-to-br from-blue-900 to-blue-300 rounded-lg shadow-sm border border-blue-500">
+    <h2 className="text-center text-2xl font-bold text-gray-200 mb-1">
       ❤️ Jazakumullah khoiron katsiron
     </h2>
-    <p className="text-sm text-black text-center mb-6">
+    <p className="text-sm text-gray-200 text-center mb-6">
       Terima kasih telah mendukung pengembangan aplikasi CBT ini 🙏
     </p>
 
@@ -1118,7 +1113,7 @@ const handleLogout = async () => {
       </div>
     </div>
 
-    <p className="text-center text-[11px] text-blue-500 mt-6">
+    <p className="text-center text-[11px] text-gray-100 mt-6">
       Donasi Anda sangat berarti untuk keberlanjutan dan pengembangan fitur baru GTX Core.
     </p>
   </div>
@@ -1197,10 +1192,10 @@ const handleLogout = async () => {
 
       {isTulisPesanOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-lg w-full">
+          <div className="bg-gradient-to-br from-blue-300 to-blue-900 rounded-lg max-w-lg w-full">
             <div className="p-6">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold text-blue-500">Kirim Saran & Kritik</h2>
+                <h2 className="text-xl font-bold text-gray-200">Kirim Saran & Kritik</h2>
                 <button
                   onClick={() => setIsTulisPesanOpen(false)}
                   className="text-gray-500 hover:text-gray-700"

@@ -50,26 +50,26 @@ export default function RegisterGuru() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-300 to-blue-900 flex items-center justify-center p-4">
       <div className="max-w-md w-full">
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center justify-center mb-6">
+        <div className="text-center mb-2">
+          <Link href="/" className="inline-flex items-center justify-center mb-0">
             <div className="bg-blue-600 p-3 rounded-2xl shadow-lg">
               <BookOpen className="w-10 h-10 text-white" />
             </div>
           </Link>
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">
+          <h1 className="text-3xl font-bold text-gray-200 mb-0">
             Daftar Guru
           </h1>
-          <p className="text-gray-600">
+          <p className="text-gray-200">
             Buat akun guru baru
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-8">
-          <form onSubmit={handleRegister} className="space-y-6">
+        <div className="bg-blue-100 rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-blue-100">
+          <form onSubmit={handleRegister} className="space-y-1">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-0">
                 Nama Lengkap
               </label>
               <div className="relative">
@@ -86,7 +86,7 @@ export default function RegisterGuru() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-0">
                 Email
               </label>
               <div className="relative">
@@ -103,7 +103,7 @@ export default function RegisterGuru() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-0">
                 Password
               </label>
               <div className="relative">
@@ -128,7 +128,7 @@ export default function RegisterGuru() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-0">
                 Konfirmasi Password
               </label>
               <div className="relative">

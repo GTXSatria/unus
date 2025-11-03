@@ -50,7 +50,7 @@ function LoginSiswaContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-green-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-300 to-blue-900 flex items-center justify-center p-4">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center justify-center mb-6">
@@ -58,15 +58,15 @@ function LoginSiswaContent() {
               <Users className="w-10 h-10 text-white" />
             </div>
           </Link>
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">
+          <h1 className="text-3xl font-bold text-gray-200 mb-2">
             Login Siswa
           </h1>
-          <p className="text-gray-600">
+          <p className="text-gray-200">
             Masuk dengan kode ujian dan NISN
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-8">
+        <div className="bg-blue-100 rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-blue-100">
           {message && (
             <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-6 flex items-center">
               <CheckCircle className="w-5 h-5 mr-2" />
@@ -112,7 +112,7 @@ function LoginSiswaContent() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-blue-400 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-gradient-to-br from-blue-300 to-blue-900 hover:from-blue-900 hover:to-blue-300 hover:bg-gradient-to-br text-white px-4 py-2 rounded-lg flex items-center mx-auto disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? 'Memproses...' : 'Mulai Ujian'}
             </button>

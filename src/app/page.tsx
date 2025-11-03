@@ -7,7 +7,7 @@ import Image from 'next/image'
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-300 to-blue-900 flex items-center justify-center p-4">
       <div className="max-w-4xl w-full">
         <div className="text-center mb-1">
     <div className="flex justify-center mb-1">
@@ -21,24 +21,24 @@ export default function Home() {
       priority // <-- TAMBAHKAN PROPS INI
     />
 <p className="text-center text-2xl md:text-3xl font-semibold leading-snug">
-  <span className="bg-gradient-to-r from-sky-500 to-blue-600 bg-clip-text text-transparent">
+  <span className="text-4xl md:text-2xl font-bold text-gray-200 mb-4">
     Sistem Ujian Online
   </span>
   <br />
-  <span className="bg-gradient-to-r from-sky-500 to-blue-600 bg-clip-text text-transparent">
+  <span className="text-4xl md:text-2xl font-bold text-gray-200 mb-4">
     Berbasis Web Bentuk Soal Pilihan Ganda
   </span>
 </p>
     </div>
     </div>
-          <h1 className="text-4xl md:text-2xl font-bold text-gray-800 mb-4">
+          <h1 className="text-4xl md:text-2xl font-bold text-gray-200 mb-4">
             Intelligent Evaluation Platform
           </h1>
          </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 gap-4">
           <Link href="/login/guru" className="group">
-            <div className="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-blue-100">
+            <div className="bg-blue-200 rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-blue-100">
               <div className="flex items-center mb-4">
                 <div className="bg-blue-600 p-3 rounded-xl mr-4">
                   <BookOpen className="w-8 h-8 text-white" />
@@ -58,7 +58,7 @@ export default function Home() {
           </Link>
 
           <Link href="/login/siswa" className="group">
-            <div className="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-green-100">
+            <div className="bg-blue-200 rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-green-100">
               <div className="flex items-center mb-4">
                 <div className="bg-blue-600 p-3 rounded-xl mr-4">
                   <Users className="w-8 h-8 text-white" />
@@ -78,7 +78,7 @@ export default function Home() {
           </Link>
         </div>
 
-        <div className="text-center mt-12 text-gray-500 text-sm">
+        <div className="text-center mt-15 text-gray-200 text-sm">
           © 2018 GTX Core (Banjar) - By Ade Susandi, S.Pd
         </div>
       </div>

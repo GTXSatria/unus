@@ -151,42 +151,42 @@ export default function EditUjian() {
 
   if (isLoadingData) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-300 to-blue-900 flex items-center justify-center p-4">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Memuat data ujian...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
+          <p className="mt-4 text-white">Memuat data ujian...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-300 to-blue-900">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-gradient-to-br from-blue-300 to-blue-900 shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center h-16">
             <Link
               href="/dashboard/guru"
-              className="flex items-center text-gray-600 hover:text-gray-900 mr-4"
+              className="flex items-center text-white hover:text-gray-900 mr-4"
             >
               <ArrowLeft className="w-5 h-5 mr-2" />
               Kembali
             </Link>
-            <h1 className="text-xl font-bold text-gray-900">Edit Ujian</h1>
+            <h1 className="text-xl font-bold text-white">Edit Ujian</h1>
           </div>
         </div>
       </header>
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-gradient-to-br from-blue-300 to-blue-900 rounded-lg shadow p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Informasi Ujian */}
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Informasi Ujian</h2>
+              <h2 className="text-lg font-semibold text-white mb-4">Informasi Ujian</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-white mb-2">
                     Kode Ujian *
                   </label>
                   <input
@@ -201,7 +201,7 @@ export default function EditUjian() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-white mb-2">
                     Nama Ujian *
                   </label>
                   <input
@@ -216,7 +216,7 @@ export default function EditUjian() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-white mb-2">
                     Kelas *
                   </label>
                   <input
@@ -231,7 +231,7 @@ export default function EditUjian() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-white mb-2">
                     Jumlah Soal *
                   </label>
                   <input
@@ -247,7 +247,7 @@ export default function EditUjian() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-white mb-2">
                     Lama Ujian (menit) *
                   </label>
                   <input
@@ -263,7 +263,7 @@ export default function EditUjian() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-white mb-2">
                     Tipe Pilihan *
                   </label>
                   <select
@@ -282,7 +282,7 @@ export default function EditUjian() {
 
             {/* Upload PDF (Optional) */}
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Update Soal PDF (Opsional)</h2>
+              <h2 className="text-lg font-semibold text-white mb-4">Update Soal PDF (Opsional)</h2>
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
                 <input
                   ref={pdfInputRef}
@@ -295,26 +295,26 @@ export default function EditUjian() {
                 {pdfFile ? (
                   <div className="flex items-center justify-center">
                     <FileText className="w-8 h-8 text-blue-600 mr-3" />
-                    <span className="text-gray-700">{pdfFile.name}</span>
+                    <span className="text-white">{pdfFile.name}</span>
                     <button
                       type="button"
                       onClick={() => {
                         setPdfFile(null)
                         if (pdfInputRef.current) pdfInputRef.current.value = ''
                       }}
-                      className="ml-3 text-red-600 hover:text-red-700"
+                      className="ml-3 text-white hover:text-red-700"
                     >
                       Hapus
                     </button>
                   </div>
                 ) : (
                   <div>
-                    <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-600 mb-2">Klik untuk mengganti file PDF soal ujian (kosongkan jika tidak ingin mengubah)</p>
+                    <FileText className="w-12 h-12 text-white mx-auto mb-4" />
+                    <p className="text-white mb-2">Klik untuk mengganti file PDF soal ujian (kosongkan jika tidak ingin mengubah)</p>
                     <button
                       type="button"
                       onClick={() => pdfInputRef.current?.click()}
-                      className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center mx-auto"
+                      className="bg-gradient-to-br from-blue-300 to-blue-900 hover:from-blue-900 hover:to-blue-300 hover:bg-gradient-to-br text-white px-4 py-2 rounded-lg flex items-center mx-auto"
                     >
                       <Upload className="w-4 h-4 mr-2" />
                       Pilih File PDF Baru
@@ -326,7 +326,7 @@ export default function EditUjian() {
 
             {/* Upload Kunci Jawaban (Optional) */}
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Update Kunci Jawaban (Opsional)</h2>
+              <h2 className="text-lg font-semibold text-white mb-4">Update Kunci Jawaban (Opsional)</h2>
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
                 <input
                   ref={kunciInputRef}
@@ -338,27 +338,27 @@ export default function EditUjian() {
                 
                 {kunciFile ? (
                   <div className="flex items-center justify-center">
-                    <FileText className="w-8 h-8 text-green-600 mr-3" />
-                    <span className="text-gray-700">{kunciFile.name}</span>
+                    <FileText className="w-8 h-8 text-white mr-3" />
+                    <span className="text-white">{kunciFile.name}</span>
                     <button
                       type="button"
                       onClick={() => {
                         setKunciFile(null)
                         if (kunciInputRef.current) kunciInputRef.current.value = ''
                       }}
-                      className="ml-3 text-red-600 hover:text-red-700"
+                      className="ml-3 text-white hover:text-red-700"
                     >
                       Hapus
                     </button>
                   </div>
                 ) : (
                   <div>
-                    <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-600 mb-2">Klik untuk mengganti file Excel kunci jawaban (kosongkan jika tidak ingin mengubah)</p>
+                    <FileText className="w-12 h-12 text-white mx-auto mb-4" />
+                    <p className="text-white mb-2">Klik untuk mengganti file Excel kunci jawaban (kosongkan jika tidak ingin mengubah)</p>
                     <button
                       type="button"
                       onClick={() => kunciInputRef.current?.click()}
-                      className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center mx-auto"
+                      className="bg-gradient-to-br from-blue-300 to-blue-900 hover:from-blue-900 hover:to-blue-300 hover:bg-gradient-to-br text-white px-4 py-2 rounded-lg flex items-center mx-auto"
                     >
                       <Upload className="w-4 h-4 mr-2" />
                       Pilih File Excel Baru
@@ -366,7 +366,7 @@ export default function EditUjian() {
                   </div>
                 )}
               </div>
-              <p className="text-sm text-gray-500 mt-2">
+              <p className="text-sm text-white mt-2">
                 Template: Kolom A = Nomor Soal, Kolom B = Jawaban (A/B/C/D/E)
               </p>
             </div>
@@ -388,14 +388,14 @@ export default function EditUjian() {
             <div className="flex justify-end space-x-4">
               <Link
                 href="/dashboard/guru"
-                className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                className="bg-gradient-to-br from-blue-300 to-blue-900 hover:from-blue-900 hover:to-blue-300 hover:bg-gradient-to-br text-white px-4 py-2 rounded-lg"
               >
                 Batal
               </Link>
               <button
                 type="submit"
                 disabled={isLoading}
-                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                className="bg-gradient-to-br from-blue-300 to-blue-900 hover:from-blue-900 hover:to-blue-300 hover:bg-gradient-to-br text-white px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
               >
                 <Save className="w-4 h-4 mr-2" />
                 {isLoading ? 'Menyimpan...' : 'Simpan Perubahan'}

@@ -327,10 +327,10 @@ const kirimJawaban = async () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-300 to-blue-900 flex items-center justify-center p-4">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Memuat data...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
+          <p className="mt-4 text-white">Memuat data...</p>
         </div>
       </div>
     )
@@ -355,12 +355,12 @@ const kirimJawaban = async () => {
 
   if (!hasStarted) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen bg-gradient-to-br from-blue-300 to-blue-900 flex items-center justify-center p-4">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Awali Dengan Do'a</h1>
+          <h1 className="text-white 2xl font-bold mb-4">Dengan menekan "Mulai Ujian" layar akan masuk Mode penuh</h1>
           <button
             onClick={handleStartExam}
-            className="bg-blue-400 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700"
+            className="bg-gradient-to-br from-blue-300 to-blue-900 hover:from-blue-900 hover:to-blue-300 hover:bg-gradient-to-br text-white px-4 py-2 rounded-lg flex items-center mx-auto"
           >
             Mulai Ujian
           </button>
@@ -371,10 +371,10 @@ const kirimJawaban = async () => {
 
   if (!ujianData || !siswaData) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-300 to-blue-900 flex items-center justify-center p-4">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Memuat data...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
+          <p className="mt-4 text-white">Memuat data...</p>
         </div>
       </div>
     )
@@ -382,13 +382,13 @@ const kirimJawaban = async () => {
 
   if (showResult && result) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-blue-300 to-blue-900 flex items-center justify-center p-4">
         <div className="max-w-md w-full">
-          <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
+          <div className="bg-gradient-to-br from-blue-300 to-blue-900 rounded-2xl shadow-lg p-8 text-center">
             <div className="mb-6">
-              <CheckCircle className="w-16 h-16 text-green-600 mx-auto mb-4" />
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">Ujian Selesai!</h1>
-              <p className="text-gray-600">Hasil ujian Anda:</p>
+              <CheckCircle className="w-16 h-16 text-white mx-auto mb-4" />
+              <h1 className="text-2xl font-bold text-white mb-2">Ujian Selesai!</h1>
+              <p className="text-white">Hasil ujian Anda:</p>
             </div>
 
             <div className="space-y-4 mb-8">
@@ -411,7 +411,7 @@ const kirimJawaban = async () => {
 
             <button
               onClick={handleLogout}
-              className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+              className="bg-gradient-to-br from-blue-300 to-blue-900 hover:from-blue-900 hover:to-blue-300 hover:bg-gradient-to-br text-white px-4 py-2 rounded-lg flex items-center mx-auto"
             >
               Selesai
             </button>
@@ -423,7 +423,7 @@ const kirimJawaban = async () => {
 
   return (
     <div className="bg-gray-50 flex flex-col" data-fullscreen>
-      <header className="bg-blue-400 shadow-sm border-b relative z-20">
+      <header className="bg-gradient-to-br from-blue-300 to-blue-900 text-white px-4 py-2 rounded-lg z-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
@@ -489,7 +489,7 @@ const kirimJawaban = async () => {
           }`}
         >
           <div className="w-96 h-full flex flex-col">
-            <div className="bg-blue-500 text-white p-4 flex items-center justify-between">
+            <div className="bg-gradient-to-br from-blue-300 to-blue-900 text-white p-4 flex items-center justify-between">
               <h3 className="text-lg font-semibold">Lembar Jawaban</h3>
               <button
                 onClick={() => setShowJawaban(false)}
@@ -499,11 +499,11 @@ const kirimJawaban = async () => {
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4">
-              <div className="space-y-3">
+            <div className="flex-1 overflow-y-auto p-2">
+              <div className="space-y-0.5">
                 {Array.from({ length: ujianData.jumlahSoal }, (_, i) => i + 1).map(nomor => (
-                  <div key={nomor} className="bg-white rounded-lg p-3">
-                      <div className="flex items-center gap-2 mb-2">
+                  <div key={nomor} className="bg-white rounded-lg p-2">
+                      <div className="flex items-center gap1 mb-0.5">
                         <span className="font-semibold text-black">Soal {nomor}</span>
                         <span className="text-black font-semibold">=</span>
                         <span
@@ -516,7 +516,7 @@ const kirimJawaban = async () => {
                           {jawaban[nomor] || 'Belum dijawab'}
                         </span>
                       </div>
-                    <div className="grid grid-cols-5 gap-1">
+                    <div className="grid grid-cols-5 gap-0.5">
                       {getPilihanOptions().map(pilihan => (
                         <button
                           key={pilihan}
@@ -539,20 +539,20 @@ const kirimJawaban = async () => {
                 <button
                   onClick={handleSubmit}
                   disabled={isSubmitting || Object.keys(jawaban).length === 0}
-                  className="w-full bg-blue-500 text-white py-3 rounded-lg font-semibold hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                  className="bg-gradient-to-br from-blue-300 to-blue-900 hover:from-blue-900 hover:to-blue-300 hover:bg-gradient-to-br text-white px-4 py-2 rounded-lg flex items-center mx-auto disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                 >
                   <Send className="w-4 h-4 mr-2" />
                   {isSubmitting ? 'Mengirim...' : 'Selesai & Kirim'}
                 </button>
 
-                <div className="mt-3 bg-blue-50 rounded-lg p-3">
-                  <div className="flex justify-between items-center mb-2">
+                <div className="mt-3 bg-gradient-to-br from-blue-300 to-blue-900 rounded-lg p-3">
+                  <div className="flex justify-between items-center mb-1">
                     <span className="text-sm font-medium text-blue-900">Progress</span>
                     <span className="text-sm text-blue-700">
                       {Object.keys(jawaban).length} / {ujianData.jumlahSoal}
                     </span>
                   </div>
-                  <div className="w-full bg-blue-200 rounded-full h-2">
+                  <div className="w-full bg-gradient-to-br from-blue-300 to-blue-900 rounded-full h-2">
                     <div
                       className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                       style={{
