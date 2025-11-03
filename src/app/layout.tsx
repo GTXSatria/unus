@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
-import { useEffect } from "react";
+import ConsoleWarning from "./ConsoleWarning"; // import client component
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,24 +16,15 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://gtxsatria.vercel.app"),
-  title:
-    "GTX Core - Platform Ujian Online & Evaluasi Cerdas untuk Siswa dan Guru",
+  title: "GTX Core - Intelligent Evaluation Platform",
   description:
-    "GTX Core, platform ujian online & evaluasi cerdas untuk siswa dan guru. Kelola ujian, pantau hasil, dan berikan masukan dengan mudah.",
-  keywords: [
-    "Ujian Online",
-    "Evaluasi Siswa",
-    "Guru",
-    "Siswa",
-    "GTX Core",
-    "Pendidikan",
-  ],
+    "Platform evaluasi cerdas untuk guru dan siswa. Kelola ujian, pantau hasil, dan sampaikan masukan dengan mudah.",
+  keywords: ["Intelligent Evaluation", "Ujian Online", "Guru", "Siswa", "GTX Core", "Pendidikan"],
   authors: [{ name: "GTX Core Team" }],
   openGraph: {
-    title:
-      "GTX Core - Platform Ujian Online & Evaluasi Cerdas untuk Siswa dan Guru",
+    title: "GTX Core - Intelligent Evaluation Platform",
     description:
-      "Kelola ujian, pantau hasil, dan sampaikan masukan dengan mudah di GTX Core.",
+      "Platform evaluasi cerdas untuk guru dan siswa. Kelola ujian, pantau hasil, dan sampaikan masukan dengan mudah.",
     url: "https://gtxsatria.vercel.app",
     siteName: "GTX Core",
     images: [
@@ -49,10 +40,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title:
-      "GTX Core - Platform Ujian Online & Evaluasi Cerdas untuk Siswa dan Guru",
-    description:
-      "Kelola ujian, pantau hasil, dan sampaikan masukan dengan mudah di GTX Core",
+    title: "GTX Core - Intelligent Evaluation Platform",
+    description: "Platform evaluasi cerdas untuk guru dan siswa.",
     images: ["/og-image.png"],
   },
 };
@@ -60,20 +49,6 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  // Console warning global
-  useEffect(() => {
-    setTimeout(() => {
-      console.log(
-        "%cHold On!",
-        "font-size:30px;color:red;font-weight:bold;"
-      );
-      console.log(
-        "Jangan paste kode dari orang lain ke console, akun dan data kamu bisa dicuri."
-      );
-      console.log("%c*gak usah rese lah :)*", "font-size:16px;color:blue;");
-    }, 300);
-  }, []);
-
   return (
     <html lang="id" suppressHydrationWarning>
       <body
@@ -81,6 +56,7 @@ export default function RootLayout({
       >
         {children}
         <Toaster />
+        <ConsoleWarning /> {/* panggil client component */}
       </body>
     </html>
   );
