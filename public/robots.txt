@@ -1,14 +1,13 @@
-User-agent: Googlebot
-Allow: /
+# robots.txt untuk GTX Core - Ujian Online Siswa
 
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
+# Semua bot diizinkan meng-crawl halaman penting
 User-agent: *
 Allow: /
+
+# Batasi halaman sensitif / admin (ubah sesuai kebutuhan)
+Disallow: /admin/
+Disallow: /login/
+Disallow: /register/
+
+# Sitemap membantu Google & Bing menemukan semua halaman
+Sitemap: https://gtxsatria.vercel.app/sitemap.xml
