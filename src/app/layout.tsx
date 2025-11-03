@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://gtxsatria.vercel.app"),
-  title: "GTX Core - Intelligent Evaluation Platform",
+  title: "Ujian Online Cerdas | GTX Core untuk Sekolah & Guru",
   description:
     "Platform evaluasi cerdas untuk guru dan siswa. Kelola ujian, pantau hasil, dan sampaikan masukan dengan mudah.",
   keywords: ["Intelligent Evaluation", "Ujian Online", "Guru", "Siswa", "GTX Core", "Pendidikan"],
