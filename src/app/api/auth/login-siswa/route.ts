@@ -96,15 +96,15 @@ export async function POST(request: NextRequest) {
     });
 
     // Set cookie dengan token
-    response.cookies.set({
-      name: 'siswaToken', // Nama cookie berbeda untuk membedakan
-      value: token,       // Nilai token
-      httpOnly: true,     // Penting: Tidak bisa diakses via JavaScript
-      secure: process.env.NODE_ENV === 'production', // Hanya kirim via HTTPS
-      sameSite: 'strict', // Perlindungan dari CSRF
-      maxAge: 60 * 60 * 24, // Umur cookie: 1 hari
-      path: '/',          // Cookie berlaku untuk seluruh situs
-    });
+response.cookies.set({
+  name: 'siswaToken',
+  value: token,
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'lax',
+  maxAge: 60 * 60 * 24,
+  path: '/',
+});
 
     return response;
 
