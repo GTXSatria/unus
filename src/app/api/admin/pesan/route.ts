@@ -103,8 +103,15 @@ export async function GET(request: NextRequest) {
       })
     );
 
-    const allPesan = [...saranList.flat(), ...publicList].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+const allPesan = [
+  ...saranList.flat(),
+  ...publicList
+].sort((a, b) => {
+  const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0
+  const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0
 
+  return dateB - dateA
+})
     return NextResponse.json(allPesan);
 
   } catch (error) {

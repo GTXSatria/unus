@@ -85,8 +85,12 @@ export async function GET(request: NextRequest) {
     )
 
     // Urutkan dari yang terbaru
-    pesanList.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+ pesanList.sort((a, b) => {
+  const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0
+  const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0
 
+  return dateB - dateA
+})
     // --- Hitung pesan yang belum dibaca (Versi Diperbaiki) ---
     // --- Hitung pesan yang belum dibaca (Versi Kompatibel) ---
     let unreadCount = 0;
@@ -104,8 +108,17 @@ export async function GET(request: NextRequest) {
         unreadCount = pesanList.length;
       } else {
         // Jika file ditemukan, ambil waktu pembuatannya
-        const lastReadTime = new Date(files[0].created_at).getTime();
-        unreadCount = pesanList.filter(p => new Date(p.createdAt).getTime() > lastReadTime).length;
+const lastReadTime = files[0].created_at
+  ? new Date(files[0].created_at).getTime()
+  : 0
+
+unreadCount = pesanList.filter(p => {
+  const messageTime = p.createdAt
+    ? new Date(p.createdAt).getTime()
+    : 0
+
+  return messageTime > lastReadTime
+}).length
       }
     } catch (error) {
       // Fallback jika terjadi error tak terduga
