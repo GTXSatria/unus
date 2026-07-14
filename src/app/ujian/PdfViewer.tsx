@@ -1,154 +1,179 @@
 // src/app/ujian/PdfViewer.tsx
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 
 interface PdfViewerProps {
   pdfUrl: string | null
   ujianData: any
 }
 
-export default function PdfViewer({
-  pdfUrl,
-  ujianData
-}: PdfViewerProps) {
-
-  const [blobUrl, setBlobUrl] = useState<string | null>(null)
+export default function PdfViewer({ pdfUrl, ujianData }: PdfViewerProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [numPages, setNumPages] = useState(0)
+  const [pageNumber, setPageNumber] = useState(1)
+  const [pdfjsReady, setPdfjsReady] = useState(false)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const pdfDocRef = useRef<any>(null)
 
+  // ============================================================
+  // Load PDF.js dari CDN via <script> tag
+  // Ini BYPASS webpack — tidak ada import, tidak ada ESM error
+  // ============================================================
   useEffect(() => {
+    if ((window as any).pdfjsLib) {
+      setPdfjsReady(true)
+      return
+    }
 
-    let objectUrl: string | null = null
-    async function loadPdf() {
+    const script = document.createElement('script')
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js'
+    script.async = true
+    script.onload = () => {
+      ;(window as any).pdfjsLib.GlobalWorkerOptions.workerSrc =
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'
+      setPdfjsReady(true)
+    }
+    script.onerror = () => {
+      setError('Gagal memuat PDF reader. Periksa koneksi internet.')
+      setIsLoading(false)
+    }
+    document.head.appendChild(script)
+  }, [])
 
-      if (!pdfUrl) {
-        setError('URL PDF tidak tersedia')
-        setIsLoading(false)
-        return
-      }
+  const renderPage = useCallback(async (pdf: any, pageNum: number) => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    const page = await pdf.getPage(pageNum)
+    const parentWidth = canvas.parentElement?.clientWidth || 595
+    const defaultViewport = page.getViewport({ scale: 1 })
+    const scale = parentWidth / defaultViewport.width
+    const viewport = page.getViewport({ scale })
+
+    // ============================================================
+    // FIX: Skala canvas sesuai device pixel ratio (DPI)
+    // HP biasanya 2x atau 3x DPI
+    // Tanpa ini, text akan buram/pixelated
+    // ============================================================
+    const dpr = window.devicePixelRatio || 1
+    canvas.width = viewport.width * dpr
+    canvas.height = viewport.height * dpr
+    canvas.style.width = `${viewport.width}px`
+    canvas.style.height = `${viewport.height}px`
+    ctx.scale(dpr, dpr)
+
+    await page.render({
+      canvasContext: ctx,
+      viewport
+    }).promise
+  }, [])
+
+  // Load PDF dari API
+  useEffect(() => {
+    if (!pdfjsReady || !pdfUrl) return
+
+    let cancelled = false
+
+    async function loadAndRender() {
       try {
         setIsLoading(true)
         setError(null)
-        const response = await fetch(pdfUrl, {
+
+        const pdfjsLib = (window as any).pdfjsLib
+        const response = await fetch(pdfUrl!, {
           method: 'GET',
           credentials: 'include',
           cache: 'no-store'
         })
+
         if (!response.ok) {
-          if (response.status === 401) {
-            throw new Error(
-              'Sesi siswa habis. Silakan login ulang.'
-            )
-          }
-          throw new Error(
-            'Gagal mengambil file PDF'
-          )
+          if (response.status === 401) throw new Error('Sesi siswa habis. Silakan login ulang.')
+          throw new Error('Gagal mengambil file PDF')
         }
-        const blob = await response.blob()
-        if (blob.type !== 'application/pdf') {
-          throw new Error(
-            'File yang diterima bukan PDF'
-          )
-        }
-        objectUrl = URL.createObjectURL(blob)
-        setBlobUrl(
-          `${objectUrl}#toolbar=0&navpanes=0&scrollbar=1`
-        )
+
+        const arrayBuffer = await response.arrayBuffer()
+        if (cancelled) return
+
+        const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise
+        pdfDocRef.current = pdf
+        setNumPages(pdf.numPages)
+        setPageNumber(1)
+
+        if (cancelled) return
+
+        await renderPage(pdf, 1)
         setIsLoading(false)
       } catch (err: any) {
-        console.error(
-          'PDF LOAD ERROR:',
-          err
-        )
-        setError(
-          err.message ||
-          'PDF gagal dibuka'
-        )
-        setIsLoading(false)
+        if (!cancelled) {
+          setError(err.message || 'PDF gagal dibuka')
+          setIsLoading(false)
+        }
       }
     }
-    loadPdf()
-    return () => {
 
-      if (objectUrl) {
-        URL.revokeObjectURL(objectUrl)
-      }
+    loadAndRender()
+    return () => { cancelled = true }
+  }, [pdfjsReady, pdfUrl, renderPage])
 
-    }
-  }, [pdfUrl])
+  // Navigasi halaman
+  useEffect(() => {
+    if (!pdfDocRef.current || numPages === 0) return
+    renderPage(pdfDocRef.current, pageNumber)
+  }, [pageNumber, numPages, renderPage])
 
   return (
-    <div className="flex-1 bg-gray-100 relative w-full h-full">
-      {
-        isLoading && (
-          <div className="
-            absolute inset-0
-            flex items-center justify-center
-            bg-white z-10
-          ">
-            <div className="text-center">
-              <div className="
-                animate-spin
-                rounded-full
-                h-12
-                w-12
-                border-b-2
-                border-blue-600
-                mx-auto
-                mb-4
-              " />
-
-              <p>
-                Memuat soal...
-              </p>
-
-            </div>
-
+    <div className="flex-1 bg-gray-100 relative w-full h-full flex flex-col">
+      {/* Loading */}
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-white z-10">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4" />
+            <p>Memuat soal...</p>
           </div>
-        )
-      }
-      {
-        error && (
+        </div>
+      )}
 
-          <div className="
-            absolute inset-0
-            flex items-center justify-center
-            bg-white z-20
-          ">
-            <div className="text-center p-6">
-
-              <h2 className="
-                text-red-600
-                font-bold
-                text-lg
-                mb-3
-              ">
-                Gagal Membuka Soal
-              </h2>
-              <p className="text-gray-600">
-                {error}
-              </p>
-            </div>
+      {/* Error */}
+      {error && (
+        <div className="absolute inset-0 flex items-center justify-center bg-white z-20 p-4">
+          <div className="text-center">
+            <h2 className="text-red-600 font-bold text-lg mb-3">Gagal Membuka Soal</h2>
+            <p className="text-gray-600">{error}</p>
           </div>
+        </div>
+      )}
 
-        )
-      }
-      {
-        blobUrl && (
+      {/* Canvas PDF */}
+      <div className="flex-1 min-h-0 h-0 overflow-auto flex flex-col items-start p-2 sm:p-4 bg-gray-200">
+      <canvas ref={canvasRef} className="shadow-lg bg-white" />
+      </div>
 
-          <iframe
-            src={blobUrl}
-            className="
-              w-full
-              h-full
-              border-0
-            "
-            title="Soal Ujian PDF"
-          />
-
-        )
-      }
+      {/* Navigasi */}
+      {numPages > 1 && (
+        <div className="sticky bottom-0 left-0 right-0 bg-white shadow-md p-3 mt-4 flex justify-center items-center gap-4 z-30 rounded-t-lg">
+          <button
+            onClick={() => setPageNumber(prev => Math.max(prev - 1, 1))}
+            disabled={pageNumber <= 1}
+            className="px-4 py-2 bg-blue-600 text-white rounded disabled:bg-gray-400"
+          >
+            Sebelumnya
+          </button>
+          <span className="font-medium text-gray-700">
+            Hal {pageNumber} / {numPages}
+          </span>
+          <button
+            onClick={() => setPageNumber(prev => Math.min(prev + 1, numPages))}
+            disabled={pageNumber >= numPages}
+            className="px-4 py-2 bg-blue-600 text-white rounded disabled:bg-gray-400"
+          >
+            Berikutnya
+          </button>
+        </div>
+      )}
     </div>
   )
 }

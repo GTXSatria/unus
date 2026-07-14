@@ -3,42 +3,42 @@
 
   <!-- Homepage -->
   <url>
-    <loc>https://gtxsatria.vercel.app/</loc>
+    <loc>https://ujianpintar.vercel.app/</loc>
     <lastmod>2025-11-03</lastmod>
     <priority>1.0</priority>
   </url>
 
   <!-- Halaman fitur ujian -->
   <url>
-    <loc>https://gtxsatria.vercel.app/fitur-ujian</loc>
+    <loc>https://ujianpintar.vercel.app/fitur-ujian</loc>
     <lastmod>2025-11-03</lastmod>
     <priority>0.9</priority>
   </url>
 
   <!-- Halaman dashboard guru -->
   <url>
-    <loc>https://gtxsatria.vercel.app/dashboard-guru</loc>
+    <loc>https://ujianpintar.vercel.app/dashboard-guru</loc>
     <lastmod>2025-11-03</lastmod>
     <priority>0.8</priority>
   </url>
 
   <!-- Halaman dashboard siswa -->
   <url>
-    <loc>https://gtxsatria.vercel.app/dashboard-siswa</loc>
+    <loc>https://ujianpintar.vercel.app/dashboard-siswa</loc>
     <lastmod>2025-11-03</lastmod>
     <priority>0.8</priority>
   </url>
 
   <!-- Halaman login -->
   <url>
-    <loc>https://gtxsatria.vercel.app/login</loc>
+    <loc>https://ujianpintar.vercel.app/login</loc>
     <lastmod>2025-11-03</lastmod>
     <priority>0.5</priority>
   </url>
 
   <!-- Halaman register -->
   <url>
-    <loc>https://gtxsatria.vercel.app/register</loc>
+    <loc>https://ujianpintar.vercel.app/register</loc>
     <lastmod>2025-11-03</lastmod>
     <priority>0.5</priority>
   </url>

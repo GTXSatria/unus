@@ -422,7 +422,7 @@ const kirimJawaban = async () => {
   }
 
   return (
-    <div className="bg-gray-50 flex flex-col" data-fullscreen>
+    <div className="bg-gray-50 flex flex-col h-screen" data-fullscreen>
       <header className="bg-gradient-to-br from-blue-300 to-blue-900 text-white px-4 py-2 rounded-lg z-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -484,11 +484,11 @@ const kirimJawaban = async () => {
         />
 
         <div
-          className={`fixed top-16 right-0 h-full bg-white shadow-2xl transition-transform duration-300 ease-in-out z-30 ${
+          className={`fixed top-16 right-0 bottom-0 left-0 sm:left-auto bg-white shadow-2xl transition-transform duration-300 ease-in-out z-30 ${
             showJawaban ? 'translate-x-0' : 'translate-x-full'
           }`}
         >
-          <div className="w-96 h-full flex flex-col">
+          <div className="w-full sm:w-96 h-full flex flex-col">
             <div className="bg-gradient-to-br from-blue-300 to-blue-900 text-white p-4 flex items-center justify-between">
               <h3 className="text-lg font-semibold">Lembar Jawaban</h3>
               <button

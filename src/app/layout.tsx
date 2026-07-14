@@ -1,8 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+// @ts-ignore: CSS module declarations are handled by the build setup
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
-import ConsoleWarning from "./ConsoleWarning"; // import client component
+import ConsoleWarning from "./ConsoleWarning";
+import InstallPrompt from "@/components/InstallPrompt";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,8 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://gtxsatria.vercel.app"),
-  title: "Ujian Online Cerdas | GTX Core untuk Sekolah & Guru",
+  metadataBase: new URL("https://ujianpintar.vercel.app"),
+  title: "Ujian Pintar",
   description:
     "Platform evaluasi cerdas untuk guru dan siswa. Kelola ujian, pantau hasil, dan sampaikan masukan dengan mudah.",
   keywords: ["Intelligent Evaluation", "Ujian Online", "Guru", "Siswa", "GTX Core", "Pendidikan"],
@@ -25,7 +27,7 @@ export const metadata: Metadata = {
     title: "GTX Core - Intelligent Evaluation Platform",
     description:
       "Platform evaluasi cerdas untuk guru dan siswa. Kelola ujian, pantau hasil, dan sampaikan masukan dengan mudah.",
-    url: "https://gtxsatria.vercel.app",
+    url: "https://ujianpintar.vercel.app",
     siteName: "GTX Core",
     images: [
       {
@@ -44,6 +46,20 @@ export const metadata: Metadata = {
     description: "Platform evaluasi cerdas untuk guru dan siswa.",
     images: ["/og-image.png"],
   },
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Ujian Pintar",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#1e40af",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
@@ -51,12 +67,29 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="id" suppressHydrationWarning>
+      <head>
+        <link rel="apple-touch-icon" href="/logo.png" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >
         {children}
         <Toaster />
-        <ConsoleWarning /> {/* panggil client component */}
+        <ConsoleWarning />
+        <InstallPrompt />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                  navigator.serviceWorker.register('/sw.js').catch(function(err) {
+                    console.log('SW register failed:', err);
+                  });
+                });
+              }
+            `
+          }}
+        />
       </body>
     </html>
   );
