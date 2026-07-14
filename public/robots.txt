@@ -1,0 +1,13 @@
+# robots.txt untuk GTX Core - Ujian Online Siswa
+
+# Semua bot diizinkan meng-crawl halaman penting
+User-agent: *
+Allow: /
+
+# Batasi halaman sensitif / admin (ubah sesuai kebutuhan)
+Disallow: /admin/
+Disallow: /login/
+Disallow: /register/
+
+# Sitemap membantu Google & Bing menemukan semua halaman
+Sitemap: https://gtxsatria.vercel.app/sitemap.xml
