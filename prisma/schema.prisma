@@ -63,18 +63,19 @@ model Ujian {
 }
 
 model HasilUjian {
-  id          String   @id @default(cuid())
-  ujianId     String
-  siswaId     String
-  jawaban     String   // JSON format
-  skor        Int
-  benar       Int
-  salah       Int
-  waktuMulai  DateTime
-  waktuSelesai DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id             String   @id @default(cuid())
+  ujianId        String
+  siswaId        String
+  jawaban        String
+  skor           Int
+  benar          Int
+  salah          Int
+  appSwitchCount Int      @default(0)   // ← tambahkan ini
+  waktuMulai     DateTime
+  waktuSelesai   DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
   
-  ujian       Ujian    @relation(fields: [ujianId], references: [id], onDelete: Cascade)
-  siswa       Siswa    @relation(fields: [siswaId], references: [id])
+  ujian          Ujian    @relation(fields: [ujianId], references: [id], onDelete: Cascade)
+  siswa          Siswa    @relation(fields: [siswaId], references: [id])
 }

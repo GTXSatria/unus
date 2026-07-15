@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { jawaban } = await request.json()
+    const { jawaban, appSwitchCount } = await request.json()
 
     if (!jawaban) {
       return NextResponse.json(
@@ -109,12 +109,13 @@ export async function POST(request: NextRequest) {
     const hasil = await db.hasilUjian.update({
       where: { id: existingHasil.id },
       data: {
-        jawaban: JSON.stringify(jawaban),
-        skor,
-        benar,
-        salah,
-        waktuSelesai: new Date()
-      }
+              jawaban: JSON.stringify(jawaban),
+              skor,
+              benar,
+              salah,
+              appSwitchCount: appSwitchCount ?? 0,
+              waktuSelesai: new Date()
+            }
     })
 
     return NextResponse.json({

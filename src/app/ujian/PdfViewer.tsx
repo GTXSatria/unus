@@ -6,9 +6,10 @@ import { useEffect, useState, useRef, useCallback } from 'react'
 interface PdfViewerProps {
   pdfUrl: string | null
   ujianData: any
+  siswaData?: { nama: string; nisn: string; kelas: string } | null
 }
 
-export default function PdfViewer({ pdfUrl, ujianData }: PdfViewerProps) {
+export default function PdfViewer({ pdfUrl, ujianData, siswaData }: PdfViewerProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [numPages, setNumPages] = useState(0)
@@ -17,10 +18,6 @@ export default function PdfViewer({ pdfUrl, ujianData }: PdfViewerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const pdfDocRef = useRef<any>(null)
 
-  // ============================================================
-  // Load PDF.js dari CDN via <script> tag
-  // Ini BYPASS webpack — tidak ada import, tidak ada ESM error
-  // ============================================================
   useEffect(() => {
     if ((window as any).pdfjsLib) {
       setPdfjsReady(true)
@@ -54,11 +51,6 @@ export default function PdfViewer({ pdfUrl, ujianData }: PdfViewerProps) {
     const scale = parentWidth / defaultViewport.width
     const viewport = page.getViewport({ scale })
 
-    // ============================================================
-    // FIX: Skala canvas sesuai device pixel ratio (DPI)
-    // HP biasanya 2x atau 3x DPI
-    // Tanpa ini, text akan buram/pixelated
-    // ============================================================
     const dpr = window.devicePixelRatio || 1
     canvas.width = viewport.width * dpr
     canvas.height = viewport.height * dpr
@@ -70,9 +62,34 @@ export default function PdfViewer({ pdfUrl, ujianData }: PdfViewerProps) {
       canvasContext: ctx,
       viewport
     }).promise
-  }, [])
 
-  // Load PDF dari API
+    // ============================================================
+    // WATERMARK: Nama + NISN + Kelas siswa
+    // Diagonal berulang, semi-transparan merah
+    // ============================================================
+    if (siswaData?.nama) {
+      ctx.save()
+      ctx.font = `bold ${Math.max(12, 14 * scale)}px Arial`
+      ctx.fillStyle = 'rgba(200, 0, 0, 0.1)'
+      ctx.textAlign = 'center'
+
+      const text = `${siswaData.nama} — ${siswaData.nisn} — ${siswaData.kelas}`
+      const textWidth = ctx.measureText(text).width
+      const stepX = textWidth + 60
+      const stepY = Math.max(80, 100 * scale)
+
+      ctx.translate(viewport.width / 2, viewport.height / 2)
+      ctx.rotate((-25 * Math.PI) / 180)
+
+      for (let y = -viewport.height * 1.5; y < viewport.height * 1.5; y += stepY) {
+        for (let x = -viewport.width * 1.5; x < viewport.width * 1.5; x += stepX) {
+          ctx.fillText(text, x, y)
+        }
+      }
+      ctx.restore()
+    }
+  }, [siswaData])
+
   useEffect(() => {
     if (!pdfjsReady || !pdfUrl) return
 
@@ -119,7 +136,6 @@ export default function PdfViewer({ pdfUrl, ujianData }: PdfViewerProps) {
     return () => { cancelled = true }
   }, [pdfjsReady, pdfUrl, renderPage])
 
-  // Navigasi halaman
   useEffect(() => {
     if (!pdfDocRef.current || numPages === 0) return
     renderPage(pdfDocRef.current, pageNumber)
@@ -127,7 +143,6 @@ export default function PdfViewer({ pdfUrl, ujianData }: PdfViewerProps) {
 
   return (
     <div className="flex-1 bg-gray-100 relative w-full h-full flex flex-col">
-      {/* Loading */}
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-white z-10">
           <div className="text-center">
@@ -137,7 +152,6 @@ export default function PdfViewer({ pdfUrl, ujianData }: PdfViewerProps) {
         </div>
       )}
 
-      {/* Error */}
       {error && (
         <div className="absolute inset-0 flex items-center justify-center bg-white z-20 p-4">
           <div className="text-center">
@@ -147,12 +161,13 @@ export default function PdfViewer({ pdfUrl, ujianData }: PdfViewerProps) {
         </div>
       )}
 
-      {/* Canvas PDF */}
       <div className="flex-1 min-h-0 h-0 overflow-auto flex flex-col items-start p-2 sm:p-4 bg-gray-200">
-      <canvas ref={canvasRef} className="shadow-lg bg-white" />
+        <canvas
+          ref={canvasRef}
+          className="shadow-lg bg-white max-w-full h-auto"
+        />
       </div>
 
-      {/* Navigasi */}
       {numPages > 1 && (
         <div className="sticky bottom-0 left-0 right-0 bg-white shadow-md p-3 mt-4 flex justify-center items-center gap-4 z-30 rounded-t-lg">
           <button

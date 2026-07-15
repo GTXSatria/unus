@@ -1,4 +1,4 @@
-const CACHE_NAME = 'upin-v.0.1'
+const CACHE_NAME = 'upin-v.0.2'
 const URLS_TO_CACHE = [
   '/',
   '/login/siswa',

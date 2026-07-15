@@ -59,6 +59,7 @@ interface HasilUjian {
   skor: number
   benar: number
   salah: number
+  appSwitchCount: number
   createdAt: string
 }
 
@@ -966,6 +967,9 @@ const handleLogout = async () => {
                           <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                             Salah
                           </th>
+                          <th className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                            Catatan
+                          </th>
                           <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                             Aksi
                           </th>
@@ -1001,6 +1005,16 @@ const handleLogout = async () => {
                               <span className="text-red-600 font-medium">
                                 {hasil.salah}
                               </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-center">
+                              {hasil.appSwitchCount > 0 ? (
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">
+                                  <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                                  {hasil.appSwitchCount}x keluar
+                                </span>
+                              ) : (
+                                <span className="text-xs text-gray-400">Aman</span>
+                              )}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                               <button

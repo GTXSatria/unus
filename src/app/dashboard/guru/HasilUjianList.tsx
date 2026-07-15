@@ -9,6 +9,7 @@ interface HasilUjian {
   skor: number
   benar: number
   salah: number
+  appSwitchCount: number
   createdAt: string
   ujian: {
     id: string
@@ -189,7 +190,7 @@ export default function HasilUjianList() {
     // console.log('=== EXPORTING TO CSV ===')
     
     // Create CSV content
-    const headers = ['Nama Siswa', 'NISN', 'Kelas', 'Ujian', 'Skor', 'Benar', 'Salah', 'Tanggal']
+    const headers = ['Nama Siswa', 'NISN', 'Kelas', 'Ujian', 'Skor', 'Benar', 'Salah', 'Keluar App', 'Tanggal']
     const rows = hasilUjian.map(item => [
       item.siswa.nama,
       item.siswa.nisn,
@@ -198,6 +199,7 @@ export default function HasilUjianList() {
       item.skor.toString(),
       item.benar.toString(),
       item.salah.toString(),
+      item.appSwitchCount.toString(),
       new Date(item.createdAt).toLocaleDateString()
     ])
     
@@ -326,6 +328,7 @@ return (
                 <th className="px-4 py-2 text-center">Benar</th>
                 <th className="px-4 py-2 text-center">Salah</th>
                 <th className="px-4 py-2 text-left">Tanggal</th>
+                <th className="px-4 py-2 text-center">Catatan</th>
                 <th className="px-4 py-2 text-center">Aksi</th>
               </tr>
             </thead>
@@ -345,6 +348,16 @@ return (
                   <td className="px-4 py-2 border-b text-center">{hasil.salah}</td>
                   <td className="px-4 py-2 border-b">
                     {new Date(hasil.createdAt).toLocaleDateString()}
+                  </td>
+                  <td className="px-4 py-2 border-b text-center">
+                    {hasil.appSwitchCount > 0 ? (
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">
+                        <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                        {hasil.appSwitchCount}x keluar
+                      </span>
+                    ) : (
+                      <span className="text-xs text-gray-400">Aman</span>
+                    )}
                   </td>
                   <td className="px-4 py-2 border-b text-center">
                     <button 

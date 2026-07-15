@@ -60,6 +60,7 @@ export default function UjianPage() {
   const [startTime, setStartTime] = useState<Date | null>(null)
   const [soalBelumDijawab, setSoalBelumDijawab] = useState<number[]>([]);
   const [showKonfirmasi, setShowKonfirmasi] = useState(false);
+  const [appSwitchCount, setAppSwitchCount] = useState(0);
   const router = useRouter()
   const timerRef = useRef<NodeJS.Timeout | null>(null)
   const isClient = typeof window !== 'undefined'
@@ -180,9 +181,17 @@ export default function UjianPage() {
       }
     }
 
+    let hiddenTime: number | null = null
+
     const handleVisibilityChange = () => {
-      if (document.hidden) {
-        console.warn('Peringatan: Siswa mencoba mengganti tab atau meminimalkan jendela.')
+      if (document.visibilityState === 'hidden') {
+        hiddenTime = Date.now()
+      } else if (hiddenTime !== null) {
+        const duration = Date.now() - hiddenTime
+        if (duration > 4000) {
+          setAppSwitchCount((prev) => prev + 1)
+        }
+        hiddenTime = null
       }
     }
 
@@ -284,7 +293,7 @@ const kirimJawaban = async () => {
     const response = await fetch("/api/ujian/submit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ jawaban }),
+      body: JSON.stringify({ jawaban, appSwitchCount }),
     });
 
     const data = await response.json();
@@ -478,10 +487,11 @@ const kirimJawaban = async () => {
       </header>
 
       <div className="flex-1 flex relative">
-        <PdfViewer
-          pdfUrl={pdfUrl}
-          ujianData={ujianData}
-        />
+      <PdfViewer
+        pdfUrl={pdfUrl}
+        ujianData={ujianData}
+        siswaData={siswaData}
+      />
 
         <div
           className={`fixed top-16 right-0 bottom-0 left-0 sm:left-auto bg-white shadow-2xl transition-transform duration-300 ease-in-out z-30 ${
