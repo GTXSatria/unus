@@ -583,7 +583,7 @@ const handleLogout = async () => {
               { id: 'kunci', label: 'Kunci Jawaban', icon: FileText },
               { id: 'siswa', label: 'Data Siswa', icon: Users },
               { id: 'hasil', label: 'Hasil Ujian', icon: FileText },
-              { id: 'donasi', label: 'Donasi'}
+              { id: 'donasi', label: '❤️Donasi'}
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -945,7 +945,7 @@ const handleLogout = async () => {
                 </div>
                 {/* Detail Hasil per Kelas */}
                 {expandedKelas[kelas] && (
-                  <div className="mt-2 bg-white rounded-lg shadow overflow-hidden">
+                  <div className="mt-2 bg-white rounded-lg shadow overflow-x-auto">
                     <table className="min-w-full divide-y divide-blue-500">
                       <thead className="bg-gradient-to-br from-blue-300 to-blue-900 hover:from-blue-900 hover:to-blue-300 hover:bg-gradient-to-br text-white px-4 py-2 rounded-lg">
                         <tr>
@@ -1055,72 +1055,69 @@ const handleLogout = async () => {
       ❤️ Jazakumullah khoiron katsiron
     </h2>
     <p className="text-sm text-gray-200 text-center mb-6">
-      Terima kasih telah mendukung pengembangan aplikasi CBT ini 🙏
+      Terima kasih telah mendukung pengembangan aplikasi Ujian Pintar ini 🙏
     </p>
 
-    <div className="space-y-5 max-w-md mx-auto">
+    <div className="space-y-3 max-w-md mx-auto">
 
       {/* BANK BJB */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 shadow-sm flex items-center justify-between">
-        <div className="flex items-center space-x-3">
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 shadow-sm flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0">
           <img
             src="/images/bank-bjb.webp"
-            alt="Logo Bank BJB"
-            className="h-7 w-auto"
+            alt="Bank BJB"
+            className="h-8 w-16 object-contain flex-shrink-0"
           />
-          <div>
-            <p className="text-blue-500 font-medium">0142842068100</p>
+          <div className="min-w-0">
+            <p className="text-blue-500 font-medium text-sm">0142842068100</p>
             <p className="text-xs text-gray-600">A.n: Ade Susandi, S.Pd</p>
           </div>
         </div>
         <button
           onClick={() => handleCopy("0142842068100")}
-          className="text-blue-700 hover:text-blue-900"
+          className="text-blue-700 hover:text-blue-900 flex-shrink-0"
         >
           <Copy className="w-5 h-5" />
         </button>
       </div>
 
       {/* BANK BRI */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 shadow-sm flex items-center justify-between">
-        <div className="flex items-center space-x-3">
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 shadow-sm flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0">
           <img
             src="/images/bank-bri.webp"
-            alt="Logo Bank BRI"
-            className="h-7 w-auto"
+            alt="Bank BRI"
+            className="h-8 w-16 object-contain flex-shrink-0"
           />
-          <div>
-            <p className="text-blue-500 font-medium">445601016460536</p>
+          <div className="min-w-0">
+            <p className="text-blue-500 font-medium text-sm">445601016460536</p>
             <p className="text-xs text-gray-600">A.n: Ade Susandi, S.Pd</p>
           </div>
         </div>
         <button
           onClick={() => handleCopy("445601016460536")}
-          className="text-blue-700 hover:text-blue-900"
+          className="text-blue-700 hover:text-blue-900 flex-shrink-0"
         >
           <Copy className="w-5 h-5" />
         </button>
       </div>
 
-      {/* WALLET / CRYPTO */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 shadow-sm flex items-center justify-between">
-        <div className="flex items-center space-x-3 w-full">
+      {/* DANA */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 shadow-sm flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0">
           <img
-            src="/images/wallet.webp"
-            alt="Logo e-wallet."
-            className="h-7 w-auto"
+            src="/images/dana.webp"
+            alt="Dana"
+            className="h-8 w-16 object-contain flex-shrink-0"
           />
-          <div className="flex-1">
-            <p className="font-semibold text-blue-800">e-wallet</p>
-            <p className="text-blue-500 font-medium break-all">
-              0x4d9b5f58f02aaaf71d4a978f07cd21572e082966
-            </p>
-            <p className="text-xs text-gray-600">A.n: Ksdoel</p>
+          <div className="min-w-0">
+            <p className="text-blue-500 font-medium text-sm">083895603395</p>
+            <p className="text-xs text-gray-600">A.n: Ade Susandi, S.Pd</p>
           </div>
         </div>
         <button
-          onClick={() => handleCopy("0x4d9b5f58f02aaaf71d4a978f07cd21572e082966")}
-          className="text-blue-700 hover:text-blue-900"
+          onClick={() => handleCopy("083895603395")}
+          className="text-blue-700 hover:text-blue-900 flex-shrink-0"
         >
           <Copy className="w-5 h-5" />
         </button>
