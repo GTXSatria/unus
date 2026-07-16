@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     siteName: "GTX Core",
     images: [
       {
-        url: "/og-image.png",
+        url: "/ssc2.png",
         width: 1200,
         height: 630,
         alt: "GTX Core - Intelligent Evaluation Platform",
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "GTX Core - Intelligent Evaluation Platform",
     description: "Platform evaluasi cerdas untuk guru dan siswa.",
-    images: ["/og-image.png"],
+    images: ["/ssc2.png"],
   },
   manifest: "/manifest.json",
   appleWebApp: {

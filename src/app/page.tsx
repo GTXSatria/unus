@@ -13,11 +13,11 @@ export default function Home() {
     <div className="flex justify-center mb-1">
     <div className="flex flex-col items-center text-center">
     <Image
-      src="/logo.svg"
+      src="/ssc1.png"
       alt="GTXEduKids - Platform Ujian Online"
-      width={300}   // lebar logo (px)
+      width={250}   // lebar logo (px)
       height={200}  // tinggi logo (px)
-      className="w-[300px] h-[200px] object-contain"
+      className="w-[250px] h-[200px] object-contain"
       priority // <-- TAMBAHKAN PROPS INI
     />
 <p className="text-center text-2xl md:text-3xl font-semibold leading-snug">

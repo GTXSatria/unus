@@ -432,10 +432,10 @@ const handleLogout = async () => {
           <div className="flex justify-between items-center h-16">
     <div className="flex flex-col items-center text-center">
       <Image
-        src="/logo.svg"
-        alt="GTX Core Logo"
-        width={140}
-        height={100}
+        src="/ssc.png"
+        alt="ssc Logo"
+        width={90}
+        height={50}
         className="object-contain"
         priority
       />

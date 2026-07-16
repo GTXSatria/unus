@@ -1,9 +1,7 @@
-const CACHE_NAME = 'upin-v.0.3'
+const CACHE_NAME = 'upin-v.0.1.1'
 const URLS_TO_CACHE = [
   '/',
-  '/login/siswa',
-  '/logo.png',
-  '/logo.svg'
+  '/ssc2.png',
 ]
 
 self.addEventListener('install', (event) => {

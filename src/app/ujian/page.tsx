@@ -486,7 +486,7 @@ const kirimJawaban = async () => {
         </div>
       </header>
 
-      <div className="flex-1 flex relative">
+      <div className="flex-1 min-h-0 flex relative overflow-hidden">
       <PdfViewer
         pdfUrl={pdfUrl}
         ujianData={ujianData}
