@@ -147,7 +147,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Daftar Pesan */}
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="bg-white rounded-lg shadow overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gradient-to-br from-blue-300 to-blue-900">
               <tr>

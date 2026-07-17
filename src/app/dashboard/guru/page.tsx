@@ -23,7 +23,10 @@ import {
   HelpCircle,
   X,
   Mail,
-  Send
+  Send,
+  UserPlus,
+  Save,
+  Menu
 } from 'lucide-react'
 
 interface Ujian {
@@ -80,6 +83,17 @@ export default function DashboardGuru() {
   const [guruData, setGuruData] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
+
+  // === State untuk Tambah Siswa ===
+  const [tambahKelas, setTambahKelas] = useState<string>('')
+  const [showTambahForm, setShowTambahForm] = useState(false)
+  const [tambahRows, setTambahRows] = useState<Array<{ nisn: string; nama: string }>>([
+    { nisn: '', nama: '' }
+  ])
+  const [isSavingSiswa, setIsSavingSiswa] = useState(false)
+  const [tambahError, setTambahError] = useState('')
+  const [tambahSuccess, setTambahSuccess] = useState('')
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -364,6 +378,72 @@ const handleLogout = async () => {
     }
   }
 
+  // === Handler Tambah Siswa ===
+  const openTambahForm = (kelas: string) => {
+    setTambahKelas(kelas)
+    setTambahRows([{ nisn: '', nama: '' }])
+    setTambahError('')
+    setTambahSuccess('')
+    setShowTambahForm(true)
+  }
+
+  const updateTambahRow = (index: number, field: 'nisn' | 'nama', value: string) => {
+    setTambahRows(prev => {
+      const updated = [...prev]
+      updated[index] = { ...updated[index], [field]: value }
+      return updated
+    })
+  }
+
+  const addTambahRow = () => {
+    setTambahRows(prev => [...prev, { nisn: '', nama: '' }])
+  }
+
+  const removeTambahRow = (index: number) => {
+    if (tambahRows.length <= 1) return
+    setTambahRows(prev => prev.filter((_, i) => i !== index))
+  }
+
+  const handleTambahSiswa = async () => {
+    const validRows = tambahRows.filter(r => r.nisn.trim() && r.nama.trim())
+    if (validRows.length === 0) {
+      setTambahError('Isi minimal 1 data siswa (NISN dan Nama)')
+      return
+    }
+
+    setIsSavingSiswa(true)
+    setTambahError('')
+    setTambahSuccess('')
+
+    try {
+      const response = await fetch('/api/siswa', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          siswa: validRows.map(r => ({
+            nisn: r.nisn.trim(),
+            nama: r.nama.trim(),
+            kelas: tambahKelas
+          }))
+        })
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setTambahSuccess(data.message)
+        fetchData()
+        setTimeout(() => setShowTambahForm(false), 1500)
+      } else {
+        setTambahError(data.message || 'Gagal menambahkan siswa')
+      }
+    } catch (error) {
+      setTambahError('Terjadi kesalahan. Silakan coba lagi.')
+    } finally {
+      setIsSavingSiswa(false)
+    }
+  }
+
   const toggleKelas = (kelas: string) => {
     setExpandedKelas(prev => ({
       ...prev,
@@ -423,26 +503,50 @@ const handleLogout = async () => {
     .catch(() => alert("Gagal menyalin nomor rekening"));
 };
 
+  const downloadKunciTemplate = () => {
+    const templateContent = [
+      ['Nomor', 'Jawaban'],
+      ['1', 'A'],
+      ['2', 'A-C-E'],
+      ['3', 'B']
+    ];
+  
+    const csvContent = templateContent.map(row => row.join(',')).join('\n');
+  
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'template_kunci_jawaban.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="min-h-screen bg-page-gradient">
       {/* Header */}
       <header className="bg-brand-header">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-    <div className="flex flex-col items-center text-center">
-      <Image
-        src="/ssc.png"
-        alt="ssc Logo"
-        width={90}
-        height={50}
-        className="object-contain"
-        priority
-      />
-      <p className="text-sm text-brand-header m-0 p-0 leading-tight">
-        Dashboard Guru
-      </p>
-    </div>
-            <div className="flex items-center space-x-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-14 md:h-16">
+            {/* Logo */}
+            <div className="flex items-center gap-2">
+              <Image
+                src="/ssc.png"
+                alt="ssc Logo"
+                width={60}
+                height={34}
+                className="object-contain"
+                priority
+              />
+              <p className="text-sm text-brand-header font-bold m-0 p-0 leading-tight hidden sm:block">
+                Dashboard Guru
+              </p>
+            </div>
+
+            {/* Desktop menu (hidden on mobile) */}
+            <div className="hidden md:flex items-center space-x-4">
                 {guruData?.role === 'ADMIN' && (
                 <Link
                 href="/dashboard/admin"
@@ -452,7 +556,7 @@ const handleLogout = async () => {
                 </Link>
                 )}
 
-{/* --- DROPDOWN PESAN --- */}
+{/* --- DROPDOWN PESAN (Desktop) --- */}
 <div className="relative">
   <button
     onClick={() => setIsPesanOpen(!isPesanOpen)}
@@ -465,7 +569,7 @@ const handleLogout = async () => {
   </button>
 
   {isPesanOpen && (
-    <div className="absolute right-0 mt-0 w-[600px] bg-brand-header rounded-lg shadow-lg border border-brand-surface z-50">
+    <div className="absolute right-0 mt-0 w-72 sm:w-96 lg:w-[600px] bg-brand-header rounded-lg shadow-lg border border-brand-surface z-50">
       {/* Header Dropdown */}
       <div className="p-3 border-b border-brand-surface flex justify-between items-center">
         <h3 className="text-sm font-semibold text-brand-on-dark">Pesan Masuk</h3>
@@ -490,56 +594,44 @@ const handleLogout = async () => {
       {/* Tabel Pesan */}
       <div className="max-h-80 overflow-y-auto">
         {pesanList.length > 0 ? (
-          <table className="min-w-full divide-y divide-brand-surface">
-            <thead className="bg-brand-table-header">
-              <tr>
-                <th className="px-4 py-2 text-left text-xs font-medium text-brand-header uppercase tracking-wider">Dari</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-brand-header uppercase tracking-wider">Judul</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-brand-header uppercase tracking-wider">Isi Pesan</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-brand-header uppercase tracking-wider">Tanggal</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-brand-surface">
-              {pesanList.map((pesan) => (
-                <tr key={pesan.id}>
-                  <td className="px-4 py-2 whitespace-nowrap">
-                    <p className="text-xs font-medium text-brand-link">{pesan.dari}</p>
-                  </td>
-                  <td className="px-4 py-2 whitespace-nowrap">
-                    <p className="text-xs text-brand-muted">{pesan.judul}</p>
-                  </td>
-                  <td className="px-4 py-2 text-sm text-brand-body">
-                    {expandedPesanId === pesan.id ? (
-                      <>
-                        <p>{pesan.isi}</p>
-                        <button
-                          onClick={() => setExpandedPesanId(null)}
-                          className="text-brand-link hover:text-brand-link-hover text-xs font-medium"
-                        >
-                          Tutup
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <p className="line-clamp-2">{pesan.isi}</p>
-                        {pesan.isi.length > 150 && (
-                          <button
-                            onClick={() => setExpandedPesanId(pesan.id)}
-                            className="text-brand-link hover:text-brand-link-hover text-xs font-medium"
-                          >
-                            Lihat Selengkapnya
-                          </button>
-                        )}
-                      </>
-                    )}
-                  </td>
-                  <td className="px-4 py-2 whitespace-nowrap text-xs text-brand-muted">
+          <div className="divide-y divide-brand-surface">
+            {pesanList.map((pesan) => (
+              <div key={pesan.id} className="p-3 hover:bg-brand-surface/50">
+                <div className="flex justify-between items-start mb-1">
+                  <p className="text-xs font-medium text-brand-link">{pesan.dari}</p>
+                  <span className="text-[10px] text-brand-muted flex-shrink-0 ml-2">
                     {new Date(pesan.createdAt).toLocaleDateString('id-ID')}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </span>
+                </div>
+                <p className="text-xs font-medium text-brand-muted mb-1">{pesan.judul}</p>
+                <p className="text-sm text-brand-body">
+                  {expandedPesanId === pesan.id ? (
+                    <>
+                      <p>{pesan.isi}</p>
+                      <button
+                        onClick={() => setExpandedPesanId(null)}
+                        className="text-brand-link hover:text-brand-link-hover text-xs font-medium mt-1"
+                      >
+                        Tutup
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <p className="line-clamp-2">{pesan.isi}</p>
+                      {pesan.isi.length > 150 && (
+                        <button
+                          onClick={() => setExpandedPesanId(pesan.id)}
+                          className="text-brand-link hover:text-brand-link-hover text-xs font-medium mt-1"
+                        >
+                          Lihat Selengkapnya
+                        </button>
+                      )}
+                    </>
+                  )}
+                </p>
+              </div>
+            ))}
+          </div>
         ) : (
           <div className="p-4 text-center text-sm text-brand-muted">
             Belum ada pesan.
@@ -558,35 +650,139 @@ const handleLogout = async () => {
               Panduan
               </button>
 
-              <span className="text-brand-header font-bold">
+              <span className="text-brand-header font-bold text-sm">
                 {guruData?.name}
               </span>
               <button
                 onClick={handleLogout}
-                className="btn-brand px-4 py-2 rounded-lg flex items-center">
+                className="btn-brand px-3 py-1.5 rounded-lg flex items-center text-sm">
                 <LogOut className="w-4 h-4 mr-1" />
                 Logout
               </button>
             </div>
+
+            {/* Mobile hamburger button (hidden on desktop) */}
+            <button
+              className="md:hidden text-brand-header p-2 rounded-lg hover:opacity-80 relative"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              <Menu className="w-6 h-6" />
+            </button>
           </div>
+
+          {/* Mobile dropdown menu */}
+          {isMobileMenuOpen && (
+            <div className="md:hidden border-t border-brand-surface pb-3">
+              {/* Guru name */}
+              <div className="px-4 py-2 text-brand-header font-bold text-sm">
+                {guruData?.name}
+              </div>
+
+              {/* Admin link */}
+              {guruData?.role === 'ADMIN' && (
+                <Link
+                  href="/dashboard/admin"
+                  className="flex items-center px-4 py-2 text-brand-link hover:opacity-80"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Menu Admin
+                </Link>
+              )}
+
+              {/* Pesan */}
+              <button
+                onClick={() => { setIsPesanOpen(!isPesanOpen); }}
+                className="flex items-center w-full text-left px-4 py-2 text-brand-header hover:opacity-80 relative"
+              >
+                <Mail className="w-5 h-5 mr-3" />
+                Pesan
+                {unreadCount > 0 && (
+                  <span className="ml-2 h-2 w-2 bg-yellow-500 rounded-full"></span>
+                )}
+              </button>
+
+              {/* Mobile pesan panel */}
+              {isPesanOpen && (
+                <div className="mx-3 mb-2 bg-brand-header rounded-lg shadow-lg border border-brand-surface">
+                  <div className="p-3 border-b border-brand-surface flex justify-between items-center">
+                    <h3 className="text-sm font-semibold text-brand-on-dark">Pesan Masuk</h3>
+                    <button onClick={() => setIsPesanOpen(false)} className="text-brand-on-dark hover:opacity-80">
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                  <div className="bg-brand-surface px-4 py-2">
+                    <button
+                      onClick={() => { setIsTulisPesanOpen(true); setIsPesanOpen(false); setIsMobileMenuOpen(false); }}
+                      className="w-full text-left text-sm font-medium text-brand-link hover:text-brand-link-hover"
+                    >
+                      + Saran & Kritik (Klik Disini)
+                    </button>
+                  </div>
+                  <div className="max-h-60 overflow-y-auto">
+                    {pesanList.length > 0 ? (
+                      <div className="divide-y divide-brand-surface">
+                        {pesanList.map((pesan) => (
+                          <div key={pesan.id} className="p-3">
+                            <div className="flex justify-between items-start mb-1">
+                              <p className="text-xs font-medium text-brand-link">{pesan.dari}</p>
+                              <span className="text-[10px] text-brand-muted flex-shrink-0 ml-2">
+                                {new Date(pesan.createdAt).toLocaleDateString('id-ID')}
+                              </span>
+                            </div>
+                            <p className="text-xs font-medium text-brand-muted mb-1">{pesan.judul}</p>
+                            <p className="text-sm text-brand-body">
+                              {expandedPesanId === pesan.id ? pesan.isi : (
+                                <span className="line-clamp-2">{pesan.isi}</span>
+                              )}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="p-4 text-center text-sm text-brand-muted">Belum ada pesan.</div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Panduan */}
+              <button
+                onClick={() => { setIsPanduanOpen(true); setIsMobileMenuOpen(false); }}
+                className="flex items-center w-full text-left px-4 py-2 text-brand-header hover:opacity-80"
+              >
+                <HelpCircle className="w-5 h-5 mr-3" />
+                Panduan
+              </button>
+
+              {/* Logout */}
+              <button
+                onClick={handleLogout}
+                className="flex items-center w-full text-left px-4 py-2 text-red-300 hover:text-red-200"
+              >
+                <LogOut className="w-5 h-5 mr-3" />
+                Logout
+              </button>
+            </div>
+          )}
         </div>
       </header>
 
       {/* Navigation Tabs */}
       <div className="bg-brand-surface border-b border-brand-surface">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav className="flex space-x-8">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <nav className="flex space-x-4 sm:space-x-8 overflow-x-auto scrollbar-hide -mb-px">
             {[
-              { id: 'ujian', label: 'Upload Ujian', icon: Upload },
-              { id: 'kunci', label: 'Kunci Jawaban', icon: FileText },
-              { id: 'siswa', label: 'Data Siswa', icon: Users },
-              { id: 'hasil', label: 'Hasil Ujian', icon: FileText },
-              { id: 'donasi', label: '❤️Donasi'}
+              { id: 'ujian', label: 'Upload Ujian' },
+              { id: 'kunci', label: 'Kunci Jawaban' },
+              { id: 'siswa', label: 'Data Siswa' },
+              { id: 'hasil', label: 'Hasil Ujian' },
+              { id: 'donasi', label: '❤️ Donasi' },
+              { id: 'qr', label: '📱 QR Aplikasi' }
             ].map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center py-4 px-1 border-b-2 font-medium text-sm ${
+                className={`flex items-center py-3 px-2 sm:py-4 sm:px-1 border-b-2 font-medium text-sm whitespace-nowrap flex-shrink-0 ${
                   activeTab === tab.id
                     ? 'border-[var(--brand-link-hover)] text-[var(--brand-link-hover)]'
                     : 'border-transparent text-brand-muted hover:text-brand-heading hover:border-[var(--brand-link-hover)]'
@@ -600,7 +796,7 @@ const handleLogout = async () => {
       </div>
 
       {/* Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Upload Ujian Tab */}
         {activeTab === 'ujian' && (
           <div>
@@ -614,7 +810,7 @@ const handleLogout = async () => {
               </Link>
             </div>
 
-            <div className="bg-white rounded-lg shadow overflow-hidden">
+            <div className="bg-white rounded-lg shadow overflow-x-auto">
               <table className="min-w-full divide-y divide-brand-surface">
                 <thead className="bg-brand-table-header">
                   <tr>
@@ -708,10 +904,16 @@ const handleLogout = async () => {
                   <Plus className="w-4 h-4 mr-2" />
                   Upload Kunci Jawaban
                 </button>
+                <button
+                  onClick={downloadKunciTemplate}
+                  className="btn-brand px-4 py-2 rounded-lg flex items-center">
+                  <Download className="w-4 h-4 mr-2" />
+                  Download Template
+                </button>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow overflow-hidden">
+            <div className="bg-white rounded-lg shadow overflow-x-auto">
               <table className="min-w-full divide-y divide-brand-surface">
                 <thead className="bg-brand-table-header">
                   <tr>
@@ -807,7 +1009,7 @@ const handleLogout = async () => {
 
             <div className="space-y-4">
               {Object.entries(siswaPerKelas).map(([kelas, siswaList]) => (
-                <div key={kelas} className="bg-white rounded-lg shadow overflow-hidden">
+                <div key={kelas} className="bg-white rounded-lg shadow overflow-x-auto">
                   <div
                     className="btn-brand px-4 py-2 flex justify-between items-center cursor-pointer"
                     onClick={() => toggleKelas(kelas)}
@@ -823,15 +1025,28 @@ const handleLogout = async () => {
                         {siswaList.length} siswa
                       </span>
                     </div>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        handleDeleteSiswaPerKelas(kelas)
-                      }}
-                      className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-700 flex items-center"
-                    >
-                      Hapus Kelas
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          openTambahForm(kelas)
+                        }}
+                        className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 flex items-center"
+                      >
+                        <UserPlus className="w-4 h-4 mr-1" />
+                        Tambah Siswa
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleDeleteSiswaPerKelas(kelas)
+                        }}
+                        className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-700 flex items-center"
+                      >
+                        <Trash2 className="w-4 h-4 mr-1" />
+                        Hapus Kelas
+                      </button>
+                    </div>
                   </div>
                   
                   {expandedKelas[kelas] && (
@@ -862,6 +1077,95 @@ const handleLogout = async () => {
                 <p className="text-brand-on-dark">Belum ada data siswa</p>
               </div>
             )}
+          </div>
+        )}
+
+        {/* === MODAL TAMBAH SISWA === */}
+        {showTambahForm && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-lg w-full max-w-lg max-h-[90vh] overflow-y-auto">
+              <div className="flex items-center justify-between p-4 border-b">
+                <div>
+                  <h3 className="text-lg font-semibold text-brand-heading">Tambah Siswa</h3>
+                  <p className="text-sm text-brand-body">Kelas: <span className="font-bold">{tambahKelas}</span></p>
+                </div>
+                <button
+                  onClick={() => setShowTambahForm(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="p-4 space-y-3">
+                {tambahRows.map((row, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <span className="text-xs text-gray-400 w-5 text-center">{index + 1}</span>
+                    <input
+                      type="text"
+                      placeholder="NISN"
+                      value={row.nisn}
+                      onChange={(e) => updateTambahRow(index, 'nisn', e.target.value)}
+                      className="w-1/3 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ring)]"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Nama Lengkap"
+                      value={row.nama}
+                      onChange={(e) => updateTambahRow(index, 'nama', e.target.value)}
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ring)]"
+                    />
+                    {tambahRows.length > 1 && (
+                      <button
+                        onClick={() => removeTambahRow(index)}
+                        className="text-red-400 hover:text-red-600 p-1 shrink-0"
+                        title="Hapus baris"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {tambahError && (
+                <div className="mx-4 mb-2 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+                  {tambahError}
+                </div>
+              )}
+
+              {tambahSuccess && (
+                <div className="mx-4 mb-2 p-3 bg-green-50 border border-green-200 text-green-700 rounded-lg text-sm">
+                  {tambahSuccess}
+                </div>
+              )}
+
+              <div className="flex items-center justify-between p-4 border-t">
+                <button
+                  onClick={addTambahRow}
+                  className="flex items-center px-3 py-2 rounded-lg text-sm font-semibold text-brand-link hover:opacity-80 border border-brand-surface"
+                >
+                  <Plus className="w-4 h-4 mr-1" />
+                  Tambah Baris
+                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setShowTambahForm(false)}
+                    className="px-4 py-2 rounded-lg text-sm font-semibold bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    onClick={handleTambahSiswa}
+                    disabled={isSavingSiswa}
+                    className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-700 disabled:opacity-50 flex items-center"
+                  >
+                    <Save className="w-4 h-4 mr-1" />
+                    {isSavingSiswa ? 'Menyimpan...' : 'Simpan'}
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
@@ -1124,6 +1428,28 @@ const handleLogout = async () => {
 
     <p className="text-center text-[11px] text-brand-on-dark mt-6">
       Donasi Anda sangat berarti untuk keberlanjutan dan pengembangan fitur baru GTX Core.
+    </p>
+  </div>
+)}
+
+        {/* QR Aplikasi Tab */}
+        {activeTab === 'qr' && (
+  <div className="p-6 bg-page-gradient-hover rounded-lg shadow-sm border border-brand-surface text-center">
+    <h2 className="text-2xl font-bold text-brand-on-dark mb-2">
+      📱 QR Aplikasi SSC
+    </h2>
+    <p className="text-sm text-brand-on-dark mb-6">
+      Scan QR code di bawah ini untuk mengakses aplikasi SSC dari HP Anda
+    </p>
+    <div className="flex justify-center">
+      <img
+        src="/qrssc.png"
+        alt="QR Code SSC"
+        className="w-56 h-56 sm:w-72 sm:h-72 object-contain rounded-lg"
+      />
+    </div>
+    <p className="text-xs text-brand-on-dark mt-6">
+      Arahkan kamera HP ke QR code di atas untuk membuka aplikasi
     </p>
   </div>
 )}

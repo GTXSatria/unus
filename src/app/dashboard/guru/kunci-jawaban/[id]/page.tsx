@@ -74,7 +74,16 @@ export default function KunciJawabanDetail() {
         if (data.kunciJawaban) {
           try {
             const parsed = JSON.parse(data.kunciJawaban)
-            setKunciJawaban(parsed)
+            // Normalize: convert format lama "A-C-E" (dash) → "A,C,E" (koma)
+            const normalized: KunciJawaban = {}
+            for (const [key, value] of Object.entries(parsed)) {
+              if (typeof value === 'string') {
+                normalized[parseInt(key)] = value.includes('-')
+                  ? value.split('-').map(s => s.trim()).sort().join(',')
+                  : value
+              }
+            }
+            setKunciJawaban(normalized)
           } catch {
             setKunciJawaban({})
           }
@@ -339,10 +348,10 @@ export default function KunciJawabanDetail() {
             <div className="flex items-center space-x-4">
               <label className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center cursor-pointer">
                 <Upload className="w-4 h-4 mr-2" />
-                Upload CSV
+                Upload Kunci Jawaban
                 <input
                   type="file"
-                  accept=".csv"
+                  accept=".csv,.xls,.xlsx"
                   onChange={handleFileUpload}
                   className="hidden"
                 />
@@ -367,7 +376,7 @@ export default function KunciJawabanDetail() {
         )}
 
         {/* Kunci Jawaban Table */}
-        <div className="bg-page-gradient-hover rounded-lg shadow overflow-hidden">
+        <div className="bg-page-gradient-hover rounded-lg shadow overflow-x-auto">
           <div className="px-6 py-4 bg-brand-table-header border-b border-brand-surface">
             <h3 className="text-lg font-semibold text-brand-header">
               Daftar Kunci Jawaban ({ujian.jumlahSoal} Soal)

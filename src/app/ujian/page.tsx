@@ -466,7 +466,7 @@ export default function UjianPage() {
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-3">
               <img
-                src="/ssc-1.PNG"
+                src="/ssc.PNG"
                 alt="SSC Logo"
                 className="h-12 w-auto object-contain"
               />

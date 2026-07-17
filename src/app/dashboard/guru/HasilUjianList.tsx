@@ -315,7 +315,7 @@ return (
         <p>Belum ada hasil ujian yang tersedia.</p>
       </div>
     ) : (
-      <div className="bg-white rounded shadow overflow-hidden mb-6">
+      <div className="bg-white rounded shadow overflow-x-auto mb-6">
         <div className="overflow-x-auto">
           <table className="min-w-full">
             <thead className="bg-brand-table-header">

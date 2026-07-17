@@ -1,10 +1,10 @@
-const CACHE_NAME = 'ssc-v.0.1.5'
+const CACHE_NAME = 'ssc-v.0.1.8'
 
 // Hanya asset statis, BUKAN halaman dinamis
 const STATIC_ASSETS = [
   '/',
   '/manifest.json',
-  '/ssc-1.png',
+  '/ssc.png',
   '/icon-192x192.png',
   '/icon-512x512.png'
 ]

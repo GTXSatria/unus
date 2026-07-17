@@ -45,13 +45,8 @@ export default function UploadSiswa() {
       const formDataToSend = new FormData()
       formDataToSend.append('file', file)
 
-      
       const response = await fetch('/api/siswa/upload', {
         method: 'POST',
-        // --- HAPUS BLOK headers INI ---
-        // headers: {
-        //   'Content-Type': 'application/json'
-        // },
         body: formDataToSend
       })
 
@@ -77,7 +72,6 @@ export default function UploadSiswa() {
   }
 
   const downloadTemplate = () => {
-    // Create template content
     const templateContent = [
       ['NISN', 'NAMA', 'KELAS'],
       ['1234567890', 'Ahmad Rizki', 'XII-A'],
@@ -85,10 +79,8 @@ export default function UploadSiswa() {
       ['1234567892', 'Budi Arifin', 'XII-B']
     ]
 
-    // Create CSV content
     const csvContent = templateContent.map(row => row.join(',')).join('\n')
     
-    // Create blob and download
     const blob = new Blob([csvContent], { type: 'text/csv' })
     const url = window.URL.createObjectURL(blob)
     const a = document.createElement('a')

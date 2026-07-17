@@ -42,10 +42,10 @@ export default function UploadUjian() {
 
   const handleKunciChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (file && (file.type === 'application/vnd.ms-excel' || file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) {
+    if (file && (file.type === 'text/csv' || file.type === 'application/vnd.ms-excel' || file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) {
       setKunciFile(file)
     } else {
-      setError('File harus berformat Excel (.xls atau .xlsx)')
+      setError('File harus berformat CSV, .xls atau .xlsx')
     }
   }
 
@@ -106,8 +106,8 @@ const downloadKunciTemplate = () => {
   const templateContent = [
     ['Nomor', 'Jawaban'],
     ['1', 'A'],
-    ['2', 'B'],
-    ['3', 'C']
+    ['2', 'A-C-E'],
+    ['3', 'B']
   ];
 
   const csvContent = templateContent.map(row => row.join(',')).join('\n');
@@ -295,7 +295,7 @@ const downloadKunciTemplate = () => {
                 <input
                   ref={kunciInputRef}
                   type="file"
-                  accept=".xls,.xlsx"
+                  accept=".csv,.xls,.xlsx"
                   onChange={handleKunciChange}
                   className="hidden"
                 />
@@ -325,7 +325,7 @@ const downloadKunciTemplate = () => {
                       className="btn-brand px-4 py-2 rounded-lg flex items-center mx-auto"
                     >
                       <Upload className="w-4 h-4 mr-2" />
-                      Pilih File Excel
+                      Pilih File Kunci Jawaban
                     </button>
                     <button
                     type="button"
@@ -339,7 +339,7 @@ const downloadKunciTemplate = () => {
                 )}
               </div>
               <p className="text-sm text-brand-on-dark mt-2">
-                template berupa File CVS anda bisa merubah format CVS ke xls atau xlsx (blok kolom A klik data-Teks to Columns pilih Tab dan Desimal)
+                Template berupa file CSV. Buka di Excel, isi jawaban, lalu save as CSV untuk diupload.
               </p>
             </div>
 

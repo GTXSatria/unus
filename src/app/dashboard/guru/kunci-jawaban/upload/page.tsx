@@ -190,7 +190,7 @@ export default function UploadKunciJawaban() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Upload Form */}
           <div className="bg-page-gradient-hover rounded-lg shadow p-6">
-            <h2 className="text-lg font-semibold text-brand-on-dark mb-6">Upload File Kunci Jawaban</h2>
+            <h2 className="text-lg font-semibold text-brand-on-dark mb-6">Lakukan Upload Kunci Jawaban di menu + Upload Ujian Baru</h2>
             
             {/* Select Ujian */}
             <div className="mb-6">
@@ -220,7 +220,7 @@ export default function UploadKunciJawaban() {
                 <input
                   id="file-input"
                   type="file"
-                  accept=".csv"
+                  accept=".csv,.xls,.xlsx"
                   onChange={handleFileChange}
                   className="hidden"
                 />
@@ -334,7 +334,7 @@ export default function UploadKunciJawaban() {
         </div>
 
         {/* Daftar Ujian */}
-        <div className="mt-8 bg-white rounded-lg shadow overflow-hidden">
+        <div className="mt-8 bg-white rounded-lg shadow overflow-x-auto">
           <div className="px-6 py-4 bg-brand-table-header border-b border-brand-surface">
             <h2 className="text-lg font-semibold text-brand-header">Daftar Ujian</h2>
           </div>

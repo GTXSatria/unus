@@ -24,8 +24,8 @@ export const metadata: Metadata = {
   keywords: ["Intelligent Evaluation", "Ujian Online", "Guru", "Siswa", "SSC", "Pendidikan"],
   authors: [{ name: "SSC Team" }],
   icons: {
-    icon: "/192x192.png",
-    apple: "/ssc-1.png",
+    icon: "/icon-192x192.png",
+    apple: "/apple-touch-icon.png",
   },
   openGraph: {
     title: "SSC - Future Education, Today",
@@ -72,7 +72,7 @@ export default function RootLayout({
   return (
     <html lang="id" suppressHydrationWarning>
       <head>
-        <link rel="apple-touch-icon" href="/ssc-1.png" />
+        <link rel="apple-touch-icon" href="/icon-192x192.png" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
