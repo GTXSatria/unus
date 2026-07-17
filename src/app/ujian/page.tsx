@@ -83,11 +83,11 @@ export default function UjianPage() {
 
       setSiswaData(siswa)
       setUjianData(ujian)
-      
+
       // Build PDF URL dengan timestamp untuk cache busting
       const pdfUrl = `/api/ujian/pdf/${ujian.kodeUjian}?t=${Date.now()}`
       setPdfUrl(pdfUrl)
-      
+
       setIsLoading(false)
     } catch (err) {
       console.error('Error parsing stored data:', err)
@@ -140,7 +140,7 @@ export default function UjianPage() {
       if (document.documentElement.requestFullscreen) {
         await document.documentElement.requestFullscreen()
       }
-      
+
       setIsReadyForFullscreen(true)
       setHasStarted(true)
 
@@ -251,77 +251,106 @@ export default function UjianPage() {
       : `${minutes}:${secs.toString().padStart(2, '0')}`
   }
 
-  // Jawaban
+  // === BARU: Toggle jawaban (checkbox behavior, bukan radio) ===
   const handleJawabanChange = (soalNomor: number, value: string) => {
-    setJawaban(prev => ({
-      ...prev,
-      [soalNomor]: value
-    }))
+    setJawaban(prev => {
+      const current = prev[soalNomor] || ''
+      const currentLetters = current ? current.split(',').filter(Boolean) : []
+
+      if (currentLetters.includes(value)) {
+        // Deselect — hapus value
+        const filtered = currentLetters.filter(l => l !== value)
+        const updated = { ...prev }
+        if (filtered.length === 0) {
+          delete updated[soalNomor]
+        } else {
+          updated[soalNomor] = filtered.sort().join(',')
+        }
+        return updated
+      } else {
+        // Select — tambah value
+        return {
+          ...prev,
+          [soalNomor]: [...currentLetters, value].sort().join(',')
+        }
+      }
+    })
   }
 
-const handleSubmit = async () => {
-  if (!isClient) return;
-
-  if (!ujianData || typeof ujianData.jumlahSoal !== "number" || ujianData.jumlahSoal <= 0) {
-    console.warn("Data ujian tidak tersedia atau jumlah soal tidak valid.");
-    return;
+  // Helper: cek apakah pilihan terpilih
+  const isPilihanSelected = (nomor: number, pilihan: string): boolean => {
+    const current = jawaban[nomor] || ''
+    return current.split(',').includes(pilihan)
   }
 
-  const totalSoal = ujianData.jumlahSoal;
-  const belumDijawab: number[] = [];
+  // Helper: cek apakah soal ini punya jawaban ganda
+  const isJawabanGanda = (nomor: number): boolean => {
+    const current = jawaban[nomor] || ''
+    return current.includes(',')
+  }
 
-  for (let i = 1; i <= totalSoal; i++) {
-    if (!jawaban[i.toString()]) {
-      belumDijawab.push(i);
+  const handleSubmit = async () => {
+    if (!isClient) return;
+
+    if (!ujianData || typeof ujianData.jumlahSoal !== "number" || ujianData.jumlahSoal <= 0) {
+      console.warn("Data ujian tidak tersedia atau jumlah soal tidak valid.");
+      return;
     }
-  }
 
-  // Jika masih ada soal yang belum dijawab, tampilkan popup konfirmasi
-  if (belumDijawab.length > 0) {
-    setSoalBelumDijawab(belumDijawab);
-    setShowKonfirmasi(true);
-    return;
-  }
+    const totalSoal = ujianData.jumlahSoal;
+    const belumDijawab: number[] = [];
 
-  await kirimJawaban();
-};
-
-const kirimJawaban = async () => {
-  try {
-    setIsSubmitting(true);
-
-    const response = await fetch("/api/ujian/submit", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ jawaban, appSwitchCount }),
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      setResult(data.hasil);
-      setShowResult(true);
-    } else if (response.status === 400) {
-      console.warn("Submit 400: kemungkinan ujian sudah tersimpan sebelumnya.");
-      setShowResult(true);
-    } else if (response.status === 401) {
-      console.warn("Sesi habis atau tidak valid.");
-      router.push("/login/siswa");
-    } else {
-      console.error("Submit error:", data.message || "Terjadi kesalahan server.");
-      setError(data.message || "Gagal mengirim jawaban");
+    for (let i = 1; i <= totalSoal; i++) {
+      if (!jawaban[i.toString()]) {
+        belumDijawab.push(i);
+      }
     }
-  } catch (error) {
-    console.error("Submit error:", error);
-    setError("Gagal mengirim jawaban");
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+
+    if (belumDijawab.length > 0) {
+      setSoalBelumDijawab(belumDijawab);
+      setShowKonfirmasi(true);
+      return;
+    }
+
+    await kirimJawaban();
+  };
+
+  const kirimJawaban = async () => {
+    try {
+      setIsSubmitting(true);
+
+      const response = await fetch("/api/ujian/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jawaban, appSwitchCount }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setResult(data.hasil);
+        setShowResult(true);
+      } else if (response.status === 400) {
+        console.warn("Submit 400: kemungkinan ujian sudah tersimpan sebelumnya.");
+        setShowResult(true);
+      } else if (response.status === 401) {
+        console.warn("Sesi habis atau tidak valid.");
+        router.push("/login/siswa");
+      } else {
+        console.error("Submit error:", data.message || "Terjadi kesalahan server.");
+        setError(data.message || "Gagal mengirim jawaban");
+      }
+    } catch (error) {
+      console.error("Submit error:", error);
+      setError("Gagal mengirim jawaban");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handleLogout = () => {
     if (!isClient) return
-    
+
     localStorage.removeItem('siswaData')
     localStorage.removeItem('ujianData')
     router.push('/')
@@ -351,8 +380,8 @@ const kirimJawaban = async () => {
         <div className="text-center">
           <h1 className="text-2xl font-bold text-red-500 mb-4">Terjadi Kesalahan</h1>
           <p className="mb-4 text-brand-on-dark">{error}</p>
-          <button 
-            onClick={() => window.location.reload()} 
+          <button
+            onClick={() => window.location.reload()}
             className="btn-brand px-6 py-3 rounded-lg font-semibold"
           >
             Muat Ulang
@@ -430,7 +459,7 @@ const kirimJawaban = async () => {
     )
   }
 
-return (
+  return (
     <div className="bg-brand-surface flex flex-col h-screen" data-fullscreen>
       <header className="bg-brand-header text-brand-header px-4 py-1.5 z-20">
         <div className="max-w-7xl mx-auto">
@@ -487,12 +516,13 @@ return (
       </header>
 
       <div className="flex-1 min-h-0 flex relative overflow-hidden">
-      <PdfViewer
-        pdfUrl={pdfUrl}
-        ujianData={ujianData}
-        siswaData={siswaData}
-      />
+        <PdfViewer
+          pdfUrl={pdfUrl}
+          ujianData={ujianData}
+          siswaData={siswaData}
+        />
 
+        {/* === LEMBAR JAWABAN (toggle behavior) === */}
         <div
           className={`fixed top-16 right-0 bottom-0 left-0 sm:left-auto bg-white shadow-2xl transition-transform duration-300 ease-in-out z-30 ${
             showJawaban ? 'translate-x-0' : 'translate-x-full'
@@ -511,38 +541,46 @@ return (
 
             <div className="flex-1 overflow-y-auto p-2">
               <div className="space-y-0.5">
-                {Array.from({ length: ujianData.jumlahSoal }, (_, i) => i + 1).map(nomor => (
-                  <div key={nomor} className="bg-white rounded-lg p-2">
-                      <div className="flex items-center gap1 mb-0.5">
+                {Array.from({ length: ujianData.jumlahSoal }, (_, i) => i + 1).map(nomor => {
+                  const currentJawaban = jawaban[nomor] || ''
+                  return (
+                    <div key={nomor} className="bg-white rounded-lg p-2">
+                      <div className="flex items-center gap-1 mb-0.5">
                         <span className="font-semibold text-black">Soal {nomor}</span>
                         <span className="text-black font-semibold">=</span>
                         <span
                           className={`px-2 py-1 rounded text-xs font-semibold ${
-                            jawaban[nomor]
-                              ? 'bg-white text-black'
-                              : 'bg-white text-black'
+                            currentJawaban
+                              ? 'bg-green-100 text-green-800'
+                              : 'bg-gray-100 text-gray-500'
                           }`}
                         >
-                          {jawaban[nomor] || 'Belum dijawab'}
+                          {currentJawaban || 'Belum dijawab'}
                         </span>
+                        {isJawabanGanda(nomor) && (
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-700">
+                            GANDA
+                          </span>
+                        )}
                       </div>
-                    <div className="grid grid-cols-5 gap-0.5">
-                      {getPilihanOptions().map(pilihan => (
-                        <button
-                          key={pilihan}
-                          onClick={() => handleJawabanChange(nomor, pilihan)}
-                          className={`p-1 rounded text-xs font-medium transition-colors ${
-                            jawaban[nomor] === pilihan
-                              ? 'bg-green-100 border border-black text-black hover:bg-brand-surface'
-                              : 'bg-white border border-black text-black hover:bg-brand-surface'
-                          }`}
-                        >
-                          {pilihan}
-                        </button>
-                      ))}
+                      <div className="grid grid-cols-5 gap-0.5">
+                        {getPilihanOptions().map(pilihan => (
+                          <button
+                            key={pilihan}
+                            onClick={() => handleJawabanChange(nomor, pilihan)}
+                            className={`p-1 rounded text-xs font-medium transition-colors border ${
+                              isPilihanSelected(nomor, pilihan)
+                                ? 'bg-green-600 text-white border-green-600'
+                                : 'bg-white text-black border-gray-300 hover:bg-gray-50'
+                            }`}
+                          >
+                            {pilihan}
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
 
               <div className="mt-6 pt-4 border-t border-brand-surface">
@@ -577,35 +615,35 @@ return (
         </div>
       </div>
       {showKonfirmasi && (
-  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-    <div className="bg-white rounded-xl shadow-lg p-6 w-96 text-center">
-      <h2 className="text-lg font-semibold text-brand-heading mb-2">Konfirmasi Pengiriman</h2>
-      <p className="text-sm text-black mb-4">
-        Ada soal yang belum dijawab yaitu nomor:
-        <span className="font-semibold text-red-700"> {soalBelumDijawab.join(", ")} </span>
-      </p>
-      <p className="text-sm text-black mb-6">Apakah Anda yakin ingin mengirim jawaban sekarang?</p>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-lg p-6 w-96 text-center">
+            <h2 className="text-lg font-semibold text-brand-heading mb-2">Konfirmasi Pengiriman</h2>
+            <p className="text-sm text-black mb-4">
+              Ada soal yang belum dijawab yaitu nomor:
+              <span className="font-semibold text-red-700"> {soalBelumDijawab.join(", ")} </span>
+            </p>
+            <p className="text-sm text-black mb-6">Apakah Anda yakin ingin mengirim jawaban sekarang?</p>
 
-      <div className="flex justify-center gap-3">
-        <button
-          onClick={() => setShowKonfirmasi(false)}
-          className="px-4 py-2 rounded-lg bg-brand-surface-hover text-brand-heading hover:opacity-80 transition"
-        >
-          Batal
-        </button>
-        <button
-          onClick={() => {
-            setShowKonfirmasi(false);
-            kirimJawaban();
-          }}
-          className="btn-brand px-4 py-2 rounded-lg transition"
-        >
-          Kirim
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+            <div className="flex justify-center gap-3">
+              <button
+                onClick={() => setShowKonfirmasi(false)}
+                className="px-4 py-2 rounded-lg bg-brand-surface-hover text-brand-heading hover:opacity-80 transition"
+              >
+                Batal
+              </button>
+              <button
+                onClick={() => {
+                  setShowKonfirmasi(false);
+                  kirimJawaban();
+                }}
+                className="btn-brand px-4 py-2 rounded-lg transition"
+              >
+                Kirim
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

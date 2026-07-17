@@ -82,7 +82,7 @@ export default function UploadSiswa() {
       ['NISN', 'NAMA', 'KELAS'],
       ['1234567890', 'Ahmad Rizki', 'XII-A'],
       ['1234567891', 'Siti Nurhaliza', 'XII-A'],
-      ['1234567892', 'Budi Santoso', 'XII-B']
+      ['1234567892', 'Budi Arifin', 'XII-B']
     ]
 
     // Create CSV content

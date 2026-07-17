@@ -2,14 +2,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import jwt from 'jsonwebtoken'
-import { cookies } from 'next/headers' // --- IMPORT HELPER COOKIES --- // --- IMPORT HELPER COOKIES ---
+import { cookies } from 'next/headers'
 
-// YANG BARU DAN KONSISTEN
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'
 
-// --- KOREKSI KEAMANAN: Fungsi verifikasi token dari HttpOnly cookie ---
 async function verifySiswaToken(request: NextRequest) {
-  // Baca cookie dari request menggunakan helper Next.js
   const cookieStore = await cookies()
   const token = cookieStore.get('siswaToken')?.value
 
@@ -28,9 +25,20 @@ async function verifySiswaToken(request: NextRequest) {
   }
 }
 
+// Helper: normalize jawaban → sort alphabetically, trim, gabung koma
+// "C,A,E" → "A,C,E"  |  "A" → "A"  |  undefined → ""
+function normalizeJawaban(str: string | undefined): string {
+  if (!str) return ''
+  return str
+    .split(',')
+    .map(s => s.trim().toUpperCase())
+    .filter(Boolean)
+    .sort()
+    .join(',')
+}
+
 export async function POST(request: NextRequest) {
   try {
-    // Verifikasi token (sekarang membaca dari cookie)
     const siswa = await verifySiswaToken(request)
     if (!siswa) {
       return NextResponse.json(
@@ -63,18 +71,22 @@ export async function POST(request: NextRequest) {
     // Ambil kunci jawaban
     const kunciJawaban = JSON.parse(ujian.kunciJawaban as string)
 
-    // Hitung skor
+    // Hitung skor — support single & multiple answer
     let benar = 0
     let salah = 0
 
     for (let i = 1; i <= ujian.jumlahSoal; i++) {
-      const jawabanSiswa = jawaban[String(i)]
-      const kunci = kunciJawaban[String(i)]
+      const kunciNorm = normalizeJawaban(kunciJawaban[String(i)])
 
-      if (jawabanSiswa === kunci) {
+      // Skip soal yang tidak punya kunci jawaban
+      if (!kunciNorm) continue
+
+      const jawabanNorm = normalizeJawaban(jawaban[String(i)])
+
+      if (jawabanNorm === kunciNorm) {
         benar++
-      } else if (jawabanSiswa && jawabanSiswa !== '') {
-        salah++
+      } else {
+        salah++ // Termasuk: salah, kurang, kelebihan, atau tidak dijawab
       }
     }
 
@@ -89,7 +101,6 @@ export async function POST(request: NextRequest) {
     })
 
     if (!existingHasil) {
-      // Jika tidak ada record, buat baru. Ini mungkin terjadi jika API start tidak dipanggil.
       const baru = await db.hasilUjian.create({
         data: {
           ujianId: siswa.ujianId,
@@ -105,35 +116,34 @@ export async function POST(request: NextRequest) {
       existingHasil = baru
     }
 
-    // Update hasil ujian yang sudah ada
+    // Update hasil ujian
     const hasil = await db.hasilUjian.update({
       where: { id: existingHasil.id },
       data: {
-              jawaban: JSON.stringify(jawaban),
-              skor,
-              benar,
-              salah,
-              appSwitchCount: appSwitchCount ?? 0,
-              waktuSelesai: new Date()
-            }
+        jawaban: JSON.stringify(jawaban),
+        skor,
+        benar,
+        salah,
+        appSwitchCount: appSwitchCount ?? 0,
+        waktuSelesai: new Date()
+      }
     })
 
     return NextResponse.json({
-  message: 'Jawaban berhasil disubmit',
-  hasil: {
-    skor,
-    benar,
-    salah,
-    totalSoal: ujian.jumlahSoal
-  }
-}, {
-  // --- TAMBAHKAN OBJECT headers INI ---
-  headers: {
-    'Cache-Control': 'no-store, no-cache, must-revalidate',
-    'Pragma': 'no-cache',
-    'Expires': '0'
-  }
-})
+      message: 'Jawaban berhasil disubmit',
+      hasil: {
+        skor,
+        benar,
+        salah,
+        totalSoal: ujian.jumlahSoal
+      }
+    }, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
+    })
 
   } catch (error) {
     console.error('Submit ujian error:', error)

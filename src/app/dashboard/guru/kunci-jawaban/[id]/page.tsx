@@ -3,10 +3,10 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
-import { 
-  ArrowLeft, 
-  Save, 
-  Trash2, 
+import {
+  ArrowLeft,
+  Save,
+  Trash2,
   Upload,
   Download,
   Edit,
@@ -40,7 +40,6 @@ export default function KunciJawabanDetail() {
   const params = useParams()
 
   useEffect(() => {
-    // Check authentication using cookies
     const checkAuth = async () => {
       try {
         const response = await fetch('/api/auth/me');
@@ -49,7 +48,6 @@ export default function KunciJawabanDetail() {
           return;
         }
         const userData = await response.json();
-        // User is authenticated, proceed
       } catch (error) {
         console.error('Auth check failed:', error);
         router.push('/login/guru');
@@ -72,8 +70,7 @@ export default function KunciJawabanDetail() {
       if (response.ok) {
         const data = await response.json()
         setUjian(data)
-        
-        // Parse kunci jawaban jika ada
+
         if (data.kunciJawaban) {
           try {
             const parsed = JSON.parse(data.kunciJawaban)
@@ -105,7 +102,7 @@ export default function KunciJawabanDetail() {
 
       if (response.ok) {
         setIsEditing(false)
-        fetchUjian() // Refresh data
+        fetchUjian()
         alert('Kunci jawaban berhasil disimpan!')
       } else {
         alert('Gagal menyimpan kunci jawaban')
@@ -142,6 +139,19 @@ export default function KunciJawabanDetail() {
     }
   }
 
+  // Helper: parse jawaban dari CSV line — support "A" dan "A-C-E"
+  function parseJawabanCSV(raw: string): string[] {
+    const cleaned = raw.replace(/"/g, '').trim().toUpperCase()
+    if (!cleaned) return []
+    if (cleaned.includes('-')) {
+      return cleaned.split('-').map(s => s.trim()).filter(Boolean)
+    }
+    if (cleaned.includes(',')) {
+      return cleaned.split(',').map(s => s.trim()).filter(Boolean)
+    }
+    return [cleaned]
+  }
+
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file) return
@@ -149,13 +159,27 @@ export default function KunciJawabanDetail() {
     try {
       const text = await file.text()
       const lines = text.split('\n').filter(line => line.trim())
-      
+
       const newKunci: KunciJawaban = {}
-      
-      for (let i = 0; i < lines.length; i++) {
-        const [nomor, jawaban] = lines[i].split(',').map(s => s.trim())
-        if (nomor && jawaban) {
-          newKunci[parseInt(nomor)] = jawaban
+
+      // Skip header row (index 0)
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim()
+        if (!line) continue
+
+        // Split hanya di koma pertama
+        const idx = line.indexOf(',')
+        if (idx === -1) continue
+
+        const nomorStr = line.substring(0, idx).trim()
+        const jawabanRaw = line.substring(idx + 1).trim()
+
+        if (nomorStr && jawabanRaw) {
+          const letters = parseJawabanCSV(jawabanRaw)
+          if (letters.length > 0) {
+            // Simpan sebagai koma-separated, sorted
+            newKunci[parseInt(nomorStr)] = [...letters].sort().join(',')
+          }
         }
       }
 
@@ -169,7 +193,7 @@ export default function KunciJawabanDetail() {
   }
 
   const downloadTemplate = () => {
-    const template = '1,A\n2,B\n3,C\n4,D\n5,A'
+    const template = 'Nomor,Jawaban\n1,A\n2,B\n3,A-C-E\n4,D\n5,A-D'
     const blob = new Blob([template], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -179,11 +203,42 @@ export default function KunciJawabanDetail() {
     URL.revokeObjectURL(url)
   }
 
+  // === BARU: Toggle jawaban (checkbox behavior) ===
   const handleKunciChange = (nomor: number, value: string) => {
-    setKunciJawaban(prev => ({
-      ...prev,
-      [nomor]: value
-    }))
+    setKunciJawaban(prev => {
+      const current = prev[nomor] || ''
+      const currentLetters = current ? current.split(',').filter(Boolean) : []
+
+      if (currentLetters.includes(value)) {
+        // Deselect — hapus value
+        const filtered = currentLetters.filter(l => l !== value)
+        const updated = { ...prev }
+        if (filtered.length === 0) {
+          delete updated[nomor]
+        } else {
+          updated[nomor] = filtered.sort().join(',')
+        }
+        return updated
+      } else {
+        // Select — tambah value
+        return {
+          ...prev,
+          [nomor]: [...currentLetters, value].sort().join(',')
+        }
+      }
+    })
+  }
+
+  // Helper: cek apakah pilihan terpilih untuk soal tertentu
+  const isSelected = (nomor: number, pilihan: string): boolean => {
+    const current = kunciJawaban[nomor] || ''
+    return current.split(',').includes(pilihan)
+  }
+
+  // Helper: dapatkan opsi pilihan dari tipePilihan
+  const getPilihanOptions = (): string[] => {
+    if (!ujian) return []
+    return ujian.tipePilihan.split('')
   }
 
   if (isLoading) {
@@ -306,7 +361,7 @@ export default function KunciJawabanDetail() {
               </div>
             )}
             <p className="mt-2 text-sm text-brand-on-dark opacity-70">
-              Format CSV: nomor_soal,jawaban (contoh: 1,A)
+              Format CSV: nomor_soal,jawaban — Single: <span className="font-mono font-semibold">1,A</span> | Ganda: <span className="font-mono font-semibold">3,A-C-E</span> (pisah dengan dash)
             </p>
           </div>
         )}
@@ -321,7 +376,7 @@ export default function KunciJawabanDetail() {
               Kelas: {ujian.kelas} | Tipe Pilihan: {ujian.tipePilihan}
             </p>
           </div>
-          
+
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-brand-surface">
               <thead className="bg-brand-table-header">
@@ -333,6 +388,9 @@ export default function KunciJawabanDetail() {
                     Kunci Jawaban
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-brand-header uppercase tracking-wider">
+                    Tipe
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-brand-header uppercase tracking-wider">
                     Status
                   </th>
                 </tr>
@@ -340,6 +398,7 @@ export default function KunciJawabanDetail() {
               <tbody className="bg-white divide-y divide-brand-surface">
                 {Array.from({ length: ujian.jumlahSoal }, (_, i) => i + 1).map((nomor) => {
                   const jawaban = kunciJawaban[nomor]
+                  const isMultiple = jawaban && jawaban.includes(',')
                   return (
                     <tr key={nomor}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-brand-heading">
@@ -347,26 +406,44 @@ export default function KunciJawabanDetail() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
                         {isEditing ? (
-                          <select
-                            value={jawaban || ''}
-                            onChange={(e) => handleKunciChange(nomor, e.target.value)}
-                            className="block w-full px-3 py-2 border border-brand-surface rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--ring)] focus:border-[var(--ring)]"
-                          >
-                            <option value="">Pilih Jawaban</option>
-                            {ujian.tipePilihan.includes('A') && <option value="A">A</option>}
-                            {ujian.tipePilihan.includes('B') && <option value="B">B</option>}
-                            {ujian.tipePilihan.includes('C') && <option value="C">C</option>}
-                            {ujian.tipePilihan.includes('D') && <option value="D">D</option>}
-                            {ujian.tipePilihan.includes('E') && <option value="E">E</option>}
-                          </select>
+                          /* === CHECKBOX GROUP (bukan select) === */
+                          <div className="flex gap-1.5">
+                            {getPilihanOptions().map(pilihan => (
+                              <button
+                                key={pilihan}
+                                type="button"
+                                onClick={() => handleKunciChange(nomor, pilihan)}
+                                className={`px-3 py-1.5 rounded text-sm font-semibold border-2 transition-colors ${
+                                  isSelected(nomor, pilihan)
+                                    ? 'bg-green-600 text-white border-green-600'
+                                    : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
+                                }`}
+                              >
+                                {pilihan}
+                              </button>
+                            ))}
+                          </div>
                         ) : (
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            jawaban 
-                              ? 'bg-green-100 text-green-800' 
+                          <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                            jawaban
+                              ? 'bg-green-100 text-green-800'
                               : 'bg-red-100 text-red-800'
                           }`}>
                             {jawaban || 'Belum Ada'}
                           </span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        {!isEditing && jawaban && (
+                          isMultiple ? (
+                            <span className="px-2 py-0.5 rounded text-xs font-semibold bg-blue-100 text-blue-800">
+                              Ganda
+                            </span>
+                          ) : (
+                            <span className="px-2 py-0.5 rounded text-xs font-semibold bg-gray-100 text-gray-600">
+                              Tunggal
+                            </span>
+                          )
                         )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
@@ -407,7 +484,20 @@ export default function KunciJawabanDetail() {
               <p className="text-2xl font-bold text-red-300">{ujian.jumlahSoal - Object.keys(kunciJawaban).length}</p>
             </div>
           </div>
-          
+
+          {/* Info soal ganda */}
+          {Object.keys(kunciJawaban).length > 0 && (
+            <div className="mt-4 p-4 bg-white/10 rounded-lg">
+              <p className="text-sm text-brand-on-dark opacity-80">
+                <span className="font-semibold">Soal jawaban ganda:</span>{' '}
+                {Object.entries(kunciJawaban)
+                  .filter(([, v]) => v.includes(','))
+                  .map(([k, v]) => `No.${k} (${v})`)
+                  .join(', ') || 'Tidak ada'}
+              </p>
+            </div>
+          )}
+
           {Object.keys(kunciJawaban).length === ujian.jumlahSoal && (
             <div className="mt-4 p-4 bg-green-500/20 border border-green-400/50 text-green-300 rounded-lg">
               <p className="font-medium">✅ Lengkap!</p>
