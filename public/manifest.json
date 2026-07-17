@@ -1,18 +1,24 @@
 {
-  "name": "Ujian Pintar",
-  "short_name": "UPIN",
-  "description": "Sistem Ujian Online",
+  "name": "SSC - Ujian Online",
+  "short_name": "SSC",
+  "description": "Sistem Ujian Online SSC",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#1e40af",
+  "theme_color": "#b4c81e",
   "orientation": "any",
   "icons": [
     {
-      "src": "/ssc2.png",
-      "sizes": "420x422",
+      "src": "/192x192.PNG",
+      "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/512x512.PNG",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }

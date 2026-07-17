@@ -154,31 +154,31 @@ export default function UploadKunciJawaban() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-page-gradient flex items-center justify-center p-4">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Memuat data...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-header mx-auto"></div>
+          <p className="mt-4 text-brand-on-dark">Memuat data...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-page-gradient">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-brand-header shadow-sm border-b border-brand-surface">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Link
                 href="/dashboard/guru"
-                className="mr-4 text-gray-600 hover:text-gray-700"
+                className="mr-4 text-brand-header hover:opacity-80"
               >
                 <ArrowLeft className="w-5 h-5" />
               </Link>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Upload Kunci Jawaban</h1>
-                <p className="text-sm text-gray-500">Upload kunci jawaban untuk ujian</p>
+                <h1 className="text-xl font-bold text-brand-header">Upload Kunci Jawaban</h1>
+                <p className="text-sm text-brand-on-dark">Upload kunci jawaban untuk ujian</p>
               </div>
             </div>
           </div>
@@ -189,18 +189,18 @@ export default function UploadKunciJawaban() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Upload Form */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-6">Upload File Kunci Jawaban</h2>
+          <div className="bg-page-gradient-hover rounded-lg shadow p-6">
+            <h2 className="text-lg font-semibold text-brand-on-dark mb-6">Upload File Kunci Jawaban</h2>
             
             {/* Select Ujian */}
             <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-brand-on-dark mb-2">
                 Pilih Ujian
               </label>
               <select
                 value={selectedUjian}
                 onChange={(e) => setSelectedUjian(e.target.value)}
-                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                className="block w-full px-3 py-2 border border-brand-surface rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--ring)] focus:border-[var(--ring)] bg-white"
               >
                 <option value="">-- Pilih Ujian --</option>
                 {ujians.map((ujian) => (
@@ -213,10 +213,10 @@ export default function UploadKunciJawaban() {
 
             {/* File Upload */}
             <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-brand-on-dark mb-2">
                 File Kunci Jawaban (CSV)
               </label>
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+              <div className="border-2 border-dashed border-brand-surface rounded-lg p-6 text-center">
                 <input
                   id="file-input"
                   type="file"
@@ -228,11 +228,11 @@ export default function UploadKunciJawaban() {
                   htmlFor="file-input"
                   className="cursor-pointer flex flex-col items-center"
                 >
-                  <Upload className="w-12 h-12 text-gray-400 mb-2" />
-                  <span className="text-sm text-gray-600">
+                  <Upload className="w-12 h-12 text-brand-on-dark mb-2" />
+                  <span className="text-sm text-brand-on-dark">
                     {file ? file.name : 'Klik untuk memilih file CSV'}
                   </span>
-                  <span className="text-xs text-gray-500 mt-1">
+                  <span className="text-xs text-brand-on-dark mt-1 opacity-70">
                     Format: Nomor,Jawaban (contoh: 1,A)
                   </span>
                 </label>
@@ -244,11 +244,11 @@ export default function UploadKunciJawaban() {
               <button
                 onClick={handleUpload}
                 disabled={!selectedUjian || !file || isUploading}
-                className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                className="flex-1 btn-brand px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 {isUploading ? (
                   <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-brand-header mr-2"></div>
                     Mengupload...
                   </>
                 ) : (
@@ -286,16 +286,16 @@ export default function UploadKunciJawaban() {
           </div>
 
           {/* Instructions */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-6">Petunjuk Upload</h2>
+          <div className="bg-page-gradient-hover rounded-lg shadow p-6">
+            <h2 className="text-lg font-semibold text-brand-on-dark mb-6">Petunjuk Upload</h2>
             
             <div className="space-y-4">
               <div>
-                <h3 className="font-medium text-gray-900 mb-2">1. Format File CSV</h3>
-                <p className="text-sm text-gray-600 mb-2">
+                <h3 className="font-medium text-brand-on-dark mb-2">1. Format File CSV</h3>
+                <p className="text-sm text-brand-on-dark mb-2 opacity-80">
                   File harus dalam format CSV dengan dua kolom:
                 </p>
-                <div className="bg-gray-50 p-3 rounded text-sm font-mono">
+                <div className="bg-white/20 p-3 rounded text-sm font-mono text-brand-on-dark">
                   Nomor,Jawaban<br />
                   1,A<br />
                   2,B<br />
@@ -305,8 +305,8 @@ export default function UploadKunciJawaban() {
               </div>
 
               <div>
-                <h3 className="font-medium text-gray-900 mb-2">2. Panduan Jawaban</h3>
-                <ul className="text-sm text-gray-600 space-y-1">
+                <h3 className="font-medium text-brand-on-dark mb-2">2. Panduan Jawaban</h3>
+                <ul className="text-sm text-brand-on-dark opacity-80 space-y-1">
                   <li>• Gunakan huruf kapital (A, B, C, D, E)</li>
                   <li>• Nomor soal harus berurutan dari 1</li>
                   <li>• Jumlah jawaban harus sesuai dengan jumlah soal</li>
@@ -315,15 +315,15 @@ export default function UploadKunciJawaban() {
               </div>
 
               <div>
-                <h3 className="font-medium text-gray-900 mb-2">3. Download Template</h3>
-                <p className="text-sm text-gray-600">
+                <h3 className="font-medium text-brand-on-dark mb-2">3. Download Template</h3>
+                <p className="text-sm text-brand-on-dark opacity-80">
                   Setelah memilih ujian, klik tombol "Template" untuk mendownload file CSV yang sudah diformat sesuai dengan ujian yang dipilih.
                 </p>
               </div>
 
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <h3 className="font-medium text-blue-900 mb-2">💡 Tips</h3>
-                <ul className="text-sm text-blue-800 space-y-1">
+              <div className="bg-white/20 border border-white/30 rounded-lg p-4">
+                <h3 className="font-medium text-brand-on-dark mb-2">💡 Tips</h3>
+                <ul className="text-sm text-brand-on-dark opacity-80 space-y-1">
                   <li>• Periksa kembali file sebelum upload</li>
                   <li>• Pastikan semua soal memiliki kunci jawaban</li>
                   <li>• Simpan file CSV dengan encoding UTF-8</li>
@@ -335,46 +335,46 @@ export default function UploadKunciJawaban() {
 
         {/* Daftar Ujian */}
         <div className="mt-8 bg-white rounded-lg shadow overflow-hidden">
-          <div className="px-6 py-4 bg-gray-50 border-b">
-            <h2 className="text-lg font-semibold text-gray-900">Daftar Ujian</h2>
+          <div className="px-6 py-4 bg-brand-table-header border-b border-brand-surface">
+            <h2 className="text-lg font-semibold text-brand-header">Daftar Ujian</h2>
           </div>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-brand-surface">
+              <thead className="bg-brand-table-header">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-brand-header uppercase tracking-wider">
                     Kode Ujian
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-brand-header uppercase tracking-wider">
                     Nama Ujian
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-brand-header uppercase tracking-wider">
                     Kelas
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-brand-header uppercase tracking-wider">
                     Jumlah Soal
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-brand-header uppercase tracking-wider">
                     Tipe Pilihan
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white divide-y divide-brand-surface">
                 {ujians.map((ujian) => (
                   <tr key={ujian.id}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-brand-link">
                       {ujian.kodeUjian}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-brand-muted">
                       {ujian.namaUjian}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-brand-muted">
                       {ujian.kelas}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-brand-muted">
                       {ujian.jumlahSoal}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-brand-muted">
                       {ujian.tipePilihan}
                     </td>
                   </tr>
@@ -383,11 +383,11 @@ export default function UploadKunciJawaban() {
             </table>
             {ujians.length === 0 && (
               <div className="text-center py-12">
-                <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-500">Belum ada ujian yang tersedia</p>
+                <FileText className="w-12 h-12 text-brand-muted mx-auto mb-4" />
+                <p className="text-brand-muted">Belum ada ujian yang tersedia</p>
                 <Link
                   href="/dashboard/guru/upload-ujian"
-                  className="mt-4 text-blue-600 hover:text-blue-700 inline-block"
+                  className="mt-4 text-brand-link hover:text-brand-link-hover inline-block"
                 >
                   Upload Ujian Baru
                 </Link>

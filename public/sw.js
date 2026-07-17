@@ -1,7 +1,9 @@
-const CACHE_NAME = 'upin-v.0.1.1'
+const CACHE_NAME = 'ssc-v.0.1.4'
 const URLS_TO_CACHE = [
   '/',
-  '/ssc2.png',
+  '/192x192.PNG',
+  '/512x512.PNG',
+  '/ssc-1.PNG',
 ]
 
 self.addEventListener('install', (event) => {

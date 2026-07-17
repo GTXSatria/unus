@@ -18,23 +18,27 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://ujianpintar.vercel.app"),
-  title: "Ujian Pintar",
+  title: "SSC - Ujian Online",
   description:
     "Platform evaluasi cerdas untuk guru dan siswa. Kelola ujian, pantau hasil, dan sampaikan masukan dengan mudah.",
-  keywords: ["Intelligent Evaluation", "Ujian Online", "Guru", "Siswa", "GTX Core", "Pendidikan"],
-  authors: [{ name: "GTX Core Team" }],
+  keywords: ["Intelligent Evaluation", "Ujian Online", "Guru", "Siswa", "SSC", "Pendidikan"],
+  authors: [{ name: "SSC Team" }],
+  icons: {
+    icon: "/192x192.png",
+    apple: "/ssc-1.png",
+  },
   openGraph: {
-    title: "GTX Core - Intelligent Evaluation Platform",
+    title: "SSC - Future Education, Today",
     description:
       "Platform evaluasi cerdas untuk guru dan siswa. Kelola ujian, pantau hasil, dan sampaikan masukan dengan mudah.",
     url: "https://ujianpintar.vercel.app",
-    siteName: "GTX Core",
+    siteName: "SSC",
     images: [
       {
         url: "/ssc2.png",
         width: 1200,
         height: 630,
-        alt: "GTX Core - Intelligent Evaluation Platform",
+        alt: "SSC - Future Education, Today",
       },
     ],
     locale: "id_ID",
@@ -42,7 +46,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "GTX Core - Intelligent Evaluation Platform",
+    title: "SSC - Future Education, Today",
     description: "Platform evaluasi cerdas untuk guru dan siswa.",
     images: ["/ssc2.png"],
   },
@@ -50,12 +54,12 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Ujian Pintar",
+    title: "SSC",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#1e40af",
+  themeColor: "#b4c81e",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -68,7 +72,7 @@ export default function RootLayout({
   return (
     <html lang="id" suppressHydrationWarning>
       <head>
-        <link rel="apple-touch-icon" href="/logo.png" />
+        <link rel="apple-touch-icon" href="/ssc-1.png" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}

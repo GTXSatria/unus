@@ -17,9 +17,9 @@ import {
 const PdfViewer = dynamic(() => import('./PdfViewer'), {
   ssr: false,
   loading: () => (
-    <div className="flex-1 flex items-center justify-center text-gray-500">
+    <div className="flex-1 flex items-center justify-center text-brand-muted">
       <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--ring)] mx-auto mb-4"></div>
         <p>Memuat soal...</p>
       </div>
     </div>
@@ -336,10 +336,10 @@ const kirimJawaban = async () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-300 to-blue-900 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-page-gradient flex items-center justify-center p-4">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
-          <p className="mt-4 text-white">Memuat data...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-header mx-auto"></div>
+          <p className="mt-4 text-brand-on-dark">Memuat data...</p>
         </div>
       </div>
     )
@@ -347,13 +347,13 @@ const kirimJawaban = async () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-page-gradient flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-red-600 mb-4">Terjadi Kesalahan</h1>
-          <p className="mb-4 text-gray-600">{error}</p>
+          <h1 className="text-2xl font-bold text-red-500 mb-4">Terjadi Kesalahan</h1>
+          <p className="mb-4 text-brand-on-dark">{error}</p>
           <button 
             onClick={() => window.location.reload()} 
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700"
+            className="btn-brand px-6 py-3 rounded-lg font-semibold"
           >
             Muat Ulang
           </button>
@@ -364,12 +364,12 @@ const kirimJawaban = async () => {
 
   if (!hasStarted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-300 to-blue-900 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-page-gradient flex items-center justify-center p-4">
         <div className="text-center">
-          <h1 className="text-white 2xl font-bold mb-4">Dengan menekan "Mulai Ujian" layar akan masuk Mode penuh</h1>
+          <h1 className="text-brand-on-dark text-2xl font-bold mb-4">Dengan menekan "Mulai Ujian" layar akan masuk Mode penuh</h1>
           <button
             onClick={handleStartExam}
-            className="bg-gradient-to-br from-blue-300 to-blue-900 hover:from-blue-900 hover:to-blue-300 hover:bg-gradient-to-br text-white px-4 py-2 rounded-lg flex items-center mx-auto"
+            className="btn-brand px-4 py-2 rounded-lg flex items-center mx-auto"
           >
             Mulai Ujian
           </button>
@@ -380,10 +380,10 @@ const kirimJawaban = async () => {
 
   if (!ujianData || !siswaData) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-300 to-blue-900 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-page-gradient flex items-center justify-center p-4">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
-          <p className="mt-4 text-white">Memuat data...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-header mx-auto"></div>
+          <p className="mt-4 text-brand-on-dark">Memuat data...</p>
         </div>
       </div>
     )
@@ -391,36 +391,36 @@ const kirimJawaban = async () => {
 
   if (showResult && result) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-300 to-blue-900 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-page-gradient flex items-center justify-center p-4">
         <div className="max-w-md w-full">
-          <div className="bg-gradient-to-br from-blue-300 to-blue-900 rounded-2xl shadow-lg p-8 text-center">
+          <div className="bg-page-gradient-hover rounded-2xl shadow-lg p-8 text-center">
             <div className="mb-6">
-              <CheckCircle className="w-16 h-16 text-white mx-auto mb-4" />
-              <h1 className="text-2xl font-bold text-white mb-2">Ujian Selesai!</h1>
-              <p className="text-white">Hasil ujian Anda:</p>
+              <CheckCircle className="w-16 h-16 text-brand-on-dark mx-auto mb-4" />
+              <h1 className="text-2xl font-bold text-brand-on-dark mb-2">Ujian Selesai!</h1>
+              <p className="text-brand-on-dark">Hasil ujian Anda:</p>
             </div>
 
             <div className="space-y-4 mb-8">
-              <div className="bg-blue-50 rounded-lg p-4">
-                <p className="text-sm text-blue-600 font-medium">Skor Akhir</p>
-                <p className="text-3xl font-bold text-blue-900">{result.skor}</p>
+              <div className="bg-white/20 rounded-lg p-4">
+                <p className="text-sm text-brand-on-dark opacity-80 font-medium">Skor Akhir</p>
+                <p className="text-3xl font-bold text-brand-on-dark">{result.skor}</p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-green-50 rounded-lg p-4">
-                  <p className="text-sm text-green-600 font-medium">Benar</p>
-                  <p className="text-2xl font-bold text-green-900">{result.benar}</p>
+                <div className="bg-green-500/20 rounded-lg p-4">
+                  <p className="text-sm text-green-400 font-medium">Benar</p>
+                  <p className="text-2xl font-bold text-green-300">{result.benar}</p>
                 </div>
-                <div className="bg-red-50 rounded-lg p-4">
-                  <p className="text-sm text-red-600 font-medium">Salah</p>
-                  <p className="text-2xl font-bold text-red-900">{result.salah}</p>
+                <div className="bg-red-500/20 rounded-lg p-4">
+                  <p className="text-sm text-red-400 font-medium">Salah</p>
+                  <p className="text-2xl font-bold text-red-300">{result.salah}</p>
                 </div>
               </div>
             </div>
 
             <button
               onClick={handleLogout}
-              className="bg-gradient-to-br from-blue-300 to-blue-900 hover:from-blue-900 hover:to-blue-300 hover:bg-gradient-to-br text-white px-4 py-2 rounded-lg flex items-center mx-auto"
+              className="btn-brand px-4 py-2 rounded-lg flex items-center mx-auto"
             >
               Selesai
             </button>
@@ -430,20 +430,20 @@ const kirimJawaban = async () => {
     )
   }
 
-  return (
-    <div className="bg-gray-50 flex flex-col h-screen" data-fullscreen>
-      <header className="bg-gradient-to-br from-blue-300 to-blue-900 text-white px-4 py-2 rounded-lg z-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-3">
+return (
+    <div className="bg-brand-surface flex flex-col h-screen" data-fullscreen>
+      <header className="bg-brand-header text-brand-header px-4 py-1.5 z-20">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-3">
               <img
-                src="/logo.svg"           // pastikan file ada di /public
-                alt="GTX Core Logo"
-                className="w-60 h-30 object-contain"
+                src="/ssc-1.PNG"
+                alt="SSC Logo"
+                className="h-12 w-auto object-contain"
               />
               <div>
-                <h1 className="text-lg font-semibold text-white">{ujianData.namaUjian}</h1>
-                <p className="text-sm font-semibold  text-white">
+                <h1 className="text-base sm:text-lg font-semibold text-brand-header leading-tight">{ujianData.namaUjian}</h1>
+                <p className="text-xs sm:text-sm font-semibold text-brand-header leading-tight">
                   {siswaData.nama} - {siswaData.kelas}
                 </p>
               </div>
@@ -453,7 +453,7 @@ const kirimJawaban = async () => {
                 className={`flex items-center px-3 py-1 rounded-full ${
                   timeLeft < 300
                     ? 'bg-red-600 text-white'
-                    : 'bg-white text-blue-900'
+                    : 'bg-white text-brand-heading'
                 }`}
               >
                 <Clock className="w-4 h-4 mr-2" />
@@ -465,8 +465,8 @@ const kirimJawaban = async () => {
                 onClick={() => setShowJawaban(!showJawaban)}
                 className={`flex items-center px-3 py-1 rounded-lg text-sm font-semibold transition-colors ${
                   showJawaban
-                    ? 'bg-blue-700 text-white hover:bg-blue-900'
-                    : 'bg-white text-blue-900 hover:bg-gray-200'
+                    ? 'btn-brand'
+                    : 'bg-white text-brand-heading hover:bg-brand-surface'
                 }`}
               >
                 {showJawaban ? (
@@ -499,11 +499,11 @@ const kirimJawaban = async () => {
           }`}
         >
           <div className="w-full sm:w-96 h-full flex flex-col">
-            <div className="bg-gradient-to-br from-blue-300 to-blue-900 text-white p-4 flex items-center justify-between">
+            <div className="bg-brand-header text-brand-header p-4 flex items-center justify-between">
               <h3 className="text-lg font-semibold">Lembar Jawaban</h3>
               <button
                 onClick={() => setShowJawaban(false)}
-                className="text-white hover:bg-blue-500 p-1 rounded"
+                className="text-brand-header hover:opacity-80 p-1 rounded"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -533,8 +533,8 @@ const kirimJawaban = async () => {
                           onClick={() => handleJawabanChange(nomor, pilihan)}
                           className={`p-1 rounded text-xs font-medium transition-colors ${
                             jawaban[nomor] === pilihan
-                              ? 'bg-green-100 border border-black text-black hover:bg-blue-400'
-                              : 'bg-white border border-black text-black hover:bg-blue-400'
+                              ? 'bg-green-100 border border-black text-black hover:bg-brand-surface'
+                              : 'bg-white border border-black text-black hover:bg-brand-surface'
                           }`}
                         >
                           {pilihan}
@@ -545,26 +545,26 @@ const kirimJawaban = async () => {
                 ))}
               </div>
 
-              <div className="mt-6 pt-4 border-t border-gray-200">
+              <div className="mt-6 pt-4 border-t border-brand-surface">
                 <button
                   onClick={handleSubmit}
                   disabled={isSubmitting || Object.keys(jawaban).length === 0}
-                  className="bg-gradient-to-br from-blue-300 to-blue-900 hover:from-blue-900 hover:to-blue-300 hover:bg-gradient-to-br text-white px-4 py-2 rounded-lg flex items-center mx-auto disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                  className="btn-brand px-4 py-2 rounded-lg flex items-center mx-auto disabled:opacity-50 disabled:cursor-not-allowed justify-center"
                 >
                   <Send className="w-4 h-4 mr-2" />
                   {isSubmitting ? 'Mengirim...' : 'Selesai & Kirim'}
                 </button>
 
-                <div className="mt-3 bg-gradient-to-br from-blue-300 to-blue-900 rounded-lg p-3">
+                <div className="mt-3 bg-page-gradient-hover rounded-lg p-3">
                   <div className="flex justify-between items-center mb-1">
-                    <span className="text-sm font-medium text-blue-900">Progress</span>
-                    <span className="text-sm text-blue-700">
+                    <span className="text-sm font-medium text-brand-on-dark">Progress</span>
+                    <span className="text-sm text-brand-on-dark opacity-80">
                       {Object.keys(jawaban).length} / {ujianData.jumlahSoal}
                     </span>
                   </div>
-                  <div className="w-full bg-gradient-to-br from-blue-300 to-blue-900 rounded-full h-2">
+                  <div className="w-full bg-white/20 rounded-full h-2">
                     <div
-                      className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                      className="bg-white h-2 rounded-full transition-all duration-300"
                       style={{
                         width: `${(Object.keys(jawaban).length / ujianData.jumlahSoal) * 100}%`
                       }}
@@ -577,19 +577,19 @@ const kirimJawaban = async () => {
         </div>
       </div>
       {showKonfirmasi && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
     <div className="bg-white rounded-xl shadow-lg p-6 w-96 text-center">
-      <h2 className="text-lg font-semibold text-gray-800 mb-2">Konfirmasi Pengiriman</h2>
+      <h2 className="text-lg font-semibold text-brand-heading mb-2">Konfirmasi Pengiriman</h2>
       <p className="text-sm text-black mb-4">
         Ada soal yang belum dijawab yaitu nomor:
-        <span className="font-semibold text-red-900"> {soalBelumDijawab.join(", ")} </span>
+        <span className="font-semibold text-red-700"> {soalBelumDijawab.join(", ")} </span>
       </p>
       <p className="text-sm text-black mb-6">Apakah Anda yakin ingin mengirim jawaban sekarang?</p>
 
       <div className="flex justify-center gap-3">
         <button
           onClick={() => setShowKonfirmasi(false)}
-          className="px-4 py-2 rounded-lg bg-gray-300 text-gray-800 hover:bg-gray-400 transition"
+          className="px-4 py-2 rounded-lg bg-brand-surface-hover text-brand-heading hover:opacity-80 transition"
         >
           Batal
         </button>
@@ -598,7 +598,7 @@ const kirimJawaban = async () => {
             setShowKonfirmasi(false);
             kirimJawaban();
           }}
-          className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+          className="btn-brand px-4 py-2 rounded-lg transition"
         >
           Kirim
         </button>

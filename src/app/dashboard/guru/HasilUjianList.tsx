@@ -226,7 +226,7 @@ export default function HasilUjianList() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="text-lg">Loading...</div>
+        <div className="text-lg text-brand-on-dark">Loading...</div>
       </div>
     )
   }
@@ -251,7 +251,7 @@ export default function HasilUjianList() {
 return (
   <div className="container mx-auto p-4">
     <div className="flex justify-between items-center mb-6">
-      <h1 className="text-2xl font-bold">Hasil Ujian</h1>
+      <h1 className="text-2xl font-bold text-brand-on-dark">Hasil Ujian</h1>
       <button 
         onClick={handleExportCSV}
         className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
@@ -262,16 +262,16 @@ return (
     </div>
     
     {/* Filter Section */}
-    <div className="bg-white p-4 rounded shadow mb-6">
+    <div className="bg-brand-surface p-4 rounded shadow mb-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-gray-700 text-sm font-bold mb-2">
+          <label className="block text-brand-heading text-sm font-bold mb-2">
             Filter Kelas
           </label>
           <select 
             value={filterKelas} 
             onChange={(e) => setFilterKelas(e.target.value)}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="shadow appearance-none border border-brand-surface rounded w-full py-2 px-3 text-brand-heading leading-tight focus:outline-none focus:ring-2 focus:ring-[var(--ring)] bg-white"
           >
             <option value="">Semua Kelas</option>
             {kelasList.map(kelas => (
@@ -280,13 +280,13 @@ return (
           </select>
         </div>
         <div>
-          <label className="block text-gray-700 text-sm font-bold mb-2">
+          <label className="block text-brand-heading text-sm font-bold mb-2">
             Filter Ujian
           </label>
           <select 
             value={filterUjian} 
             onChange={(e) => setFilterUjian(e.target.value)}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="shadow appearance-none border border-brand-surface rounded w-full py-2 px-3 text-brand-heading leading-tight focus:outline-none focus:ring-2 focus:ring-[var(--ring)] bg-white"
           >
             <option value="">Semua Ujian</option>
             {ujianList.map(ujian => (
@@ -301,7 +301,7 @@ return (
             setFilterKelas('')
             setFilterUjian('')
           }}
-          className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+          className="btn-brand py-2 px-4 rounded"
         >
           Reset Filter
         </button>
@@ -318,27 +318,27 @@ return (
       <div className="bg-white rounded shadow overflow-hidden mb-6">
         <div className="overflow-x-auto">
           <table className="min-w-full">
-            <thead className="bg-gray-200">
+            <thead className="bg-brand-table-header">
               <tr>
-                <th className="px-4 py-2 text-left">Nama Siswa</th>
-                <th className="px-4 py-2 text-left">NISN</th>
-                <th className="px-4 py-2 text-left">Kelas</th>
-                <th className="px-4 py-2 text-left">Ujian</th>
-                <th className="px-4 py-2 text-center">Skor</th>
-                <th className="px-4 py-2 text-center">Benar</th>
-                <th className="px-4 py-2 text-center">Salah</th>
-                <th className="px-4 py-2 text-left">Tanggal</th>
-                <th className="px-4 py-2 text-center">Catatan</th>
-                <th className="px-4 py-2 text-center">Aksi</th>
+                <th className="px-4 py-2 text-left text-brand-header">Nama Siswa</th>
+                <th className="px-4 py-2 text-left text-brand-header">NISN</th>
+                <th className="px-4 py-2 text-left text-brand-header">Kelas</th>
+                <th className="px-4 py-2 text-left text-brand-header">Ujian</th>
+                <th className="px-4 py-2 text-center text-brand-header">Skor</th>
+                <th className="px-4 py-2 text-center text-brand-header">Benar</th>
+                <th className="px-4 py-2 text-center text-brand-header">Salah</th>
+                <th className="px-4 py-2 text-left text-brand-header">Tanggal</th>
+                <th className="px-4 py-2 text-center text-brand-header">Catatan</th>
+                <th className="px-4 py-2 text-center text-brand-header">Aksi</th>
               </tr>
             </thead>
             <tbody>
               {hasilUjian.map((hasil, index) => (
-                <tr key={hasil.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                  <td className="px-4 py-2 border-b">{hasil.siswa.nama}</td>
-                  <td className="px-4 py-2 border-b">{hasil.siswa.nisn}</td>
-                  <td className="px-4 py-2 border-b">{hasil.siswa.kelas}</td>
-                  <td className="px-4 py-2 border-b">{hasil.ujian.namaUjian}</td>
+                <tr key={hasil.id} className={index % 2 === 0 ? 'bg-white' : 'bg-brand-table-row-alt'}>
+                  <td className="px-4 py-2 border-b border-brand-surface">{hasil.siswa.nama}</td>
+                  <td className="px-4 py-2 border-b border-brand-surface">{hasil.siswa.nisn}</td>
+                  <td className="px-4 py-2 border-b border-brand-surface">{hasil.siswa.kelas}</td>
+                  <td className="px-4 py-2 border-b border-brand-surface">{hasil.ujian.namaUjian}</td>
                   <td className="px-4 py-2 border-b text-center">
                     <span className={`font-bold ${hasil.skor >= 70 ? 'text-green-600' : hasil.skor >= 50 ? 'text-yellow-600' : 'text-red-600'}`}>
                       {hasil.skor}
@@ -356,7 +356,7 @@ return (
                         {hasil.appSwitchCount}x keluar
                       </span>
                     ) : (
-                      <span className="text-xs text-gray-400">Aman</span>
+                      <span className="text-xs text-brand-muted">Aman</span>
                     )}
                   </td>
                   <td className="px-4 py-2 border-b text-center">
@@ -377,11 +377,11 @@ return (
     
     {/* Delete by Kelas Section - Pastikan ini ada dan terlihat */}
     {kelasList.length > 0 && (
-      <div className="mt-6 p-4 bg-gray-100 border border-gray-300 rounded-lg shadow-md">
+      <div className="mt-6 p-4 bg-brand-surface border border-brand-surface rounded-lg shadow-md">
   <h3 className="text-lg font-bold mb-4 text-red-600">Hapus Berdasarkan Kelas</h3>
 
   {kelasList.length === 0 ? (
-    <p className="text-gray-500 text-sm italic">
+    <p className="text-brand-muted text-sm italic">
       Tidak ada data kelas ditemukan. Pastikan API hasil ujian mengembalikan properti <code>siswa.kelas</code>.
     </p>
   ) : (

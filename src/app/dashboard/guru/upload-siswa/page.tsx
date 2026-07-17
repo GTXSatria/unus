@@ -101,36 +101,36 @@ export default function UploadSiswa() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-300 to-blue-900">
+    <div className="min-h-screen bg-page-gradient">
       {/* Header */}
-      <header className="bg-gradient-to-br from-blue-300 to-blue-900 shadow-sm border-b">
+      <header className="bg-brand-header shadow-sm border-b border-brand-surface">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center h-10">
             <Link
               href="/dashboard/guru"
-              className="flex items-center text-white hover:text-gray-900 mr-4"
+              className="flex items-center text-brand-header hover:opacity-80 mr-4"
             >
               <ArrowLeft className="w-5 h-5 mr-2" />
               Kembali
             </Link>
-            <h1 className="text-xl font-bold text-white">Upload Data Siswa</h1>
+            <h1 className="text-xl font-bold text-brand-header">Upload Data Siswa</h1>
           </div>
         </div>
       </header>
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-gradient-to-br from-blue-300 to-blue-900 text-white px-4 py-2 rounded-lg">
+        <div className="bg-page-gradient-hover text-brand-on-dark px-4 py-2 rounded-lg">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Template Download */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Template Data Siswa</h3>
-              <p className="text-gray-900 mb-4">
+            <div className="bg-white/20 border border-white/30 rounded-lg p-4">
+              <h3 className="text-lg font-semibold text-brand-on-dark mb-2">Template Data Siswa</h3>
+              <p className="text-brand-on-dark mb-4 opacity-80">
                 Download template untuk format data siswa yang benar
               </p>
               <button
                 type="button"
                 onClick={downloadTemplate}
-                className="bg-gradient-to-br from-blue-300 to-blue-900 hover:from-blue-900 hover:to-blue-300 hover:bg-gradient-to-br text-white px-4 py-2 rounded-lg flex items-center"
+                className="btn-brand px-4 py-2 rounded-lg flex items-center"
               >
                 <Download className="w-4 h-4 mr-2" />
                 Download Template
@@ -139,8 +139,8 @@ export default function UploadSiswa() {
 
             {/* Upload File */}
             <div>
-              <h2 className="text-lg font-semibold text-white mb-4">Upload File Excel</h2>
-              <div className="border-2 border-dashed border-white rounded-lg p-6 text-center">
+              <h2 className="text-lg font-semibold text-brand-on-dark mb-4">Upload File Excel</h2>
+              <div className="border-2 border-dashed border-brand-on-dark rounded-lg p-6 text-center opacity-40">
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -151,27 +151,27 @@ export default function UploadSiswa() {
                 
                 {file ? (
                   <div className="flex items-center justify-center">
-                    <Users className="w-8 h-8 text-white" />
-                    <span className="text-white">{file.name}</span>
+                    <Users className="w-8 h-8 text-brand-on-dark" />
+                    <span className="text-brand-on-dark">{file.name}</span>
                     <button
                       type="button"
                       onClick={() => {
                         setFile(null)
                         if (fileInputRef.current) fileInputRef.current.value = ''
                       }}
-                      className="ml-3 text-white hover:text-red-700"
+                      className="ml-3 text-brand-on-dark hover:text-red-400"
                     >
                       Hapus
                     </button>
                   </div>
                 ) : (
                   <div>
-                    <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-white mb-2">Klik untuk upload file Excel atau CSV data siswa</p>
+                    <Users className="w-12 h-12 text-brand-on-dark mx-auto mb-4" />
+                    <p className="text-brand-on-dark mb-2">Klik untuk upload file Excel atau CSV data siswa</p>
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="bg-gradient-to-br from-blue-300 to-blue-900 hover:from-blue-900 hover:to-blue-300 hover:bg-gradient-to-br text-white px-4 py-2 rounded-lg flex items-center mx-auto"
+                      className="btn-brand px-4 py-2 rounded-lg flex items-center mx-auto"
                     >
                       <Upload className="w-4 h-4 mr-2" />
                       Pilih File Excel/CSV
@@ -182,9 +182,9 @@ export default function UploadSiswa() {
             </div>
 
             {/* Format Instructions */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Format File</h3>
-              <ul className="text-gray-700 space-y-1">
+            <div className="bg-white/20 border border-white/30 rounded-lg p-4">
+              <h3 className="text-lg font-semibold text-brand-on-dark mb-2">Format File</h3>
+              <ul className="text-brand-on-dark opacity-80 space-y-1">
                 <li>• Kolom A: NISN (wajib diisi, harus unik)</li>
                 <li>• Kolom B: Nama Lengkap (wajib diisi)</li>
                 <li>• Kolom C: Kelas (wajib diisi, contoh: XII-A)</li>
@@ -210,14 +210,14 @@ export default function UploadSiswa() {
             <div className="flex justify-end space-x-4">
               <Link
                 href="/dashboard/guru"
-                className="bg-gradient-to-br from-blue-300 to-blue-900 hover:from-blue-900 hover:to-blue-300 hover:bg-gradient-to-br text-white px-4 py-2 rounded-lg"
+                className="btn-brand px-4 py-2 rounded-lg"
               >
                 Batal
               </Link>
               <button
                 type="submit"
                 disabled={isLoading}
-                className="bg-gradient-to-br from-blue-300 to-blue-900 hover:from-blue-900 hover:to-blue-300 hover:bg-gradient-to-br text-white px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                className="btn-brand px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
               >
                 <Save className="w-4 h-4 mr-2" />
                 {isLoading ? 'Mengupload...' : 'Upload Data'}

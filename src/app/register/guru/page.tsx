@@ -50,35 +50,35 @@ export default function RegisterGuru() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-300 to-blue-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-page-gradient flex items-center justify-center p-4">
       <div className="max-w-md w-full">
         <div className="text-center mb-2">
           <Link href="/" className="inline-flex items-center justify-center mb-0">
-            <div className="bg-blue-600 p-3 rounded-2xl shadow-lg">
-              <BookOpen className="w-10 h-10 text-white" />
+            <div className="bg-brand-icon p-3 rounded-2xl shadow-lg">
+              <BookOpen className="w-10 h-10 text-brand-icon" />
             </div>
           </Link>
-          <h1 className="text-3xl font-bold text-gray-200 mb-0">
+          <h1 className="text-3xl font-bold text-brand-on-dark mb-0">
             Daftar Guru
           </h1>
-          <p className="text-gray-200">
+          <p className="text-brand-on-dark">
             Buat akun guru baru
           </p>
         </div>
 
-        <div className="bg-blue-100 rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-blue-100">
+        <div className="bg-brand-surface rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-brand-surface">
           <form onSubmit={handleRegister} className="space-y-1">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-0">
+              <label className="block text-sm font-medium text-brand-heading mb-0">
                 Nama Lengkap
               </label>
               <div className="relative">
-                <User className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                <User className="absolute left-3 top-3 w-5 h-5 text-brand-muted" />
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 border border-brand-surface rounded-lg focus:ring-2 focus:ring-[var(--ring)] focus:border-transparent"
                   placeholder="Nama lengkap"
                   required
                 />
@@ -86,16 +86,16 @@ export default function RegisterGuru() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-0">
+              <label className="block text-sm font-medium text-brand-heading mb-0">
                 Email
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                <Mail className="absolute left-3 top-3 w-5 h-5 text-brand-muted" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 border border-brand-surface rounded-lg focus:ring-2 focus:ring-[var(--ring)] focus:border-transparent"
                   placeholder="email@example.com"
                   required
                 />
@@ -103,16 +103,16 @@ export default function RegisterGuru() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-0">
+              <label className="block text-sm font-medium text-brand-heading mb-0">
                 Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                <Lock className="absolute left-3 top-3 w-5 h-5 text-brand-muted" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-10 pr-12 py-3 border border-brand-surface rounded-lg focus:ring-2 focus:ring-[var(--ring)] focus:border-transparent"
                   placeholder="Minimal 6 karakter"
                   required
                   minLength={6}
@@ -120,7 +120,7 @@ export default function RegisterGuru() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-3 text-brand-muted hover:text-brand-heading"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -128,16 +128,16 @@ export default function RegisterGuru() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-0">
+              <label className="block text-sm font-medium text-brand-heading mb-0">
                 Konfirmasi Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                <Lock className="absolute left-3 top-3 w-5 h-5 text-brand-muted" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-10 pr-12 py-3 border border-brand-surface rounded-lg focus:ring-2 focus:ring-[var(--ring)] focus:border-transparent"
                   placeholder="Konfirmasi password"
                   required
                   minLength={6}
@@ -154,23 +154,23 @@ export default function RegisterGuru() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full btn-brand py-3 rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? 'Mendaftar...' : 'Daftar'}
             </button>
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-gray-600">
+            <p className="text-brand-body">
               Sudah punya akun?{' '}
-              <Link href="/login/guru" className="text-blue-600 hover:text-blue-700 font-semibold">
+              <Link href="/login/guru" className="text-brand-link hover:text-brand-link-hover font-semibold text-brand-link-hover">
                 Login di sini
               </Link>
             </p>
           </div>
 
           <div className="mt-4 text-center">
-            <Link href="/" className="text-gray-500 hover:text-gray-700 text-sm inline-flex items-center">
+            <Link href="/" className="text-brand-muted hover:text-brand-heading text-sm inline-flex items-center">
               <ArrowLeft className="w-4 h-4 mr-1" />
               Kembali ke beranda
             </Link>

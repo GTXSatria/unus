@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { BookOpen, Eye, EyeOff, Mail, Lock, UserPlus } from 'lucide-react'
+import { BookOpen, Eye, EyeOff, Mail, Lock } from 'lucide-react'
 
 export default function LoginGuru() {
   const [email, setEmail] = useState('')
@@ -28,11 +28,9 @@ export default function LoginGuru() {
       const data = await response.json()
 
       if (response.ok) {
-        // --- BARIS INI BISA DIPERTAHANKAN SEMENTARA ---
         localStorage.setItem('guruData', JSON.stringify(data.user));
         router.push('/dashboard/guru');
       } else {
-        // Tambahkan pesan error dari server jika ada
         setError(data.message || 'Login gagal. Periksa kembali email dan password Anda.');
       }
     } catch (error) {
@@ -44,35 +42,35 @@ export default function LoginGuru() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-300 to-blue-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-page-gradient flex items-center justify-center p-4">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center justify-center mb-6">
-            <div className="bg-blue-600 p-3 rounded-2xl shadow-lg">
-              <BookOpen className="w-10 h-10 text-white" />
+            <div className="bg-brand-icon p-3 rounded-2xl shadow-lg">
+              <BookOpen className="w-10 h-10 text-brand-icon" />
             </div>
           </Link>
-          <h1 className="text-3xl font-bold text-gray-200 mb-2">
+          <h1 className="text-3xl font-bold text-brand-on-dark mb-2">
             Login Guru
           </h1>
-          <p className="text-gray-200">
-            Masuk ke portal guru GTX Core
+          <p className="text-brand-on-dark">
+            Masuk ke portal guru
           </p>
         </div>
 
-        <div className="bg-blue-100 rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-blue-100">
+        <div className="bg-brand-surface rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-brand-surface">
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-brand-heading mb-2">
                 Email
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                <Mail className="absolute left-3 top-3 w-5 h-5 text-brand-muted" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 border border-brand-surface rounded-lg focus:ring-2 focus:ring-[var(--ring)] focus:border-transparent"
                   placeholder="email@example.com"
                   required
                 />
@@ -80,23 +78,23 @@ export default function LoginGuru() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-brand-heading mb-2">
                 Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                <Lock className="absolute left-3 top-3 w-5 h-5 text-brand-muted" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-10 pr-12 py-3 border border-brand-surface rounded-lg focus:ring-2 focus:ring-[var(--ring)] focus:border-transparent"
                   placeholder="••••••••"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-3 text-brand-muted hover:text-brand-heading"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -112,23 +110,23 @@ export default function LoginGuru() {
             <button
               type="submit"
               disabled={isLoading}
-              className="bg-gradient-to-br from-blue-300 to-blue-900 hover:from-blue-900 hover:to-blue-300 hover:bg-gradient-to-br text-white px-4 py-2 rounded-lg flex items-center mx-auto disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-brand text-white px-4 py-2 rounded-lg flex items-center mx-auto disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? 'Memproses...' : 'Masuk'}
             </button>
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-gray-600">
+            <p className="text-brand-body">
               Belum punya akun?{' '}
-              <Link href="/register/guru" className="text-blue-600 hover:text-blue-700 font-semibold">
+              <Link href="/register/guru" className="text-brand-link text-brand-link-hover font-semibold">
                 Daftar sekarang
               </Link>
             </p>
           </div>
 
           <div className="mt-4 text-center">
-            <Link href="/" className="text-gray-500 hover:text-gray-700 text-sm">
+            <Link href="/" className="text-brand-muted hover:text-brand-heading text-sm">
               ← Kembali ke beranda
             </Link>
           </div>
